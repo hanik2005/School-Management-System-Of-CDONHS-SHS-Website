@@ -2,8 +2,17 @@
 // Include database connection
 include $_SERVER['DOCUMENT_ROOT'] . '/SMS_CDONHS-SHS_WEBSITE/DB_Connection/Connection.php';
 
+
+
 // Check if form is submitted
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+    if (!isset($_POST['captcha']) || !isset($_POST['correct_sum']) || $_POST['captcha'] != $_POST['correct_sum']) {
+        $_SESSION['login_data'] = ['username' => $_POST['username'] ?? ''];
+        header("Location: /SMS_CDONHS-SHS_WEBSITE/Website_Files/login.php?error=captcha");
+        exit();
+    }
+
     $username = $_POST['username'];
     $password = $_POST['password'];
 
