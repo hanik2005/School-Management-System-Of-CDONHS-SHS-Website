@@ -7,7 +7,8 @@
     <link rel="stylesheet" href="../Design/Online_Form_Design.css">
 </head>
 <body>
-    <form enctype="multipart/form-data">
+    <form action="../Back_End_Files/PHP_Files/testing.php" 
+      method="POST" enctype="multipart/form-data">
         <h1>CDONHS-SHS Online Enrollment</h1>
         <img src="../Assets/LOGO.png" alt="CDONHS-SHS Logo">
         <h2>Student Personal Information</h2>
@@ -92,13 +93,13 @@
         <h2>Enrollment Requirements</h2>
         <p>Please upload the following requirements below IF AVAILABLE.</p>
         <label for="psaBirthCertificate">PSA/NSO Birth Certificate:</label>
-        <input type="file" id="psaBirthCertificate" name="psaBirthCertificate" accept=".pdf,.jpg,.png" required><br><br>
+        <input type="file" id="psaBirthCertificate" name="psaBirthCertificate" accept=".pdf,.jpg,.png"><br><br>
         
         <label for="form138">Form138/Report Card:</label>
-        <input type="file" id="form138" name="form138" accept=".pdf,.jpg,.png" required><br><br>
+        <input type="file" id="form138" name="form138" accept=".pdf,.jpg,.png" ><br><br>
         
         <label for="studentID">Copy of Student Current ID:</label>
-        <input type="file" id="studentID" name="studentID" accept=".pdf,.jpg,.png" required><br><br>
+        <input type="file" id="studentID" name="studentID" accept=".pdf,.jpg,.png"><br><br>
         
         <button type="submit">Submit</button>
     </form>
