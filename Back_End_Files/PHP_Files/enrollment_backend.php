@@ -5,10 +5,8 @@
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require $_SERVER['DOCUMENT_ROOT'] . '/SMS_CDONHS-SHS_WEBSITE/mailer/src/Exception.php';
-require $_SERVER['DOCUMENT_ROOT'] . '/SMS_CDONHS-SHS_WEBSITE/mailer/src/PHPMailer.php';
-require $_SERVER['DOCUMENT_ROOT'] . '/SMS_CDONHS-SHS_WEBSITE/mailer/src/SMTP.php';
 include $_SERVER['DOCUMENT_ROOT'] . '/SMS_CDONHS-SHS_WEBSITE/DB_Connection/Connection.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/SMS_CDONHS-SHS_WEBSITE/Back_End_Files/PHP_Files/mailer_details.php';
 
 // ===============================
 // Check if form submitted
@@ -102,34 +100,47 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if ($stmt->execute()) {
 
-      $mail = new PHPMailer(true);
-      $mail-> isSMTP();
-      $mail-> Host = 'smtp.gmail.com';
-      $mail-> SMTPAuth = true;
-      $mail-> Username = 'nickcharlesclarito@gmail.com';
-      $mail-> Password = 'ygcutibfqfhgzzdt';
-      $mail-> SMTPSecure = 'ssl';
-      $mail-> Port = 465;
 
-      $mail-> setFrom('nickcharlesclarito@gmail.com', 'CDONHS-SHS Enrollment Office');
+    try{
+
+      $mail-> setFrom('cdonhsshsacc@gmail.com', 'CDONHS-SHS Enrollment Office');
       $mail->addAddress($email);
       $mail->isHTML(true);
       $mail->Subject = "CDONHS-SHS Enrollment Application Submitted";
 
       $mail->Body = "
-            Good day $firstName $lastName,
-
-            Your enrollment application has been successfully submitted.
-
-            Current Status: PENDING
-
-            Please submit all required documents on or before the deadline.
-            You may check your enrollment status online.
-
-            Thank you,
-            CDONHS-SHS Enrollment Office
-            ";
+<html>
+<head>
+  <style>
+    body { font-family: Arial, sans-serif; color: #333; line-height: 1.5; }
+    .container { max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9; }
+    .header { font-size: 18px; font-weight: bold; color: #0056b3; margin-bottom: 15px; }
+    .status { font-weight: bold; color: #ff6600; }
+    .footer { margin-top: 30px; font-size: 14px; color: #777; }
+  </style>
+</head>
+<body>
+  <div class='container'>
+    <div class='header'>Good day $firstName $lastName,</div>
+    
+    <p>Your enrollment application has been <b>successfully submitted</b>.</p>
+    
+    <p>Current Status: <span class='status'>PENDING</span></p>
+    
+    <p>Please submit all required documents on or before the deadline. You may check your enrollment status online at any time.</p>
+    
+    <p>Thank you,<br>
+    <b>CDONHS-SHS Enrollment Office</b></p>
+    
+    <div class='footer'>&copy; " . date("Y") . " CDONHS-SHS. All rights reserved.</div>
+  </div>
+</body>
+</html>
+";
         $mail->send();
+    }catch (Exception $e) {
+        error_log("PHPMailer Error: " . $mail->ErrorInfo);
+    }
         echo "<script>
                 alert('Enrollment submitted successfully. Please submit required documents before the deadline.');
                 window.location.href='../../Website_Files/thank_you.php';

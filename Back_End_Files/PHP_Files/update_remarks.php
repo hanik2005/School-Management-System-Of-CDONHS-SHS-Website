@@ -5,9 +5,7 @@ use PHPMailer\PHPMailer\Exception;
 // ===============================
 // PHPMailer (Manual Import)
 // ===============================
-require $_SERVER['DOCUMENT_ROOT'] . '/SMS_CDONHS-SHS_WEBSITE/mailer/src/Exception.php';
-require $_SERVER['DOCUMENT_ROOT'] . '/SMS_CDONHS-SHS_WEBSITE/mailer/src/PHPMailer.php';
-require $_SERVER['DOCUMENT_ROOT'] . '/SMS_CDONHS-SHS_WEBSITE/mailer/src/SMTP.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/SMS_CDONHS-SHS_WEBSITE/Back_End_Files/PHP_Files/mailer_details.php';
 
 // ===============================
 // DB Connection
@@ -44,50 +42,60 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $result = $getStudent->get_result();
     $student = $result->fetch_assoc();
 
-    // ===============================
-    // SEND EMAIL VIA PHPMailer
-    // ===============================
-    $mail = new PHPMailer(true);
-
     try {
-        $mail->isSMTP();
-        $mail->Host       = 'smtp.gmail.com';
-        $mail->SMTPAuth   = true;
-        $mail->Username   = 'nickcharlesclarito@gmail.com'; // Gmail
-        $mail->Password   = 'ygcutibfqfhgzzdt';              // App Password
-        $mail->SMTPSecure = 'ssl';
-        $mail->Port       = 465;
 
-        $mail->setFrom('nickcharlesclarito@gmail.com', 'CDONHS-SHS Enrollment Office');
+        $mail->setFrom('cdonhsshsacc@gmail.com', 'CDONHS-SHS Enrollment Office');
         $mail->addAddress($student['email'], $student['first_name'] . ' ' . $student['last_name']);
 
         $mail->isHTML(true);
         $mail->Subject = 'CDONHS-SHS Enrollment Status Update';
 
         $mail->Body = "
-            <p>Good day <b>{$student['first_name']} {$student['last_name']}</b>,</p>
-
+        <html>
+        <head>
+        <style>
+            body { font-family: Arial, sans-serif; color: #333; line-height: 1.5; }
+            .container { max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9; }
+            .header { font-size: 18px; font-weight: bold; color: #0056b3; margin-bottom: 15px; }
+            .status { font-weight: bold; color: #ff6600; }
+            .remarks { margin-left: 20px; padding: 10px; background-color: #fff3cd; border-left: 4px solid #ffcc00; border-radius: 4px; }
+            .footer { margin-top: 30px; font-size: 14px; color: #777; }
+        </style>
+        </head>
+        <body>
+        <div class='container'>
+            <div class='header'>Good day <b>{$student['first_name']} {$student['last_name']}</b>,</div>
+            
             <p>Your enrollment application has been <b>updated</b>.</p>
-
-            <p><b>Status:</b> $status</p>
-
+            
+            <p><b>Status:</b> <span class='status'>$status</span></p>
+            
             <p><b>Admin Remarks:</b></p>
-            <p>$remarks</p>
-
+            <div class='remarks'>$remarks</div>
+            
             <p>Please comply with the instructions above if required.</p>
-
+            
             <br>
             <p>Thank you,<br>
             <b>CDONHS-SHS Enrollment Office</b></p>
+            
+            <div class='footer'>&copy; " . date("Y") . " CDONHS-SHS. All rights reserved.</div>
+        </div>
+        </body>
+        </html>
         ";
 
-        $mail->AltBody = "Good day {$student['first_name']} {$student['last_name']},
+// Plain text version
+$mail->AltBody = "Good day {$student['first_name']} {$student['last_name']},
+
 Your enrollment application has been updated.
 
 Status: $status
 
 Admin Remarks:
 $remarks
+
+Please comply with the instructions above if required.
 
 Thank you,
 CDONHS-SHS Enrollment Office";
