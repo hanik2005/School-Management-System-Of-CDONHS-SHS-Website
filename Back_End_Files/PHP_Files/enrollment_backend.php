@@ -2,6 +2,12 @@
 // ===============================
 // Use existing DB Connection
 // ===============================
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+require $_SERVER['DOCUMENT_ROOT'] . '/SMS_CDONHS-SHS_WEBSITE/mailer/src/Exception.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/SMS_CDONHS-SHS_WEBSITE/mailer/src/PHPMailer.php';
+require $_SERVER['DOCUMENT_ROOT'] . '/SMS_CDONHS-SHS_WEBSITE/mailer/src/SMTP.php';
 include $_SERVER['DOCUMENT_ROOT'] . '/SMS_CDONHS-SHS_WEBSITE/DB_Connection/Connection.php';
 
 // ===============================
@@ -96,10 +102,21 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     if ($stmt->execute()) {
 
-        $to = $email;
-        $subject = "CDONHS-SHS Enrollment Application Submitted";
+      $mail = new PHPMailer(true);
+      $mail-> isSMTP();
+      $mail-> Host = 'smtp.gmail.com';
+      $mail-> SMTPAuth = true;
+      $mail-> Username = 'nickcharlesclarito@gmail.com';
+      $mail-> Password = 'ygcutibfqfhgzzdt';
+      $mail-> SMTPSecure = 'ssl';
+      $mail-> Port = 465;
 
-        $message = "
+      $mail-> setFrom('nickcharlesclarito@gmail.com', 'CDONHS-SHS Enrollment Office');
+      $mail->addAddress($email);
+      $mail->isHTML(true);
+      $mail->Subject = "CDONHS-SHS Enrollment Application Submitted";
+
+      $mail->Body = "
             Good day $firstName $lastName,
 
             Your enrollment application has been successfully submitted.
@@ -112,12 +129,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             Thank you,
             CDONHS-SHS Enrollment Office
             ";
-
-        $headers = "From: cdonhs-shs@school.edu.ph\r\n";
-        $headers .= "Content-Type: text/plain; charset=UTF-8";
-
-        mail($to, $subject, $message, $headers);
-
+        $mail->send();
         echo "<script>
                 alert('Enrollment submitted successfully. Please submit required documents before the deadline.');
                 window.location.href='../../Website_Files/thank_you.php';
