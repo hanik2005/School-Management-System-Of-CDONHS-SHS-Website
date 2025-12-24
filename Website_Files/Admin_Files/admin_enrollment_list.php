@@ -67,6 +67,7 @@ if (!$result) {
     <tr>
         <th>#</th>
         <th>Full Name</th>
+        <th>LRN</th>
         <th>Email</th>
         <th>PSA Birth Certificate</th>
         <th>Form 138</th>
@@ -83,6 +84,8 @@ if (!$result) {
                 <td><?= $count++; ?></td>
 
                 <td><?= htmlspecialchars($row['first_name'] . ' ' . $row['last_name']); ?></td>
+
+                <td><?= htmlspecialchars($row['lrn']); ?></td>
 
                 <td><?= htmlspecialchars($row['email']); ?></td>
 
@@ -142,7 +145,7 @@ if (!$result) {
         <?php endwhile; ?>
     <?php else: ?>
         <tr>
-            <td colspan="9">No enrollment records found.</td>
+            <td colspan="10">No enrollment records found.</td>
         </tr>
     <?php endif; ?>
 </table>

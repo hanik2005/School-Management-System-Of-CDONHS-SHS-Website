@@ -23,6 +23,9 @@
         
         <label for="extensionName">Extension Name:</label>
         <input type="text" id="extensionName" name="extensionName"><br><br>
+
+        <label for="lrn">Learner Reference Number (LRN):</label>
+        <input type="text" id="lrn" name="lrn" maxlength="12" pattern="\d{12}" required><br><br>
         
         <label for="dob">Date of Birth:</label>
         <input type="date" id="dob" name="dob" required><br><br>

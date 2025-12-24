@@ -20,6 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $lastName = $_POST['lastName'];
     $middleName = $_POST['middleName'] ?? null;
     $extensionName = $_POST['extensionName'] ?? null;
+    $lrn = $_POST['lrn'];
     $dob = $_POST['dob'];
     $gender = $_POST['gender'];
     $civilStatus = $_POST['civilStatus'];
@@ -73,7 +74,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // Insert Enrollment Data
     // ===============================
     $sql = "INSERT INTO enrollment_applications (
-                first_name, last_name, middle_name, extension_name,
+                first_name, last_name, middle_name, extension_name, lrn,
                 date_of_birth, gender, civil_status,
                 house_number_street, barangay, city_municipality, province,
                 contact_number, email, facebook_profile,
@@ -82,13 +83,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 mother_guardian_name, mother_guardian_contact,
                 psa_birth_certificate, form_138, student_id_copy,
                 application_status
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending')";
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending')";
 
     $stmt = $connection->prepare($sql);
 
     $stmt->bind_param(
-        "ssssssssssssssssisssssss",
-        $firstName, $lastName, $middleName, $extensionName,
+        "ssssissssssssssssisssssss",
+        $firstName, $lastName, $middleName, $extensionName, $lrn,
         $dob, $gender, $civilStatus,
         $houseNumberStreet, $barangay, $cityMunicipality, $province,
         $contactNumber, $email, $facebookName,
