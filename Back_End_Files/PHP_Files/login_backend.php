@@ -3,6 +3,7 @@ session_start();
 
 // Include database connection
 include $_SERVER['DOCUMENT_ROOT'] . '/SMS_CDONHS-SHS_WEBSITE/DB_Connection/Connection.php';
+//echo password_hash("123", PASSWORD_BCRYPT);
 
 // Check if form is submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -40,7 +41,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['school_id'] = $user['school_id'];
             $_SESSION['status'] = $user['status'];
 
-            header("Location: /SMS_CDONHS-SHS_WEBSITE/Website_Files/home.php");
+            switch ($user['role_id']) {
+                case 1: // Student
+                    header("Location: /SMS_CDONHS-SHS_WEBSITE/Website_Files/Student_Files/home.php");
+                    break;
+
+                case 2: // Admin
+                    header("Location: /SMS_CDONHS-SHS_WEBSITE/Website_Files/Admin_Files/home.php");
+                    break;
+
+                case 3: // Teacher
+                    header("Location: /SMS_CDONHS-SHS_WEBSITE/Website_Files/Teacher_Files/home.php");
+                    break;
+
+                default:
+                    header("Location: /SMS_CDONHS-SHS_WEBSITE/Website_Files/login.php?error=role");
+                    break;
+    }
+
+        
             exit();
 
         } else {

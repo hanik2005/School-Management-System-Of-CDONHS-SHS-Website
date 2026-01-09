@@ -25,7 +25,7 @@ include '../Back_End_Files/PHP_Files/login_backend.php';
                 <?php if (isset($_GET['error'])): ?>
                     <?php if ($_GET['error'] == 'captcha'): ?>
                         <p class="error">Incorrect captcha answer. Please try again.</p>
-                    <?php elseif ($_GET['error'] == '1'): ?>
+                    <?php elseif ($_GET['error'] == 'invalid'): ?>
                         <p class="error">Invalid username or password.</p>
                     <?php endif; ?>
                 <?php endif; ?>
