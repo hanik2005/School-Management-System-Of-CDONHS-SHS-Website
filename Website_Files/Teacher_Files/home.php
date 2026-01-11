@@ -15,6 +15,7 @@ if (isset($_SESSION['user_id']) && isset($_SESSION['school_id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="../../Back_End_Files/JSCRIPT_Files/timer-logout.js"></script>
     <title>Teacher Home</title>
 </head>
 <body>
