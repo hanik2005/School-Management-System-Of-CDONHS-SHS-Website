@@ -17,6 +17,10 @@ if (isset($_SESSION['user_id']) && isset($_SESSION['school_id'])) {
     <title>Admin Home</title>
 </head>
 <body>
+    <a href="admin_teacher_application_list.php">Teacher Application List</a>
+    <a href="admin_student_application_list.php">Student Application List</a>    
+    <a href="../Teacher_Online_Form.php">Enrollment Teacher</a>
+    <a href="../Student_Online_Form.php">Enrollment Student</a>
 </body>
 </html>
 <?php }else {

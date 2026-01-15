@@ -23,7 +23,6 @@ if (isset($_SESSION['user_id']) && isset($_SESSION['school_id'])) {
 </body>
 </html>
 <?php }else {
-     echo 'hello2';
         header("Location: ../login.php");
         exit;
     } ?>

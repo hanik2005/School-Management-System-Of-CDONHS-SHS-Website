@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="../Design/Online_Form_Design.css">
 </head>
 <body>
-    <form action="../Back_End_Files/PHP_Files/enrollment_backend.php" 
+    <form action="../Back_End_Files/PHP_Files/student_enrollment_backend.php" 
       method="POST" enctype="multipart/form-data">
         <h1>CDONHS-SHS Online Enrollment</h1>
         <img src="../Assets/LOGO.png" alt="CDONHS-SHS Logo">

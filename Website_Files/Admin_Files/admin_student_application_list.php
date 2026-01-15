@@ -1,25 +1,25 @@
 <?php
-// ===============================
-// Database Connection
-// ===============================
-include $_SERVER['DOCUMENT_ROOT'] . '/SMS_CDONHS-SHS_WEBSITE/DB_Connection/Connection.php';
+session_start();
 
-// ===============================
-// Fetch Enrollment Records
-// ===============================
-$sql = "SELECT * FROM enrollment_applications ORDER BY application_id DESC";
-$result = $connection->query($sql);
+if (isset($_SESSION['user_id']) && isset($_SESSION['school_id'])) {
+    include "../../DB_Connection/Connection.php";
+    include '../../Back_End_Files/PHP_Files/User.php';
+    include $_SERVER['DOCUMENT_ROOT'] . '/SMS_CDONHS-SHS_WEBSITE/DB_Connection/Connection.php';
 
-if (!$result) {
-    die("Query Failed: " . $connection->error);
-}
+
+    $sql = "SELECT * FROM student_applications ORDER BY application_id DESC";
+    $result = $connection->query($sql);
+
+    if (!$result) {
+        die("Query Failed: " . $connection->error);
+    }
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Admin Enrollment List</title>
+    <title>Admin Student Enrollment List</title>
 
     <style>
         body {
@@ -61,7 +61,7 @@ if (!$result) {
 
 <body>
 
-<h2>Enrollment Applications</h2>
+<h2>Student Applications List</h2>
 
 <table>
     <tr>
@@ -148,6 +148,10 @@ if (!$result) {
             <td colspan="10">No enrollment records found.</td>
         </tr>
     <?php endif; ?>
+    <?php }else {
+        header("Location: ../login.php");
+        exit;
+    } ?>
 </table>
 
 </body>

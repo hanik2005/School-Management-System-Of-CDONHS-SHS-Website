@@ -1,21 +1,14 @@
 <?php
-// ===============================
-// Use existing DB Connection
-// ===============================
+
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 include $_SERVER['DOCUMENT_ROOT'] . '/SMS_CDONHS-SHS_WEBSITE/DB_Connection/Connection.php';
 include $_SERVER['DOCUMENT_ROOT'] . '/SMS_CDONHS-SHS_WEBSITE/Back_End_Files/PHP_Files/mailer_details.php';
 
-// ===============================
-// Check if form submitted
-// ===============================
+
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
-    // ===============================
-    // Collect Form Data
-    // ===============================
     $firstName = $_POST['firstName'];
     $lastName = $_POST['lastName'];
     $middleName = $_POST['middleName'] ?? null;
@@ -43,9 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $motherGuardianName = $_POST['motherGuardianName'];
     $motherGuardianContact = $_POST['motherGuardianContact'];
 
-    // ===============================
-    // File Upload Setup (OPTIONAL)
-    // ===============================
+
     $uploadDir = $_SERVER['DOCUMENT_ROOT'] . "/SMS_CDONHS-SHS_WEBSITE/uploads/";
 
     if (!is_dir($uploadDir)) {
@@ -73,7 +64,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // ===============================
     // Insert Enrollment Data
     // ===============================
-    $sql = "INSERT INTO enrollment_applications (
+    $sql = "INSERT INTO student_applications (
                 first_name, last_name, middle_name, extension_name, lrn,
                 date_of_birth, gender, civil_status,
                 house_number_street, barangay, city_municipality, province,
