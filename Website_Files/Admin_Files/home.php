@@ -15,12 +15,35 @@ if (isset($_SESSION['user_id']) && isset($_SESSION['school_id'])) {
     <script src="../../Back_End_Files/JSCRIPT_Files/timer-logout.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Home</title>
+    <link rel="stylesheet" href="../../Design/main_design.css">
 </head>
 <body>
+    <!-- header -->
+    <div class="header">
+    <div class="left">
+        <img src="../../Assets/LOGO.png" alt="CDONSHS Logo">
+        <span>CDONSHS-SHS</span>
+    </div>
+    <div class="center">
+        Admin
+    </div>
+    <div class="right">
+        <span id="profileName"></span>
+        <img src="../../Assets/profile.jpg" alt="Profile Logo">
+    </div>
+    </div>
+
     <a href="admin_teacher_application_list.php">Teacher Application List</a>
     <a href="admin_student_application_list.php">Student Application List</a>    
     <a href="../Teacher_Online_Form.php">Enrollment Teacher</a>
     <a href="../Student_Online_Form.php">Enrollment Student</a>
+
+     <!-- footer -->
+    <div class="footer">
+    © 2026 Cagayan De Oro National High School - Senior High School  
+    <br>
+    School Information System
+    </div>
 </body>
 </html>
 <?php }else {

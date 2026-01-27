@@ -44,7 +44,7 @@ function getStudentUserById($id, $db){
             FROM users u
             LEFT JOIN students s 
                 ON u.school_id = s.school_id
-            LEFT JOIN enrollment_applications e 
+            LEFT JOIN student_applications e 
                 ON s.application_id = e.application_id
             WHERE u.user_id = ?";
 

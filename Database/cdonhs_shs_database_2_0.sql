@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 24, 2025 at 07:03 AM
+-- Generation Time: Jan 15, 2026 at 07:56 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -20,51 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `cdonhs_shs_database_2.0`
 --
-
--- --------------------------------------------------------
-
---
--- Table structure for table `enrollment_applications`
---
-
-CREATE TABLE `enrollment_applications` (
-  `application_id` int(11) NOT NULL,
-  `first_name` varchar(100) NOT NULL,
-  `last_name` varchar(100) NOT NULL,
-  `middle_name` varchar(100) DEFAULT NULL,
-  `extension_name` varchar(20) DEFAULT NULL,
-  `lrn` varchar(12) NOT NULL,
-  `date_of_birth` date NOT NULL,
-  `gender` enum('male','female','other') NOT NULL,
-  `civil_status` enum('single','married','divorced','widowed') NOT NULL,
-  `house_number_street` varchar(255) NOT NULL,
-  `barangay` varchar(100) NOT NULL,
-  `city_municipality` varchar(100) NOT NULL,
-  `province` varchar(100) NOT NULL,
-  `contact_number` varchar(20) NOT NULL,
-  `email` varchar(150) NOT NULL,
-  `facebook_profile` varchar(255) DEFAULT NULL,
-  `current_school` varchar(255) NOT NULL,
-  `school_classification` enum('public','private') NOT NULL,
-  `year_graduated` year(4) NOT NULL,
-  `father_guardian_name` varchar(150) NOT NULL,
-  `father_guardian_contact` varchar(20) NOT NULL,
-  `mother_guardian_name` varchar(150) NOT NULL,
-  `mother_guardian_contact` varchar(20) NOT NULL,
-  `psa_birth_certificate` varchar(255) DEFAULT NULL,
-  `form_138` varchar(255) DEFAULT NULL,
-  `student_id_copy` varchar(255) DEFAULT NULL,
-  `application_status` enum('Pending','Approved','Rejected') DEFAULT 'Pending',
-  `remarks` text DEFAULT NULL,
-  `date_submitted` timestamp NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `enrollment_applications`
---
-
-INSERT INTO `enrollment_applications` (`application_id`, `first_name`, `last_name`, `middle_name`, `extension_name`, `lrn`, `date_of_birth`, `gender`, `civil_status`, `house_number_street`, `barangay`, `city_municipality`, `province`, `contact_number`, `email`, `facebook_profile`, `current_school`, `school_classification`, `year_graduated`, `father_guardian_name`, `father_guardian_contact`, `mother_guardian_name`, `mother_guardian_contact`, `psa_birth_certificate`, `form_138`, `student_id_copy`, `application_status`, `remarks`, `date_submitted`) VALUES
-(11, 'Nick', 'Clarito', 'Durangparang', '', '405220150089', '2005-08-20', 'male', 'single', 'Blk7/lot 3', 'Carmen', 'Cagayan De Oro City', 'Misamis Oriental', '09988716534', 'nickcharlesclarito@gmail.com', 'https://www.facebook.com/niko.clarito.2025', 'CDONHS-SHS', 'public', '2020', 'papa', '09876562321', 'mama', '0987532732', NULL, NULL, NULL, 'Approved', 'goods', '2025-12-24 05:47:16');
 
 -- --------------------------------------------------------
 
@@ -110,6 +65,86 @@ INSERT INTO `students` (`student_id`, `application_id`, `school_id`, `enrollment
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `student_applications`
+--
+
+CREATE TABLE `student_applications` (
+  `application_id` int(11) NOT NULL,
+  `first_name` varchar(100) NOT NULL,
+  `last_name` varchar(100) NOT NULL,
+  `middle_name` varchar(100) DEFAULT NULL,
+  `extension_name` varchar(20) DEFAULT NULL,
+  `lrn` varchar(12) NOT NULL,
+  `date_of_birth` date NOT NULL,
+  `gender` enum('male','female','other') NOT NULL,
+  `civil_status` enum('single','married','divorced','widowed') NOT NULL,
+  `house_number_street` varchar(255) NOT NULL,
+  `barangay` varchar(100) NOT NULL,
+  `city_municipality` varchar(100) NOT NULL,
+  `province` varchar(100) NOT NULL,
+  `contact_number` varchar(20) NOT NULL,
+  `email` varchar(150) NOT NULL,
+  `facebook_profile` varchar(255) DEFAULT NULL,
+  `current_school` varchar(255) NOT NULL,
+  `school_classification` enum('public','private') NOT NULL,
+  `year_graduated` year(4) NOT NULL,
+  `father_guardian_name` varchar(150) NOT NULL,
+  `father_guardian_contact` varchar(20) NOT NULL,
+  `mother_guardian_name` varchar(150) NOT NULL,
+  `mother_guardian_contact` varchar(20) NOT NULL,
+  `psa_birth_certificate` varchar(255) DEFAULT NULL,
+  `form_138` varchar(255) DEFAULT NULL,
+  `student_id_copy` varchar(255) DEFAULT NULL,
+  `application_status` enum('Pending','Approved','Rejected') DEFAULT 'Pending',
+  `remarks` text DEFAULT NULL,
+  `date_submitted` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `student_applications`
+--
+
+INSERT INTO `student_applications` (`application_id`, `first_name`, `last_name`, `middle_name`, `extension_name`, `lrn`, `date_of_birth`, `gender`, `civil_status`, `house_number_street`, `barangay`, `city_municipality`, `province`, `contact_number`, `email`, `facebook_profile`, `current_school`, `school_classification`, `year_graduated`, `father_guardian_name`, `father_guardian_contact`, `mother_guardian_name`, `mother_guardian_contact`, `psa_birth_certificate`, `form_138`, `student_id_copy`, `application_status`, `remarks`, `date_submitted`) VALUES
+(11, 'Nick', 'Clarito', 'Durangparang', '', '405220150089', '2005-08-20', 'male', 'single', 'Blk7/lot 3', 'Carmen', 'Cagayan De Oro City', 'Misamis Oriental', '09988716534', 'nickcharlesclarito@gmail.com', 'https://www.facebook.com/niko.clarito.2025', 'CDONHS-SHS', 'public', '2020', 'papa', '09876562321', 'mama', '0987532732', NULL, NULL, NULL, 'Approved', 'goods', '2025-12-24 05:47:16'),
+(12, 'Maria', 'Clarito', 'Durangparang', '', '189979375623', '1983-02-08', 'female', 'married', 'Blk7 Lot 3', 'Barangay 1', 'CDO', 'Misamis Oriental', '09944718764', 'maria@gmail.com', 'https://www.hostitsmart.com/manage/knowledgebase/388/How-to-Change-Table-Name-in-phpMyAdmin.html', 'None', 'public', '2010', 'papa', '09798373621', 'mama', '0974832472482', NULL, NULL, NULL, 'Pending', NULL, '2026-01-15 06:47:30');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `teacher_applications`
+--
+
+CREATE TABLE `teacher_applications` (
+  `teacher_application_id` int(11) NOT NULL,
+  `first_name` varchar(100) NOT NULL,
+  `last_name` varchar(100) NOT NULL,
+  `middle_name` varchar(100) DEFAULT NULL,
+  `extension_name` varchar(20) DEFAULT NULL,
+  `date_of_birth` date NOT NULL,
+  `gender` enum('male','female','other') NOT NULL,
+  `civil_status` enum('single','married','divorced','widowed') NOT NULL,
+  `contact_number` varchar(20) NOT NULL,
+  `email` varchar(150) NOT NULL,
+  `facebook_profile` varchar(255) DEFAULT NULL,
+  `house_number_street` varchar(255) NOT NULL,
+  `barangay` varchar(100) NOT NULL,
+  `city_municipality` varchar(100) NOT NULL,
+  `province` varchar(100) NOT NULL,
+  `current_school` varchar(255) NOT NULL,
+  `highest_education` enum('Bachelors','Masters','Doctorate','Other') NOT NULL,
+  `specialization` varchar(255) NOT NULL,
+  `application_status` enum('Pending','Approved','Rejected') DEFAULT 'Pending',
+  `remarks` text DEFAULT NULL,
+  `date_submitted` timestamp NOT NULL DEFAULT current_timestamp(),
+  `resume_cv` varchar(255) DEFAULT NULL,
+  `prc_id_copy` varchar(255) DEFAULT NULL,
+  `certificates` varchar(255) DEFAULT NULL,
+  `other_documents` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `users`
 --
 
@@ -127,17 +162,12 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`user_id`, `school_id`, `username`, `password`, `role_id`, `status`) VALUES
-(1, 304111, '405220150089', '$2y$10$xJXR2c07.8rvtuaUMMehdejPGudrvKf6MGxgEjDzdL6gXAdgl/6h2', 1, 'Active');
+(1, 304111, '405220150089', '$2y$10$T1Qkc.zE1PWpRQX4FmIznepx1GJRGUzaVWsVMjdb8hj.Ve2MkQoAu', 1, 'Active'),
+(2, 5362, 'admin', '$2y$10$T1Qkc.zE1PWpRQX4FmIznepx1GJRGUzaVWsVMjdb8hj.Ve2MkQoAu', 2, 'Active');
 
 --
 -- Indexes for dumped tables
 --
-
---
--- Indexes for table `enrollment_applications`
---
-ALTER TABLE `enrollment_applications`
-  ADD PRIMARY KEY (`application_id`);
 
 --
 -- Indexes for table `roles`
@@ -155,6 +185,19 @@ ALTER TABLE `students`
   ADD UNIQUE KEY `school_id` (`school_id`);
 
 --
+-- Indexes for table `student_applications`
+--
+ALTER TABLE `student_applications`
+  ADD PRIMARY KEY (`application_id`);
+
+--
+-- Indexes for table `teacher_applications`
+--
+ALTER TABLE `teacher_applications`
+  ADD PRIMARY KEY (`teacher_application_id`),
+  ADD UNIQUE KEY `email` (`email`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -166,12 +209,6 @@ ALTER TABLE `users`
 --
 -- AUTO_INCREMENT for dumped tables
 --
-
---
--- AUTO_INCREMENT for table `enrollment_applications`
---
-ALTER TABLE `enrollment_applications`
-  MODIFY `application_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `roles`
@@ -186,10 +223,22 @@ ALTER TABLE `students`
   MODIFY `student_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
+-- AUTO_INCREMENT for table `student_applications`
+--
+ALTER TABLE `student_applications`
+  MODIFY `application_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
+--
+-- AUTO_INCREMENT for table `teacher_applications`
+--
+ALTER TABLE `teacher_applications`
+  MODIFY `teacher_application_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Constraints for dumped tables
@@ -199,7 +248,7 @@ ALTER TABLE `users`
 -- Constraints for table `students`
 --
 ALTER TABLE `students`
-  ADD CONSTRAINT `fk_students_application` FOREIGN KEY (`application_id`) REFERENCES `enrollment_applications` (`application_id`);
+  ADD CONSTRAINT `fk_students_application` FOREIGN KEY (`application_id`) REFERENCES `student_applications` (`application_id`);
 
 --
 -- Constraints for table `users`
