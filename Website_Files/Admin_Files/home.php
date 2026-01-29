@@ -16,6 +16,8 @@ if (isset($_SESSION['user_id']) && isset($_SESSION['school_id'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Home</title>
     <link rel="stylesheet" href="../../Design/main_design.css">
+    <link rel="stylesheet" href="../../Design/profile_dropdown.css">
+     <link rel="stylesheet" href="../../Design/dashboard_design.css">
 </head>
 <body>
     <!-- header -->
@@ -28,15 +30,65 @@ if (isset($_SESSION['user_id']) && isset($_SESSION['school_id'])) {
         Admin
     </div>
     <div class="right">
-        <span id="profileName"></span>
-        <img src="../../Assets/profile.jpg" alt="Profile Logo">
+         <button class="profile-btn" type="button">
+        <img src="../../Assets/admin_profile.png">
+    </button>
+
+    <div class="profile-dropdown">
+        <a href="../../Back_End_Files/PHP_Files/logout.php">Logout</a>
+
+    </div>
     </div>
     </div>
 
-    <a href="admin_teacher_application_list.php">Teacher Application List</a>
+    <div class="dashboard">
+
+  <div class="dashboard-box">
+
+    <div class="dashboard-wrapper">
+
+    <div class="dashboard-container">
+        <a href="#" class="dashboard-card">
+            <img src="../../Assets/application_button.jpg">
+            <h3>Application List</h3>
+        </a>
+    </div>
+
+    <div class="dashboard-container">
+        <a href="#" class="dashboard-card">
+            <img src="../../Assets/Visible.png">
+            <h3>Sensitive Information</h3>
+        </a>
+    </div>
+
+    <div class="dashboard-container">
+        <a href="#" class="dashboard-card">
+            <img src="../../Assets/activation_button.png">
+            <h3>Activation Page</h3>
+        </a>
+    </div>
+
+    <div class="dashboard-container">
+        <a href="#" class="dashboard-card">
+            <img src="../../Assets/validation_button.png">
+            <h3>Grades Validation</h3>
+        </a>
+    </div>
+
+</div>
+
+
+  </div>
+
+</div>
+
+
+
+
+    <!-- <a href="admin_teacher_application_list.php">Teacher Application List</a>
     <a href="admin_student_application_list.php">Student Application List</a>    
     <a href="../Teacher_Online_Form.php">Enrollment Teacher</a>
-    <a href="../Student_Online_Form.php">Enrollment Student</a>
+    <a href="../Student_Online_Form.php">Enrollment Student</a> -->
 
      <!-- footer -->
     <div class="footer">
@@ -44,6 +96,7 @@ if (isset($_SESSION['user_id']) && isset($_SESSION['school_id'])) {
     <br>
     School Information System
     </div>
+    <script src="../../Back_End_Files/JSCRIPT_Files/profile_dropdown_function.js"></script>
 </body>
 </html>
 <?php }else {

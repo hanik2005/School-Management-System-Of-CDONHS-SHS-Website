@@ -7,7 +7,7 @@ include $_SERVER['DOCUMENT_ROOT'] . '/SMS_CDONHS-SHS_WEBSITE/DB_Connection/Conne
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
-    $application_id = $_POST['application_id'];
+    $application_id = $_POST['student_application_id'];
     $remarks = $_POST['remarks'];
     $status = $_POST['application_status'];
 
@@ -15,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // Update enrollment application
     // ===============================
     $update = $connection->prepare(
-        "UPDATE enrollment_applications 
+        "UPDATE student_applications 
          SET remarks = ?, application_status = ?
          WHERE application_id = ?"
     );
@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // ===============================
     $getStudent = $connection->prepare(
         "SELECT first_name, last_name, email, lrn
-         FROM enrollment_applications
+         FROM student_applications
          WHERE application_id = ?"
     );
     $getStudent->bind_param("i", $application_id);
@@ -37,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // ===============================
     // IF APPROVED → CREATE STUDENT + USER
     // ===============================
-    if ($status === 'Approved') {
+    if ($status === 'Approved' || $status === 'Pending') {
 
         $connection->begin_transaction();
 

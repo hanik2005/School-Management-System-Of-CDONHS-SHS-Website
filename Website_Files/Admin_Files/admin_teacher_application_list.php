@@ -134,8 +134,8 @@ if (isset($_SESSION['user_id']) && isset($_SESSION['school_id'])) {
 
                 <!-- FORM: REMARKS + STATUS -->
                 <td colspan="3">
-                    <form action="../../Back_End_Files/PHP_Files/update_remarks.php" method="POST">
-                        <input type="hidden" name="application_id" value="<?= $row['application_id']; ?>">
+                    <form action="../../Back_End_Files/PHP_Files/teacher_update_remarks.php" method="POST">
+                        <input type="hidden" name="teacher_application_id" value="<?= $row['teacher_application_id']; ?>">
 
                         <textarea name="remarks" rows="3"
                             placeholder="Enter admin remarks..."><?= htmlspecialchars($row['remarks']); ?></textarea>

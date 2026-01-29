@@ -1,114 +1,50 @@
 body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f3f4f6;
-      color: #111827;
-    }
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f3f4f6;
+  color: #111827;
+}
 
-    /* ===== HEADER ===== */
-    .header {
-      background: linear-gradient(135deg, #1e3a8a, #111827);
-      color: white;
-      padding: 15px 30px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 4px solid #fbbf24;
-    }
+/* ===== HEADER ===== */
+.header {
+  background: linear-gradient(135deg, #1e3a8a, #111827);
+  color: white;
+  padding: 15px 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 4px solid #fbbf24;
+}
 
-    .header .left,
-    .header .right {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
+.header .left,
+.header .right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
 
-    .header img {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      background: #fff;
-      padding: 5px;
-    }
+.header img {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: #fff;
+  padding: 5px;
+}
 
-    .header .center {
-      text-align: center;
-      flex: 1;
-      font-weight: bold;
-      font-size: 1.1em;
-      color: #fbbf24;
-    }
+.header .center {
+  text-align: center;
+  flex: 1;
+  font-weight: bold;
+  font-size: 1.1em;
+  color: #fbbf24;
+}
 
-    /* ===== MAIN DASHBOARD ===== */
-    .dashboard {
-      padding: 30px;
-      min-height: calc(100vh - 140px);
-      background: #e5e7eb;
-    }
-
-    .dashboard-box {
-      background: #ffffff;
-      border: 3px solid #1e3a8a;
-      border-radius: 15px;
-      box-shadow: 0 8px 25px rgba(30, 58, 138, 0.25);
-      padding: 30px;
-      min-height: 400px;
-    }
-
-    .dashboard-box h2 {
-      border-bottom: 2px solid #fbbf24;
-      padding-bottom: 10px;
-      margin-bottom: 20px;
-      color: #1e3a8a;
-    }
-
-    /* ===== CONTENT SECTIONS (REPLACES BUTTONS) ===== */
-    .dashboard-sections {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-    }
-
-    .section-card {
-      background: #f3f4f6;
-      border: 2px solid #1e3a8a;
-      border-radius: 12px;
-      padding: 20px;
-      min-height: 150px;
-      box-shadow: inset 0 0 10px rgba(30,58,138,0.1);
-    }
-
-    .section-card h3 {
-      margin-top: 0;
-      color: #111827;
-      border-bottom: 1px solid #fbbf24;
-      padding-bottom: 5px;
-    }
-
-    .section-card p {
-      font-size: 0.95em;
-      color: #374151;
-    }
-
-    /* ===== FOOTER ===== */
-    .footer {
-      background: #111827;
-      color: #f3f4f6;
-      text-align: center;
-      padding: 15px;
-      border-top: 4px solid #fbbf24;
-      font-size: 0.9em;
-
-      /* Stick to bottom not recommended */
-       position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-    }
-
-    /* RESPONSIVE */
-    @media (max-width: 900px) {
-      .dashboard-sections {
-        grid-template-columns: 1fr;
-      }
-    }
+/* ===== FOOTER ===== */
+.footer {
+  background: #111827;
+  color: #f3f4f6;
+  text-align: center;
+  padding: 15px;
+  border-top: 4px solid #fbbf24;
+  font-size: 0.9em;
+}
