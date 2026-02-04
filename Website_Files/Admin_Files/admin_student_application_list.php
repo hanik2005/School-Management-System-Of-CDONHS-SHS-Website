@@ -1,18 +1,33 @@
 <?php
 session_start();
 
-if (isset($_SESSION['user_id']) && isset($_SESSION['school_id'])) {
-    include "../../DB_Connection/Connection.php";
-    include '../../Back_End_Files/PHP_Files/User.php';
-    include $_SERVER['DOCUMENT_ROOT'] . '/SMS_CDONHS-SHS_WEBSITE/DB_Connection/Connection.php';
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['school_id'])) {
+    header("Location: ../login.php");
+    exit;
+}
 
+include "../../DB_Connection/Connection.php";
 
-    $sql = "SELECT * FROM student_applications ORDER BY application_id DESC";
-    $result = $connection->query($sql);
+/* Verify student session */
+$stmt = $connection->prepare("
+    SELECT * FROM users 
+    WHERE user_id = ? 
+    AND school_id = ? 
+    AND role_id = 3
+");
 
-    if (!$result) {
-        die("Query Failed: " . $connection->error);
-    }
+$stmt->execute([
+    $_SESSION['user_id'],
+    $_SESSION['school_id']
+]);
+
+$user = $stmt->fetch();
+
+if (!$user) {
+    session_destroy();
+    header("Location: ../login.php");
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
@@ -125,7 +140,7 @@ if (isset($_SESSION['user_id']) && isset($_SESSION['school_id'])) {
                 <!-- FORM: REMARKS + STATUS -->
                 <td colspan="3">
                     <form action="../../Back_End_Files/PHP_Files/student_update_remarks.php" method="POST">
-                        <input type="hidden" name="student_application_id" value="<?= $row['student_application_id']; ?>">
+                        <input type="hidden" name="student_application_id" value="<?= $row['application_id']; ?>">
 
                         <textarea name="remarks" rows="3"
                             placeholder="Enter admin remarks..."><?= htmlspecialchars($row['remarks']); ?></textarea>
@@ -148,10 +163,6 @@ if (isset($_SESSION['user_id']) && isset($_SESSION['school_id'])) {
             <td colspan="10">No enrollment records found.</td>
         </tr>
     <?php endif; ?>
-    <?php }else {
-        header("Location: ../login.php");
-        exit;
-    } ?>
 </table>
 
 </body>

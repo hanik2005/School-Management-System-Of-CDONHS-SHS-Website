@@ -1,11 +1,33 @@
 <?php
 session_start();
 
-if (isset($_SESSION['user_id']) && isset($_SESSION['school_id'])) {
-    include "../../DB_Connection/Connection.php";
-    include '../../Back_End_Files/PHP_Files/User.php';
-    //$user = getUserById($_SESSION['user_id'], $connection);
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['school_id'])) {
+    header("Location: ../login.php");
+    exit;
+}
 
+include "../../DB_Connection/Connection.php";
+
+/* Verify student session */
+$stmt = $connection->prepare("
+    SELECT * FROM users 
+    WHERE user_id = ? 
+    AND school_id = ? 
+    AND role_id = 2
+");
+
+$stmt->execute([
+    $_SESSION['user_id'],
+    $_SESSION['school_id']
+]);
+
+$user = $stmt->fetch();
+
+if (!$user) {
+    session_destroy();
+    header("Location: ../login.php");
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
@@ -48,7 +70,7 @@ if (isset($_SESSION['user_id']) && isset($_SESSION['school_id'])) {
     <div class="dashboard-wrapper">
 
     <div class="dashboard-container">
-        <a href="#" class="dashboard-card">
+        <a href="application_page.php" class="dashboard-card">
             <img src="../../Assets/application_button.jpg">
             <h3>Application List</h3>
         </a>
@@ -99,7 +121,4 @@ if (isset($_SESSION['user_id']) && isset($_SESSION['school_id'])) {
     <script src="../../Back_End_Files/JSCRIPT_Files/profile_dropdown_function.js"></script>
 </body>
 </html>
-<?php }else {
-        header("Location: ../login.php");
-        exit;
-    } ?>
+<?php 

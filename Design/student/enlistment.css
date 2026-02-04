@@ -1,0 +1,174 @@
+/* ============================= */
+/* ENLISTMENT PAGE MAIN LAYOUT  */
+/* ============================= */
+
+body {
+    background: #f3f4f6; /* LIGHT GRAY */
+}
+
+.enlistment-container {
+    max-width: 1200px;        /* wrap width */
+    margin: 40px auto;        /* center horizontally */
+    padding: 35px 60px;
+    min-height: 70vh;
+
+    background: #ffffff;     /* CARD BACKGROUND */
+    border-radius: 16px;     /* smooth edges */
+    box-shadow: 0 12px 30px rgba(17, 24, 39, 0.12);
+}
+
+/* PAGE TITLE */
+.enlistment-container h2 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 25px;
+    color: #1e3a8a; /* ROYAL BLUE */
+}
+
+/* FLEX LAYOUT */
+.enlistment-content {
+    display: flex;
+    gap: 30px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+/* ============================= */
+/* LEFT PANEL */
+/* ============================= */
+
+.left-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.left-panel h3 {
+    font-size: 18px;
+    margin-bottom: 15px;
+    font-weight: 600;
+    color: #111827; /* DARK GRAY */
+    border-left: 5px solid #fbbf24; /* GOLD */
+    padding-left: 10px;
+}
+
+/* LABEL STYLE */
+.left-panel label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #111827;
+    margin-top: 12px;
+}
+
+/* DROPDOWN STYLE */
+.left-panel select {
+    padding: 11px;
+    border-radius: 6px;
+    border: 2px solid transparent;
+    background-color: #f3f4f6; /* LIGHT GRAY */
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+.left-panel select:hover {
+    border-color: #fbbf24; /* GOLD */
+}
+
+.left-panel select:focus {
+    outline: none;
+    border-color: #1e3a8a; /* ROYAL BLUE */
+    background-color: #ffffff;
+}
+
+/* ============================= */
+/* RIGHT PANEL */
+/* ============================= */
+
+.right-panel {
+    flex: 1;
+    min-width: 250px;
+    display: flex;
+    flex-direction: column;
+}
+
+.right-panel h3 {
+    font-size: 18px;
+    margin-bottom: 12px;
+    font-weight: 600;
+    color: #111827;
+    border-left: 5px solid #fbbf24;
+    padding-left: 10px;
+}
+
+/* SUBJECT DASHBOARD BOX */
+.subject-dashboard {
+    width: 100%;
+    max-height: 300px;
+    overflow-y: auto;
+    border: 2px solid #1e3a8a;
+    border-radius: 8px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    background: #ffffff;
+    font-size: 15px;
+    font-weight: 500;
+    color: #111827;
+}
+
+/* SUBJECT CHECKBOX LABEL */
+.subject-dashboard label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    padding: 6px 8px;
+    border-radius: 6px;
+    transition: 0.2s ease;
+}
+
+.subject-dashboard label:hover {
+    background-color: #f3f4f6;
+}
+
+/* ============================= */
+/* SUBMIT BUTTON */
+/* ============================= */
+
+.submit-btn {
+    margin-left: 5%;
+    margin-top: 18px;
+    padding: 13px 18px;
+    border: none;
+    border-radius: 10px;
+    background: #1e3a8a; /* ROYAL BLUE */
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+.submit-btn:hover {
+    background: #fbbf24; /* DARK GRAY */
+}
+
+/* ============================= */
+/* RESPONSIVE DESIGN */
+/* ============================= */
+
+@media (max-width: 900px) {
+    .enlistment-content {
+        flex-direction: column;
+    }
+
+    .left-panel {
+        width: 100%;
+    }
+
+    .subject-dashboard {
+        max-height: 300px;
+    }
+}

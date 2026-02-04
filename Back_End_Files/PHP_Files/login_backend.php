@@ -1,11 +1,9 @@
 <?php
 session_start();
 
-// Include database connection
-include $_SERVER['DOCUMENT_ROOT'] . '/SMS_CDONHS-SHS_WEBSITE/DB_Connection/Connection.php';
-//echo password_hash("123", PASSWORD_BCRYPT);
 
-// Check if form is submitted
+include $_SERVER['DOCUMENT_ROOT'] . '/SMS_CDONHS-SHS_WEBSITE/DB_Connection/Connection.php';
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // CAPTCHA check

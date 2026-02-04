@@ -40,6 +40,7 @@ if (!$user) {
      <link rel="stylesheet" href="../../Design/main_design.css">
      <link rel="stylesheet" href="../../Design/profile_dropdown.css">
      <link rel="stylesheet" href="../../Design/dashboard_design.css">
+     <link rel="stylesheet" href="../../Design/student/enlistment.css">
     <title>Student Home</title>
 </head>
 <body>
@@ -68,39 +69,63 @@ if (!$user) {
     </div>
     </div>
 
-  <div class="dashboard">
 
-  <div class="dashboard-box">
 
-    <div class="dashboard-wrapper">
+  <!-- MAIN CONTENT -->
+<div class="enlistment-container">
 
-    <div class="dashboard-container">
-        <a href="#" class="dashboard-card">
-            <img src="../../Assets/profile_button.png">
-            <h3>My Profile</h3>
-        </a>
-    </div>
+    <h2>Enlistment By Student</h2>
 
-    <div class="dashboard-container">
-        <a href="student_enlistment.php" class="dashboard-card">
-            <img src="../../Assets/enlistment_button.png">
-            <h3>Student Enlistment</h3>
-        </a>
-    </div>
+    <!-- SINGLE FORM FOR EVERYTHING -->
+    <form id="enlistment-form">
 
-    <div class="dashboard-container">
-        <a href="#" class="dashboard-card">
-            <img src="../../Assets/grades_button.png">
-            <h3>My Grades</h3>
-        </a>
-    </div>
+        <div class="enlistment-content">
+
+            <!-- LEFT PANEL -->
+            <div class="left-panel">
+                <h3>GradeLevel and Strand</h3>
+
+                <label>Grade Level:</label>
+                <select id="grade_level" name="grade_level" required>
+                    <option value="">Select Grade Level</option>
+                    <option value="11">11</option>
+                    <option value="12">12</option>
+                </select>
+
+                <label>Strand:</label>
+                <select id="strand" name="strand" required>
+                    <option value="">Select Strand</option>
+                </select>
+
+                <label>Section:</label>
+                <select id="section" name="section" required>
+                    <option value="">Select Section</option>
+                </select>
+            </div>
+
+            <!-- RIGHT PANEL -->
+            <div class="right-panel">
+                <h3>Subjects</h3>
+                <div class="subject-dashboard" id="subjects-container">
+                    <!-- Subjects will appear here dynamically -->
+                </div>
+                 <!-- SINGLE SUBMIT BUTTON -->
+                <button type="submit" class="submit-btn">Submit Enlistment</button>
+            </div>
+
+        </div>
+
+       
+
+    </form>
 
 </div>
 
+  
 
-  </div>
 
-</div>
+
+
 
 
 
@@ -113,6 +138,7 @@ if (!$user) {
     <br>
     School Information System
     </div>
+<script src="../../Back_End_Files/JSCRIPT_Files/enlistment_get_boxes.js"></script>
 <script src="../../Back_End_Files/JSCRIPT_Files/profile_dropdown_function.js"></script>
 </body>
 </html>
