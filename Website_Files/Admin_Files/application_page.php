@@ -13,7 +13,7 @@ $stmt = $connection->prepare("
     SELECT * FROM users 
     WHERE user_id = ? 
     AND school_id = ? 
-    AND role_id = 3
+    AND role_id = 2
 ");
 
 $stmt->execute([

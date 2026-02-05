@@ -8,27 +8,36 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['school_id'])) {
 
 include "../../DB_Connection/Connection.php";
 
-/* Verify student session */
+/* Verify student session using mysqli */
 $stmt = $connection->prepare("
     SELECT * FROM users 
     WHERE user_id = ? 
     AND school_id = ? 
-    AND role_id = 3
+    AND role_id = 2
 ");
 
-$stmt->execute([
-    $_SESSION['user_id'],
-    $_SESSION['school_id']
-]);
-
-$user = $stmt->fetch();
+// Bind parameters (assuming user_id and school_id are integers)
+$stmt->bind_param("ii", $_SESSION['user_id'], $_SESSION['school_id']);
+$stmt->execute();
+$result_user = $stmt->get_result();
+$user = $result_user->fetch_assoc();
 
 if (!$user) {
     session_destroy();
     header("Location: ../login.php");
     exit;
 }
+
+/* ✅ GET STUDENT APPLICATIONS */
+$sql = "SELECT * FROM student_applications ORDER BY application_id DESC";
+
+$result = $connection->query($sql);
+
+if (!$result) {
+    die("Query failed: " . $connection->error);
+}
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">

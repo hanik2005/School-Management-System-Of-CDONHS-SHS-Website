@@ -28,6 +28,12 @@ if (!$user) {
     header("Location: ../login.php");
     exit;
 }
+include "../../Back_End_Files/PHP_Files/check_enrollment.php";
+
+if($isEnlisted){
+    header("Location: home.php");
+    exit;
+}
 
 ?>
 
@@ -41,7 +47,7 @@ if (!$user) {
      <link rel="stylesheet" href="../../Design/profile_dropdown.css">
      <link rel="stylesheet" href="../../Design/dashboard_design.css">
      <link rel="stylesheet" href="../../Design/student/enlistment.css">
-    <title>Student Home</title>
+    <title>Student Enlistment</title>
 </head>
 <body>
 
@@ -51,9 +57,20 @@ if (!$user) {
         <img src="../../Assets/LOGO.png" alt="CDONSHS Logo">
         <span>CDONSHS-SHS</span>
     </div>
+
+    <?php include "../../Back_End_Files/PHP_Files/get_student_program.php"; ?>
     <div class="center">
         Program:
+        <?php if ($isEnlisted): ?>
+        <?php echo htmlspecialchars($gradeLevel); ?>, 
+        <?php echo htmlspecialchars($strandName); ?>, 
+        <?php echo htmlspecialchars($sectionName); ?>
+    <?php else: ?>
+        Not enrolled yet
+    <?php endif; ?>
     </div>
+
+
     <div class="right">
 
     <button class="profile-btn" type="button">

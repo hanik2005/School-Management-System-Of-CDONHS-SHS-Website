@@ -120,7 +120,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         error_log("Mail Error: " . $mail->ErrorInfo);
     }
 
-    header("Location: ../../Website_Files/Admin_Files/admin_enrollment_list.php");
+    header("Location: ../../Website_Files/Admin_Files/admin_student_application_list.php");
     exit;
 }
 ?>

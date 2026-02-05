@@ -28,6 +28,8 @@ if (!$user) {
     header("Location: ../login.php");
     exit;
 }
+include "../../Back_End_Files/PHP_Files/check_enrollment.php";
+
 
 ?>
 
@@ -50,8 +52,17 @@ if (!$user) {
         <img src="../../Assets/LOGO.png" alt="CDONSHS Logo">
         <span>CDONSHS-SHS</span>
     </div>
+
+    <?php include "../../Back_End_Files/PHP_Files/get_student_program.php"; ?>
     <div class="center">
         Program:
+        <?php if ($isEnlisted): ?>
+        <?php echo htmlspecialchars($gradeLevel); ?>, 
+        <?php echo htmlspecialchars($strandName); ?>, 
+        <?php echo htmlspecialchars($sectionName); ?>
+    <?php else: ?>
+        Not enrolled yet
+    <?php endif; ?>
     </div>
     <div class="right">
 
@@ -82,10 +93,19 @@ if (!$user) {
     </div>
 
     <div class="dashboard-container">
+        <?php if(!$isEnlisted): ?>
         <a href="student_enlistment.php" class="dashboard-card">
             <img src="../../Assets/enlistment_button.png">
             <h3>Student Enlistment</h3>
         </a>
+        <?php else: ?>
+
+        <div class="dashboard-card" style="opacity:0.5; pointer-events:none;">
+            <img src="../../Assets/enlistment_button.png">
+            <h3>Already Enlisted</h3>
+        </div>
+
+        <?php endif; ?>
     </div>
 
     <div class="dashboard-container">
