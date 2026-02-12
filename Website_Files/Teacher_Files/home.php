@@ -40,6 +40,7 @@ if (!$user) {
     <link rel="stylesheet" href="../../Design/main_design.css">
      <link rel="stylesheet" href="../../Design/profile_dropdown.css">
      <link rel="stylesheet" href="../../Design/dashboard_design.css">
+     
     <title>Teacher Home</title>
 </head>
 <body>
@@ -91,9 +92,9 @@ if (!$user) {
     </div>
 
     <div class="dashboard-container">
-        <a href="#" class="dashboard-card">
+        <a href="grading_page.php" class="dashboard-card">
             <img src="../../Assets/grades_button.png">
-            <h3>Grades</h3>
+            <h3>Grading Management</h3>
         </a>
     </div>
 

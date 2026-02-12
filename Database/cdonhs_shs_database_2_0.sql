@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 12, 2026 at 03:15 AM
+-- Generation Time: Feb 12, 2026 at 11:46 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -43,6 +43,22 @@ CREATE TABLE `archived_student_strand` (
 
 INSERT INTO `archived_student_strand` (`archive_id`, `student_id`, `strand_id`, `grade_level`, `section_id`, `date_archived`, `reason`) VALUES
 (4, 2, 2, 11, 9, '2026-02-05 06:06:59', 'MANUAL');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `grade_entry`
+--
+
+CREATE TABLE `grade_entry` (
+  `entry_id` int(11) NOT NULL,
+  `student_id` int(11) NOT NULL,
+  `subject_id` int(11) NOT NULL,
+  `section_id` int(11) NOT NULL,
+  `quarter` int(11) NOT NULL,
+  `grade` decimal(5,2) NOT NULL,
+  `grade_status` enum('Draft','Submitted','Approved') NOT NULL DEFAULT 'Draft'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -538,6 +554,15 @@ ALTER TABLE `archived_student_strand`
   ADD KEY `section_id` (`section_id`);
 
 --
+-- Indexes for table `grade_entry`
+--
+ALTER TABLE `grade_entry`
+  ADD PRIMARY KEY (`entry_id`),
+  ADD KEY `student_id` (`student_id`),
+  ADD KEY `subject_id` (`subject_id`),
+  ADD KEY `section_id` (`section_id`);
+
+--
 -- Indexes for table `roles`
 --
 ALTER TABLE `roles`
@@ -639,6 +664,12 @@ ALTER TABLE `archived_student_strand`
   MODIFY `archive_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
+-- AUTO_INCREMENT for table `grade_entry`
+--
+ALTER TABLE `grade_entry`
+  MODIFY `entry_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+
+--
 -- AUTO_INCREMENT for table `roles`
 --
 ALTER TABLE `roles`
@@ -709,6 +740,14 @@ ALTER TABLE `archived_student_strand`
   ADD CONSTRAINT `archived_student_strand_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `students` (`student_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `archived_student_strand_ibfk_2` FOREIGN KEY (`strand_id`) REFERENCES `strands` (`strand_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `archived_student_strand_ibfk_3` FOREIGN KEY (`section_id`) REFERENCES `section` (`section_id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `grade_entry`
+--
+ALTER TABLE `grade_entry`
+  ADD CONSTRAINT `grade_entry_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `students` (`student_id`),
+  ADD CONSTRAINT `grade_entry_ibfk_2` FOREIGN KEY (`subject_id`) REFERENCES `subject` (`subject_id`),
+  ADD CONSTRAINT `grade_entry_ibfk_3` FOREIGN KEY (`section_id`) REFERENCES `section` (`section_id`);
 
 --
 -- Constraints for table `section`

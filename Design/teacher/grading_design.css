@@ -1,0 +1,151 @@
+/* ===== DASHBOARD CONTAINER ===== */
+.dashboard-container {
+    width: 90%;
+    max-width: 1100px;
+    margin: 40px auto;
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+/* ===== TITLE ===== */
+.dashboard-container h2 {
+    text-align: center;
+    color: #1e3a8a;
+    margin-bottom: 25px;
+    font-size: 1.8rem;
+}
+
+/* ===== SELECT FORM ===== */
+form select {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 2px solid #1e3a8a;
+    font-size: 0.95rem;
+    margin-right: 10px;
+    outline: none;
+    transition: 0.2s;
+}
+
+form select:focus {
+    border-color: #fbbf24;
+    box-shadow: 0 0 5px rgba(251,191,36,0.5);
+}
+
+/* ===== TABLE DESIGN ===== */
+.grade-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+}
+
+/* Table Header */
+.grade-table th {
+    background: linear-gradient(135deg, #1e3a8a, #111827);
+    color: #fbbf24;
+    padding: 12px;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Table Cells */
+.grade-table td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+/* Zebra Rows */
+.grade-table tr:nth-child(even) {
+    background: #f9fafb;
+}
+
+/* Hover Effect */
+.grade-table tr:hover {
+    background: #eef2ff;
+}
+
+/* ===== GRADE INPUT ===== */
+.grade-table input[type="number"] {
+    width: 80px;
+    padding: 6px;
+    border-radius: 8px;
+    border: 2px solid #1e3a8a;
+    text-align: center;
+    font-weight: bold;
+    outline: none;
+    transition: 0.2s;
+}
+
+.grade-table input[type="number"]:focus {
+    border-color: #fbbf24;
+    box-shadow: 0 0 5px rgba(251,191,36,0.5);
+}
+
+/* ===== BUTTONS ===== */
+.confirm-btn {
+    background: #1e3a8a;
+    color: white;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.confirm-btn:hover {
+    background: #111827;
+    transform: scale(1.05);
+}
+
+/* Clear Button */
+.clear-btn {
+    background: #e5e7eb;
+    color: #111827;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 10px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-left: 10px;
+    transition: 0.3s;
+}
+
+.clear-btn:hover {
+    background: #d1d5db;
+    transform: scale(1.05);
+}
+
+/* ===== SUCCESS MESSAGE ===== */
+p[style*="color:green"] {
+    background: #dcfce7;
+    border: 2px solid #22c55e;
+    color: #166534 !important;
+    padding: 10px;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: bold;
+}
+.back-btn {
+   display: inline-block;       /* Make it behave like a button */
+    background-color: #4CAF50;   /* Match your confirm button */
+    color: white;
+    padding: 8px 16px;
+    text-decoration: none;       /* Remove underline */
+    border-radius: 5px;
+    margin-left: 10px;           /* Space from other buttons */
+    cursor: pointer;
+    font-weight: bold;            /* Match button text */
+    font-family: inherit;         /* Use same font as rest of page */
+    font-size: 16px;              /* Adjust if needed to match */
+}
+
+.back-btn:hover {
+    background-color: #45a049;
+}
+
