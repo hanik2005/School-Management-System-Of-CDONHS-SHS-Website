@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 04, 2026 at 05:57 PM
+-- Generation Time: Feb 12, 2026 at 03:15 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -20,6 +20,29 @@ SET time_zone = "+00:00";
 --
 -- Database: `cdonhs_shs_database_2.0`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `archived_student_strand`
+--
+
+CREATE TABLE `archived_student_strand` (
+  `archive_id` int(11) NOT NULL,
+  `student_id` int(11) NOT NULL,
+  `strand_id` int(11) NOT NULL,
+  `grade_level` int(11) NOT NULL,
+  `section_id` int(11) NOT NULL,
+  `date_archived` timestamp NOT NULL DEFAULT current_timestamp(),
+  `reason` enum('PROMOTION','TRANSFER','MANUAL') DEFAULT 'PROMOTION'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `archived_student_strand`
+--
+
+INSERT INTO `archived_student_strand` (`archive_id`, `student_id`, `strand_id`, `grade_level`, `section_id`, `date_archived`, `reason`) VALUES
+(4, 2, 2, 11, 9, '2026-02-05 06:06:59', 'MANUAL');
 
 -- --------------------------------------------------------
 
@@ -151,15 +174,17 @@ CREATE TABLE `students` (
   `application_id` int(11) NOT NULL,
   `school_id` int(11) NOT NULL,
   `enrollment_status` enum('Active','Inactive','Graduated','Transferred') DEFAULT 'Active',
-  `date_enrolled` date NOT NULL DEFAULT curdate()
+  `date_enrolled` date NOT NULL DEFAULT curdate(),
+  `enlistment_status` enum('Not Enlisted','Pending','Enlisted','Rejected') DEFAULT 'Not Enlisted'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `students`
 --
 
-INSERT INTO `students` (`student_id`, `application_id`, `school_id`, `enrollment_status`, `date_enrolled`) VALUES
-(1, 11, 304111, 'Active', '0000-00-00');
+INSERT INTO `students` (`student_id`, `application_id`, `school_id`, `enrollment_status`, `date_enrolled`, `enlistment_status`) VALUES
+(1, 11, 304111, 'Active', '0000-00-00', 'Not Enlisted'),
+(2, 13, 304112, 'Active', '2026-02-05', 'Enlisted');
 
 -- --------------------------------------------------------
 
@@ -205,7 +230,8 @@ CREATE TABLE `student_applications` (
 
 INSERT INTO `student_applications` (`application_id`, `first_name`, `last_name`, `middle_name`, `extension_name`, `lrn`, `date_of_birth`, `gender`, `civil_status`, `house_number_street`, `barangay`, `city_municipality`, `province`, `contact_number`, `email`, `facebook_profile`, `current_school`, `school_classification`, `year_graduated`, `father_guardian_name`, `father_guardian_contact`, `mother_guardian_name`, `mother_guardian_contact`, `psa_birth_certificate`, `form_138`, `student_id_copy`, `application_status`, `remarks`, `date_submitted`) VALUES
 (11, 'Nick', 'Clarito', 'Durangparang', '', '405220150089', '2005-08-20', 'male', 'single', 'Blk7/lot 3', 'Carmen', 'Cagayan De Oro City', 'Misamis Oriental', '09988716534', 'nickcharlesclarito@gmail.com', 'https://www.facebook.com/niko.clarito.2025', 'CDONHS-SHS', 'public', '2020', 'papa', '09876562321', 'mama', '0987532732', NULL, NULL, NULL, 'Approved', 'goods', '2025-12-24 05:47:16'),
-(12, 'Maria', 'Clarito', 'Durangparang', '', '189979375623', '1983-02-08', 'female', 'married', 'Blk7 Lot 3', 'Barangay 1', 'CDO', 'Misamis Oriental', '09944718764', 'maria@gmail.com', 'https://www.hostitsmart.com/manage/knowledgebase/388/How-to-Change-Table-Name-in-phpMyAdmin.html', 'None', 'public', '2010', 'papa', '09798373621', 'mama', '0974832472482', NULL, NULL, NULL, 'Pending', NULL, '2026-01-15 06:47:30');
+(12, 'Maria', 'Clarito', 'Durangparang', '', '189979375623', '1983-02-08', 'female', 'married', 'Blk7 Lot 3', 'Barangay 1', 'CDO', 'Misamis Oriental', '09944718764', 'maria@gmail.com', 'https://www.hostitsmart.com/manage/knowledgebase/388/How-to-Change-Table-Name-in-phpMyAdmin.html', 'None', 'public', '2010', 'papa', '09798373621', 'mama', '0974832472482', NULL, NULL, NULL, 'Pending', NULL, '2026-01-15 06:47:30'),
+(13, 'Andry', 'Clarito', 'Durangparang', '', '198765150721', '2004-03-05', 'male', 'single', 'Blk7 Lot 3', 'Barangay 1', 'CDO', 'Misamis Oriental', '09944718764', 'nickhoyo2005@gmail.com', 'https://www.facebook.com/andry.clarito.1', 'None', 'public', '2020', 'papa', '09798373621', 'mama', '0974832472482', NULL, NULL, NULL, 'Approved', 'You Submitted everything', '2026-02-05 03:07:25');
 
 -- --------------------------------------------------------
 
@@ -221,6 +247,14 @@ CREATE TABLE `student_strand` (
   `section_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `student_strand`
+--
+
+INSERT INTO `student_strand` (`student_strand_id`, `student_id`, `strand_id`, `grade_level`, `section_id`) VALUES
+(1, 1, 7, 11, 49),
+(4, 2, 5, 11, 33);
+
 -- --------------------------------------------------------
 
 --
@@ -234,6 +268,20 @@ CREATE TABLE `student_subjects` (
   `status` enum('Enrolled','Dropped') DEFAULT 'Enrolled',
   `school_year` varchar(9) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `student_subjects`
+--
+
+INSERT INTO `student_subjects` (`enrollment_id`, `student_id`, `subject_id`, `status`, `school_year`) VALUES
+(25, 1, 56, 'Enrolled', '2026-2027'),
+(26, 1, 54, 'Enrolled', '2026-2027'),
+(27, 2, 15, 'Enrolled', '2026-2027'),
+(28, 2, 11, 'Enrolled', '2026-2027'),
+(29, 2, 10, 'Enrolled', '2026-2027'),
+(30, 2, 38, 'Enrolled', '2026-2027'),
+(31, 2, 39, 'Enrolled', '2026-2027'),
+(32, 2, 33, 'Enrolled', '2026-2027');
 
 -- --------------------------------------------------------
 
@@ -386,7 +434,28 @@ CREATE TABLE `teachers` (
 --
 
 INSERT INTO `teachers` (`teacher_id`, `application_id`, `school_id`, `employment_status`, `date_hired`) VALUES
-(8, 1, 502301, 'Active', '2026-01-29');
+(11, 2, 502301, 'Active', '2026-02-12');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `teacher_advisory`
+--
+
+CREATE TABLE `teacher_advisory` (
+  `teacher_advisory_id` int(11) NOT NULL,
+  `teacher_id` int(10) NOT NULL,
+  `strand_id` int(11) NOT NULL,
+  `grade_level` int(2) NOT NULL,
+  `section_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `teacher_advisory`
+--
+
+INSERT INTO `teacher_advisory` (`teacher_advisory_id`, `teacher_id`, `strand_id`, `grade_level`, `section_id`) VALUES
+(1, 11, 7, 11, 49);
 
 -- --------------------------------------------------------
 
@@ -427,7 +496,7 @@ CREATE TABLE `teacher_applications` (
 --
 
 INSERT INTO `teacher_applications` (`teacher_application_id`, `first_name`, `last_name`, `middle_name`, `extension_name`, `date_of_birth`, `gender`, `civil_status`, `contact_number`, `email`, `facebook_profile`, `house_number_street`, `barangay`, `city_municipality`, `province`, `current_school`, `highest_education`, `specialization`, `application_status`, `remarks`, `date_submitted`, `resume_cv`, `prc_id_copy`, `certificates`, `other_documents`) VALUES
-(1, 'Andry', 'Clarito', 'Durangparang', '', '2010-02-05', 'male', 'married', '09944718764', 'clarito.nickcharles@gmail.com', 'https://www.hostitsmart.com/manage/knowledgebase/388/How-to-Change-Table-Name-in-phpMyAdmin.html', 'Blk4 Lot 3', 'Barangay 2', 'CDO', 'Misamis Oriental', 'None', 'Masters', 'Math', 'Pending', 'Your application has been approved today but there is some problems with your documents.', '2026-01-29 00:49:57', NULL, NULL, NULL, NULL);
+(2, 'Gerd Harvey', 'Clarito', 'Durangparang', '', '1996-02-12', 'male', 'single', '09944718764', 'nickhoyo2005@gmail.com', 'https://www.hostitsmart.com/manage/knowledgebase/388/How-to-Change-Table-Name-in-phpMyAdmin.html', 'Blk4 Lot 3', 'Barangay 1', 'CDO', 'Misamis Oriental', 'None', 'Bachelors', 'Math', 'Approved', 'dasdd', '2026-02-12 01:02:11', NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -452,11 +521,21 @@ INSERT INTO `users` (`user_id`, `school_id`, `username`, `password`, `role_id`, 
 (1, 304111, '405220150089', '$2y$10$T1Qkc.zE1PWpRQX4FmIznepx1GJRGUzaVWsVMjdb8hj.Ve2MkQoAu', 1, 'Active'),
 (2, 5362, 'admin', '$2y$10$T1Qkc.zE1PWpRQX4FmIznepx1GJRGUzaVWsVMjdb8hj.Ve2MkQoAu', 2, 'Active'),
 (5, 7, '7', '$2y$10$10S8meOCGIOPm4LQyd7hAuTOn9GJ.ct8E9M25vuViBhJErW6/XnyO', 3, 'Active'),
-(6, 502301, '502301', '$2y$10$QdRpqZx5hEuhezXQOXApperT1sUqPN/VMK7keyEvOHM17jSEPlChy', 3, 'Active');
+(7, 304112, '198765150721', '$2y$10$tg6JiiELRL9GJDdHx09GJuxnmfkQ4ggWrGrKusdV0rdYw1M0rT3tG', 1, 'Active'),
+(10, 502301, '502301', '$2y$10$J8Qup60vgWVN3BlGu6XtUeZ0zwVcFgPIJYZRFxDIir6ITWMHnbL8S', 3, 'Active');
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `archived_student_strand`
+--
+ALTER TABLE `archived_student_strand`
+  ADD PRIMARY KEY (`archive_id`),
+  ADD KEY `student_id` (`student_id`),
+  ADD KEY `strand_id` (`strand_id`),
+  ADD KEY `section_id` (`section_id`);
 
 --
 -- Indexes for table `roles`
@@ -525,6 +604,15 @@ ALTER TABLE `teachers`
   ADD UNIQUE KEY `school_id` (`school_id`);
 
 --
+-- Indexes for table `teacher_advisory`
+--
+ALTER TABLE `teacher_advisory`
+  ADD PRIMARY KEY (`teacher_advisory_id`),
+  ADD KEY `teacher_advisory_ibfk_1` (`teacher_id`),
+  ADD KEY `teacher_advisory_ibfk_2` (`strand_id`),
+  ADD KEY `teacher_advisory_ibfk_3` (`section_id`);
+
+--
 -- Indexes for table `teacher_applications`
 --
 ALTER TABLE `teacher_applications`
@@ -545,6 +633,12 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT for table `archived_student_strand`
+--
+ALTER TABLE `archived_student_strand`
+  MODIFY `archive_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
 -- AUTO_INCREMENT for table `roles`
 --
 ALTER TABLE `roles`
@@ -554,25 +648,25 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT for table `students`
 --
 ALTER TABLE `students`
-  MODIFY `student_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `student_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `student_applications`
 --
 ALTER TABLE `student_applications`
-  MODIFY `application_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `application_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `student_strand`
 --
 ALTER TABLE `student_strand`
-  MODIFY `student_strand_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `student_strand_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `student_subjects`
 --
 ALTER TABLE `student_subjects`
-  MODIFY `enrollment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `enrollment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT for table `subject`
@@ -584,23 +678,37 @@ ALTER TABLE `subject`
 -- AUTO_INCREMENT for table `teachers`
 --
 ALTER TABLE `teachers`
-  MODIFY `teacher_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `teacher_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- AUTO_INCREMENT for table `teacher_advisory`
+--
+ALTER TABLE `teacher_advisory`
+  MODIFY `teacher_advisory_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `teacher_applications`
 --
 ALTER TABLE `teacher_applications`
-  MODIFY `teacher_application_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `teacher_application_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `archived_student_strand`
+--
+ALTER TABLE `archived_student_strand`
+  ADD CONSTRAINT `archived_student_strand_ibfk_1` FOREIGN KEY (`student_id`) REFERENCES `students` (`student_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `archived_student_strand_ibfk_2` FOREIGN KEY (`strand_id`) REFERENCES `strands` (`strand_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `archived_student_strand_ibfk_3` FOREIGN KEY (`section_id`) REFERENCES `section` (`section_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `section`
@@ -634,6 +742,14 @@ ALTER TABLE `student_subjects`
 --
 ALTER TABLE `subject`
   ADD CONSTRAINT `subject_ibfk_1` FOREIGN KEY (`strand_id`) REFERENCES `strands` (`strand_id`);
+
+--
+-- Constraints for table `teacher_advisory`
+--
+ALTER TABLE `teacher_advisory`
+  ADD CONSTRAINT `teacher_advisory_ibfk_1` FOREIGN KEY (`teacher_id`) REFERENCES `teachers` (`teacher_id`),
+  ADD CONSTRAINT `teacher_advisory_ibfk_2` FOREIGN KEY (`strand_id`) REFERENCES `strands` (`strand_id`),
+  ADD CONSTRAINT `teacher_advisory_ibfk_3` FOREIGN KEY (`section_id`) REFERENCES `section` (`section_id`);
 
 --
 -- Constraints for table `users`

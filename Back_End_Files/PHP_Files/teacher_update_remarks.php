@@ -7,9 +7,10 @@ include $_SERVER['DOCUMENT_ROOT'] . '/SMS_CDONHS-SHS_WEBSITE/DB_Connection/Conne
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
-    $application_id = $_POST['teacher_application_id'];
-    $remarks        = $_POST['remarks'];
-    $status         = $_POST['application_status'];
+    $application_id      = $_POST['teacher_application_id'];
+    $remarks             = $_POST['remarks'];
+    $status              = $_POST['application_status'];
+    $advisory_assignment = $_POST['advisory_assignment'] ?? null;
 
     // ===============================
     // Update teacher application
@@ -35,33 +36,49 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $teacher = $getTeacher->get_result()->fetch_assoc();
 
     // ===============================
-    // IF APPROVED → INSERT + CREATE ACCOUNT
+    // IF APPROVED OR PENDING
     // ===============================
     if ($status === 'Approved' || $status === 'Pending') {
 
         $connection->begin_transaction();
 
         try {
-            // Generate next school_id
-            $result = $connection->query(
-                "SELECT MAX(school_id) AS max_id FROM teachers"
-            );
-            $row = $result->fetch_assoc();
-            $school_id = ($row['max_id'] ?? 502300) + 1;
 
-            // Prevent duplicate insert
+            // ===============================
+            // Check if teacher already exists
+            // ===============================
             $check = $connection->prepare(
-                "SELECT teacher_id FROM teachers WHERE application_id = ?"
+                "SELECT teacher_id, school_id 
+                 FROM teachers 
+                 WHERE application_id = ?"
             );
             $check->bind_param("i", $application_id);
             $check->execute();
             $checkResult = $check->get_result();
 
-            if ($checkResult->num_rows === 0) {
+            if ($checkResult->num_rows > 0) {
 
-                // -------------------------------
-                // INSERT INTO teachers
-                // -------------------------------
+                $existingTeacher = $checkResult->fetch_assoc();
+                $teacher_id = $existingTeacher['teacher_id'];
+                $school_id  = $existingTeacher['school_id'];
+
+                $username = (string)$school_id;
+                $tempPassword = "Already Created";
+
+            } else {
+
+                // ===============================
+                // Generate school_id
+                // ===============================
+                $result = $connection->query(
+                    "SELECT MAX(school_id) AS max_id FROM teachers"
+                );
+                $row = $result->fetch_assoc();
+                $school_id = ($row['max_id'] ?? 502300) + 1;
+
+                // ===============================
+                // Insert teacher
+                // ===============================
                 $insertTeacher = $connection->prepare(
                     "INSERT INTO teachers (application_id, school_id)
                      VALUES (?, ?)"
@@ -71,17 +88,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                 $teacher_id = $connection->insert_id;
 
-                // -------------------------------
-                // GENERATE USERNAME & PASSWORD
-                // -------------------------------
+                // ===============================
+                // Create login account
+                // ===============================
                 $username = (string)$school_id;
 
-                $tempPassword = bin2hex(random_bytes(4)); // 8-char temp password
+                $tempPassword = bin2hex(random_bytes(4));
                 $passwordHash = password_hash($tempPassword, PASSWORD_DEFAULT);
 
-                // -------------------------------
-                // INSERT INTO teacher_accounts
-                // -------------------------------
                 $insertAccount = $connection->prepare(
                     "INSERT INTO users 
                         (school_id, username, password, role_id, status)
@@ -89,6 +103,89 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 );
                 $insertAccount->bind_param("iss", $school_id, $username, $passwordHash);
                 $insertAccount->execute();
+            }
+
+            // ===============================
+            // INSERT TEACHER ADVISORY
+            // ===============================
+            if (!empty($advisory_assignment) && $status === 'Approved') {
+
+                list($strand_id, $grade_level, $section_id) = explode("|", $advisory_assignment);
+
+                // 🔥 Check if another teacher already handles this section
+                $checkSection = $connection->prepare(
+                    "SELECT teacher_advisory_id 
+                    FROM teacher_advisory 
+                    WHERE strand_id = ? 
+                    AND grade_level = ? 
+                    AND section_id = ?
+                    AND teacher_id != ?"
+                );
+
+                $checkSection->bind_param(
+                    "iiii",
+                    $strand_id,
+                    $grade_level,
+                    $section_id,
+                    $teacher_id
+                );
+
+                $checkSection->execute();
+                $sectionExists = $checkSection->get_result();
+
+                if ($sectionExists->num_rows > 0) {
+                    throw new Exception("This section already has an adviser.");
+                }
+
+                // 🔥 Check if THIS teacher already has advisory
+                $checkTeacherAdv = $connection->prepare(
+                    "SELECT teacher_advisory_id 
+                    FROM teacher_advisory 
+                    WHERE teacher_id = ?"
+                );
+
+                $checkTeacherAdv->bind_param("i", $teacher_id);
+                $checkTeacherAdv->execute();
+                $teacherAdvResult = $checkTeacherAdv->get_result();
+
+                if ($teacherAdvResult->num_rows > 0) {
+
+                    // 👉 UPDATE advisory
+                    $updateAdvisory = $connection->prepare(
+                        "UPDATE teacher_advisory
+                        SET strand_id = ?, grade_level = ?, section_id = ?
+                        WHERE teacher_id = ?"
+                    );
+
+                    $updateAdvisory->bind_param(
+                        "iiii",
+                        $strand_id,
+                        $grade_level,
+                        $section_id,
+                        $teacher_id
+                    );
+
+                    $updateAdvisory->execute();
+
+                } else {
+
+                    // 👉 INSERT new advisory
+                    $insertAdvisory = $connection->prepare(
+                        "INSERT INTO teacher_advisory
+                        (teacher_id, strand_id, grade_level, section_id)
+                        VALUES (?, ?, ?, ?)"
+                    );
+
+                    $insertAdvisory->bind_param(
+                        "iiii",
+                        $teacher_id,
+                        $strand_id,
+                        $grade_level,
+                        $section_id
+                    );
+
+                    $insertAdvisory->execute();
+                }
             }
 
             $connection->commit();
@@ -100,7 +197,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     // ===============================
-    // SEND EMAIL NOTIFICATION
+    // SEND EMAIL
     // ===============================
     try {
 
@@ -115,15 +212,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         $mail->Body = "
         <p>Good day <b>{$teacher['first_name']} {$teacher['last_name']}</b>,</p>
-
-        <p>Your <b>teacher application</b> has been 
-        <b>$status</b>.</p>
-
+        <p>Your <b>teacher application</b> has been <b>$status</b>.</p>
         <p><b>Admin Remarks:</b></p>
         <p>$remarks</p>
         ";
 
-        // ADD LOGIN INFO IF APPROVED
         if ($status === 'Approved' || $status === 'Pending') {
             $mail->Body .= "
             <hr>
@@ -132,9 +225,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 Username: <b>$username</b><br>
                 Temporary Password: <b>$tempPassword</b>
             </p>
-            <p style='color:red;'>
-                Please change your password after first login.
-            </p>
+            <p style='color:red;'>Please change your password after first login.</p>
             ";
         }
 

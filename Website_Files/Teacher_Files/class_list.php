@@ -40,7 +40,8 @@ if (!$user) {
     <link rel="stylesheet" href="../../Design/main_design.css">
      <link rel="stylesheet" href="../../Design/profile_dropdown.css">
      <link rel="stylesheet" href="../../Design/dashboard_design.css">
-    <title>Teacher Home</title>
+      <link rel="stylesheet" href="../../Design/teacher/classList_design.css">
+    <title>Teacher Class List</title>
 </head>
 <body>
     <!-- header -->
@@ -69,47 +70,59 @@ if (!$user) {
     </div>
     </div>
 
+    <div class="main-container">
 
-    <div class="dashboard">
-
-  <div class="dashboard-box">
-
-    <div class="dashboard-wrapper">
-
-    <div class="dashboard-container">
-        <a href="#" class="dashboard-card">
-            <img src="../../Assets/profile_button.png">
-            <h3>My Profile</h3>
-        </a>
+    <!-- Page Title -->
+    <div class="page-title">
+        <h1>Class List</h1>
     </div>
 
-    <div class="dashboard-container">
-        <a href="class_list.php" class="dashboard-card">
-            <img src="../../Assets/class_list_button.png">
-            <h3>Class List</h3>
-        </a>
+    <!-- Table Section -->
+     <?php include "../../Back_End_Files/PHP_Files/get_class_list.php"?>
+    <div class="table-container">
+        <table class="class-table">
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>Student Name</th>
+                    <th>LRN</th>
+                    <th>Gender</th>
+                </tr>
+            </thead>
+            <tbody>
+                        <?php if (!empty($students)): ?>
+                <?php $count = 1; ?>
+                <?php foreach ($students as $student): ?>
+                    <tr>
+                        <td><?php echo $count++; ?></td>
+                        <td>
+                            <?php 
+                                echo htmlspecialchars(
+                                    $student['last_name'] . ", " . $student['first_name']
+                                ); 
+                            ?>
+                        </td>
+                        <td><?php echo htmlspecialchars($student['lrn']); ?></td>
+                        <td><?php echo htmlspecialchars($student['gender']); ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            <?php else: ?>
+                    <tr>
+                        <td colspan="3" style="text-align:center;">No students found.</td>
+                    </tr>
+            <?php endif; ?>
+            </tbody>
+        </table>
     </div>
 
-    <div class="dashboard-container">
-        <a href="#" class="dashboard-card">
-            <img src="../../Assets/grades_button.png">
-            <h3>Grades</h3>
-        </a>
-    </div>
-
-    <div class="dashboard-container">
-        <a href="#" class="dashboard-card">
-            <img src="../../Assets/progress_button.png">
-            <h3>Student Progress</h3>
-        </a>
+    <!-- Print Button -->
+    <div class="print-container">
+        <button class="print-btn" onclick="window.print()">Print</button>
     </div>
 
 </div>
-</div>
 
-
-  </div>
-
+    
 
 
 
