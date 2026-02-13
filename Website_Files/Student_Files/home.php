@@ -60,6 +60,11 @@ include "../../Back_End_Files/PHP_Files/check_enrollment.php";
         <?php echo htmlspecialchars($gradeLevel); ?>, 
         <?php echo htmlspecialchars($strandName); ?>, 
         <?php echo htmlspecialchars($sectionName); ?>
+
+    <?php elseif($isPending):?>
+        Pending Enlistment
+    <?php elseif($isRejected):?>
+        Rejected Enlistment
     <?php else: ?>
         Not enrolled yet
     <?php endif; ?>
@@ -93,19 +98,22 @@ include "../../Back_End_Files/PHP_Files/check_enrollment.php";
     </div>
 
     <div class="dashboard-container">
-        <?php if(!$isEnlisted): ?>
+    <?php if (!$isEnlisted && !$isPending): ?>
         <a href="student_enlistment.php" class="dashboard-card">
             <img src="../../Assets/enlistment_button.png">
             <h3>Student Enlistment</h3>
         </a>
-        <?php else: ?>
-
+    <?php elseif ($isPending): ?>
+        <div class="dashboard-card" style="opacity:0.5; pointer-events:none;">
+            <img src="../../Assets/enlistment_button.png">
+            <h3>Pending Enlistment</h3>
+        </div>
+    <?php else: ?>
         <div class="dashboard-card" style="opacity:0.5; pointer-events:none;">
             <img src="../../Assets/enlistment_button.png">
             <h3>Already Enlisted</h3>
         </div>
-
-        <?php endif; ?>
+    <?php endif; ?>
     </div>
 
     <div class="dashboard-container">

@@ -8,6 +8,8 @@ include "../../DB_Connection/Connection.php";
 // Default values
 $student_id = null;
 $isEnlisted = false;
+$isPending = false;
+$isRejected = false;
 $gradeLevel = null;
 $strandName = null;
 $sectionName = null;
@@ -26,7 +28,7 @@ $stmtStudent->close();
 
 if ($studentRow) {
     $student_id = $studentRow['student_id'];
-    if ($studentRow['enlistment_status'] === 'Enlisted' || $studentRow['enlistment_status'] === 'Pending') {
+    if ($studentRow['enlistment_status'] === 'Enlisted') {
         $isEnlisted = true;
 
         // Get program info
@@ -48,5 +50,11 @@ if ($studentRow) {
             $sectionName = $row['section_name'];
         }
         $stmtProgram->close();
+    }elseif ($studentRow['enlistment_status'] === 'Pending') {
+        # code...
+        $isPending = true;
+    }elseif ($studentRow['enlistment_status'] === 'Rejected') {
+        # code...
+        $isRejected = true;
     }
 }

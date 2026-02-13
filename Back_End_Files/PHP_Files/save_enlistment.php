@@ -32,7 +32,7 @@ try {
     $school_id = $_SESSION['school_id'];
 
     // Enlistment status and school year
-    $enlistment_status = ($grade_level == 12) ? 'Pending' : 'Enlisted';
+    $enlistment_status = 'Pending';
     $school_year = date('Y') . '-' . (date('Y') + 1);
 
     // Start transaction

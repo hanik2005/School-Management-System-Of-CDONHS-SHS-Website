@@ -65,6 +65,8 @@ if($isEnlisted){
         <?php echo htmlspecialchars($gradeLevel); ?>, 
         <?php echo htmlspecialchars($strandName); ?>, 
         <?php echo htmlspecialchars($sectionName); ?>
+    <?php elseif($isRejected):?>
+        Rejected Enlistment
     <?php else: ?>
         Not enrolled yet
     <?php endif; ?>
@@ -123,9 +125,18 @@ if($isEnlisted){
             <!-- RIGHT PANEL -->
             <div class="right-panel">
                 <h3>Subjects</h3>
-                <div class="subject-dashboard" id="subjects-container">
-                    <!-- Subjects will appear here dynamically -->
-                </div>
+                <table class="subject-table">
+                    <thead>
+                        <tr>
+                            <th>Subject Name</th>
+                            <th>Enlist</th>
+                        </tr>
+                    </thead>
+                    <tbody id="subjects-container">
+                        <!-- Subjects will load here -->
+                    </tbody>
+                </table>
+
                  <!-- SINGLE SUBMIT BUTTON -->
                 <button type="submit" class="submit-btn">Submit Enlistment</button>
             </div>

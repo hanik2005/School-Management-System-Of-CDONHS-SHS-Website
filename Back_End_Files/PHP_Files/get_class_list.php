@@ -27,14 +27,15 @@ $teacher_id = $teacherData['teacher_id'];
 
 /* STEP 2: Get students under teacher advisory */
 $stmt = $connection->prepare("
-  SELECT 
+SELECT 
     sa.last_name,
     sa.first_name,
     sa.lrn,
     sa.gender,
     ss.grade_level,
     ss.strand_id,
-    ss.section_id
+    ss.section_id,
+    s.enlistment_status
 FROM teacher_advisory ta
 JOIN student_strand ss 
     ON ta.strand_id = ss.strand_id
@@ -45,9 +46,10 @@ JOIN students s
 JOIN student_applications sa
     ON s.application_id = sa.application_id
 WHERE ta.teacher_id = ?
+AND s.enlistment_status = 'Enlisted'
 ORDER BY sa.last_name ASC
-
 ");
+
 
 $stmt->bind_param("i", $teacher_id);
 $stmt->execute();

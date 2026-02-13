@@ -47,26 +47,30 @@ $subject_id = isset($_GET['subject'])
 $getStudents = $connection->prepare("
 SELECT s.student_id,
        CONCAT(sa.last_name, ', ', sa.first_name) AS student_name,
-       ge.grade
+       ge.grade,
+       s.enlistment_status
 
 FROM student_strand ss
 JOIN students s ON ss.student_id = s.student_id
 JOIN student_applications sa ON s.application_id = sa.application_id
 
-JOIN student_subjects subj ON s.student_id = subj.student_id
-AND subj.subject_id = ?
+JOIN student_subjects subj 
+    ON s.student_id = subj.student_id
+    AND subj.subject_id = ?
 
 LEFT JOIN grade_entry ge
-ON ge.student_id = s.student_id
-AND ge.subject_id = ?
-AND ge.section_id = ?
-AND ge.quarter = ?
+    ON ge.student_id = s.student_id
+    AND ge.subject_id = ?
+    AND ge.section_id = ?
+    AND ge.quarter = ?
 
 WHERE ss.section_id = ?
 AND subj.status = 'Enrolled'
+AND s.enlistment_status = 'Enlisted'
 
 ORDER BY sa.last_name ASC
 ");
+
 
 $getStudents->bind_param(
     "iiiii",
