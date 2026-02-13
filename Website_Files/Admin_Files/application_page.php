@@ -36,7 +36,7 @@ if (!$user) {
     <meta charset="UTF-8">
     <script src="../../Back_End_Files/JSCRIPT_Files/timer-logout.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Home</title>
+    <title>Admin Application Page</title>
     <link rel="stylesheet" href="../../Design/main_design.css">
     <link rel="stylesheet" href="../../Design/profile_dropdown.css">
      <link rel="stylesheet" href="../../Design/dashboard_design.css">
@@ -89,7 +89,7 @@ if (!$user) {
     <div class="footer">
     © 2026 Cagayan De Oro National High School - Senior High School  
     <br>
-    School Information System
+    School Management System
     </div>
     <script src="../../Back_End_Files/JSCRIPT_Files/profile_dropdown_function.js"></script>
 </body>

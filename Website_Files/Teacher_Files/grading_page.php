@@ -166,7 +166,7 @@ include "../../Back_End_Files/PHP_Files/save_grades.php";
     <div class="footer">
     © 2026 Cagayan De Oro National High School - Senior High School  
     <br>
-    School Information System
+    School Management System
     </div>
 <script src="../../Back_End_Files/JSCRIPT_Files/profile_dropdown_function.js"></script>
 

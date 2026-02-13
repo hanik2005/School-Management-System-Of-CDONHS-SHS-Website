@@ -1,0 +1,274 @@
+/* ==============================
+   FILTER BAR
+================================= */
+.filter-container {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: #f3f4f6;
+    padding: 15px 20px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+}
+
+.filter-container label {
+    font-weight: bold;
+    color: #1e3a8a;
+}
+
+.filter-container select {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    outline: none;
+    min-width: 120px;
+}
+
+.search-btn, .clear-btn {
+    padding: 10px 25px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s ease;
+}
+
+.search-btn {
+    background: #1e3a8a;
+    color: #fbbf24;
+}
+
+.search-btn:hover {
+    background: #111827;
+    color: #fbbf24;
+}
+
+.clear-btn {
+    background: #fbbf24;
+    color: #111827;
+}
+
+.clear-btn:hover {
+    background: #fcd34d;
+    color: #111827;
+}
+
+/* ==============================
+   VALIDATION TABLE
+================================= */
+.validation-table-container {
+    background: white;
+    padding: 25px 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    overflow-x: auto;
+}
+
+.validation-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 700px;
+}
+
+.validation-table th {
+    background: linear-gradient(135deg, #1e3a8a, #111827);
+    color: #fbbf24;
+    padding: 14px 12px;
+    text-align: left;
+    border-radius: 10px 10px 0 0;
+    font-weight: 600;
+}
+
+.validation-table td {
+    padding: 12px;
+    border-bottom: 1px solid #e5e7eb;
+    vertical-align: middle;
+}
+
+.validation-table tr:hover {
+    background: #f9fafb;
+}
+
+/* ==============================
+   STATUS SELECT
+================================= */
+.status-select {
+    padding: 6px 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-weight: bold;
+    color: #111827;
+    background: #f3f4f6;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.status-select option[value="Draft"] {
+    color: gray;
+    font-weight: bold;
+}
+
+.status-select option[value="Submitted"] {
+    color: orange;
+    font-weight: bold;
+}
+
+.status-select option[value="Approved"] {
+    color: green;
+    font-weight: bold;
+}
+
+.status-select:hover {
+    border-color: #1e3a8a;
+    background: #e5e7eb;
+}
+
+/* ==============================
+   DASHBOARD PANEL
+================================= */
+/* Dashboard panel */
+.dashboard-panel {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    margin-top: 25px;
+}
+
+/* Dashboard grid for multiple tables */
+.dashboard-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: flex-start;
+    margin-top: 15px;
+}
+
+/* Individual subject table */
+.subject-table-container {
+    flex: 1 1 300px; /* responsive width */
+    background: #f9fafb;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    min-width: 300px;
+}
+
+.subject-table-container h3 {
+    text-align: center;
+    margin-bottom: 10px;
+    color: #1e3a8a;
+    font-weight: bold;
+}
+
+.subject-table-container table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.subject-table-container th {
+    background: linear-gradient(135deg, #1e3a8a, #111827);
+    color: #fbbf24;
+    padding: 8px;
+    font-weight: 600;
+}
+
+.subject-table-container td {
+    padding: 8px;
+    border-bottom: 1px solid #e5e7eb;
+    text-align: center;
+}
+
+.subject-table-container tr:hover {
+    background: #f1f5f9;
+}
+
+
+/* ==============================
+   DASHBOARD BUTTONS
+================================= */
+.dashboard-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: flex-end;
+}
+
+.dashboard-buttons button {
+    padding: 12px 40px;
+    border-radius: 25px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+.dashboard-buttons button:hover {
+    background: #1e3a8a;
+}
+
+/* Back to Home Link styled as a button */
+.dashboard-buttons .back-btn {
+   display: inline-block;
+    background: #fbbf24; /* golden color */
+    color: #111827;
+    text-decoration: none;
+    padding: 12px 25px;
+    border-radius: 25px;
+    font-weight: bold; /* match buttons */
+    font-family: Arial, sans-serif; /* same as body */
+    font-size: 0.9em; /* match button size */
+    text-align: center;
+    transition: 0.3s ease;
+}
+
+.dashboard-buttons .back-btn:hover {
+    background: #f59e0b; /* darker gold on hover */
+    color: #fff;
+}
+
+#confirmBtn {
+    background: #1e3a8a;
+    color: #fbbf24;
+}
+
+#confirmBtn:hover {
+    background: #111827;
+}
+
+#clearBtn {
+    background: #fbbf24;
+    color: #111827;
+}
+
+#clearBtn:hover {
+    background: #fcd34d;
+}
+
+/* ==============================
+   RESPONSIVE
+================================= */
+@media screen and (max-width: 900px) {
+    .filter-container {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .dashboard-buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+/* Main Title */
+.main-container h2 {
+    text-align: center;
+    font-size: 2em;
+    font-weight: 600;
+    color: #1e3a8a;
+    background: linear-gradient(135deg, #1e3a8a);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 30px;
+}
+

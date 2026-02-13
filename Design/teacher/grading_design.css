@@ -141,8 +141,8 @@ p[style*="color:green"] {
     margin-left: 10px;           /* Space from other buttons */
     cursor: pointer;
     font-weight: bold;            /* Match button text */
-    font-family: inherit;         /* Use same font as rest of page */
-    font-size: 16px;              /* Adjust if needed to match */
+    font-size: 0.9em;
+    font-weight: 600;            /* Adjust if needed to match */
 }
 
 .back-btn:hover {

@@ -1,0 +1,115 @@
+/* ============================= */
+/* GRADES PAGE MAIN CONTAINER    */
+/* ============================= */
+
+.grades-container {
+  padding: 35px 60px;
+  min-height: 70vh;
+  background: #ffffff;
+}
+
+/* PAGE TITLE */
+.grades-container h2 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 25px;
+  color: #1e3a8a;
+}
+
+/* ============================= */
+/* FILTER SECTION                */
+/* ============================= */
+
+.filter-box {
+  background: #e5e7eb;
+  padding: 20px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 30px;
+}
+
+.filter-box label {
+  font-weight: 600;
+  color: #111827;
+}
+
+.filter-box select {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 2px solid #1e3a8a;
+  font-weight: 600;
+}
+
+.search-btn {
+  background: linear-gradient(135deg, #1e3a8a, #111827);
+  color: white;
+  border: 2px solid #fbbf24;
+  padding: 8px 20px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.search-btn:hover {
+  background: #111827;
+  box-shadow: 0 6px 15px rgba(251,191,36,0.4);
+}
+
+/* ============================= */
+/* TABLE DESIGN                  */
+/* ============================= */
+
+.table-box {
+  background: #f3f4f6;
+  padding: 30px;
+  border-radius: 15px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+}
+
+table thead {
+  background: linear-gradient(135deg, #1e3a8a, #111827);
+  color: #fbbf24;
+}
+
+table th,
+table td {
+  padding: 12px;
+  border: 1px solid #d1d5db;
+  font-weight: 600;
+}
+
+table tbody tr:nth-child(even) {
+  background: #e5e7eb;
+}
+
+table tbody tr:hover {
+  background: #dbeafe;
+  transition: 0.2s;
+}
+
+/* ============================= */
+/* AVERAGE SECTION               */
+/* ============================= */
+
+.average-box {
+  margin-top: 20px;
+  text-align: right;
+  font-size: 18px;
+  font-weight: bold;
+  color: #1e3a8a;
+}
+
+.overall-average {
+  margin-top: 10px;
+  font-size: 20px;
+  color: #111827;
+}

@@ -109,7 +109,7 @@ include "../../Back_End_Files/PHP_Files/check_enrollment.php";
     </div>
 
     <div class="dashboard-container">
-        <a href="#" class="dashboard-card">
+        <a href="my_grades_page.php" class="dashboard-card">
             <img src="../../Assets/grades_button.png">
             <h3>My Grades</h3>
         </a>
@@ -131,7 +131,7 @@ include "../../Back_End_Files/PHP_Files/check_enrollment.php";
     <div class="footer">
     © 2026 Cagayan De Oro National High School - Senior High School  
     <br>
-    School Information System
+    School Management System
     </div>
 <script src="../../Back_End_Files/JSCRIPT_Files/profile_dropdown_function.js"></script>
 </body>

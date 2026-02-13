@@ -43,7 +43,7 @@ if (!$result) {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Admin Student Enrollment List</title>
+    <title>Admin Student Application List</title>
 
     <style>
         body {
