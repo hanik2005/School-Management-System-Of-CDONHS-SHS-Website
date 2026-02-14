@@ -48,7 +48,8 @@ $getStudents = $connection->prepare("
 SELECT s.student_id,
        CONCAT(sa.last_name, ', ', sa.first_name) AS student_name,
        ge.grade,
-       s.enlistment_status
+       s.enlistment_status,
+       sa.lrn
 
 FROM student_strand ss
 JOIN students s ON ss.student_id = s.student_id

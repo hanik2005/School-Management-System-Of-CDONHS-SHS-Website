@@ -97,6 +97,13 @@ if (!$user) {
         </a>
     </div>
 
+    <div class="dashboard-container">
+        <a href="enlistment_validation_page.php" class="dashboard-card">
+            <img src="../../Assets/enlistment_validation.png">
+            <h3>Enlistment Validation</h3>
+        </a>
+    </div>
+
 </div>
 
 

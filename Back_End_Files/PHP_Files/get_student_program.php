@@ -10,6 +10,7 @@ $student_id = null;
 $isEnlisted = false;
 $isPending = false;
 $isRejected = false;
+$Promoted = false;
 $gradeLevel = null;
 $strandName = null;
 $sectionName = null;
@@ -56,5 +57,8 @@ if ($studentRow) {
     }elseif ($studentRow['enlistment_status'] === 'Rejected') {
         # code...
         $isRejected = true;
+    }elseif ($studentRow['enlistment_status'] === 'Promoted') {
+        # code...
+        $Promoted = true;
     }
 }

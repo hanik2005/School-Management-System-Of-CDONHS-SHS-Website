@@ -67,6 +67,8 @@ if($isEnlisted){
         <?php echo htmlspecialchars($sectionName); ?>
     <?php elseif($isRejected):?>
         Rejected Enlistment
+    <?php elseif($Promoted):?>
+        Promoted
     <?php else: ?>
         Not enrolled yet
     <?php endif; ?>

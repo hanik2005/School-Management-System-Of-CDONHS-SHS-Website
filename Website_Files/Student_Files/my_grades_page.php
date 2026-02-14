@@ -30,6 +30,8 @@ include "../../Back_End_Files/PHP_Files/my_grades_backend.php";
             <?php echo htmlspecialchars($gradeLevel); ?>, 
             <?php echo htmlspecialchars($strandName); ?>, 
             <?php echo htmlspecialchars($sectionName); ?>
+        <?php elseif($Promoted):?>
+            Promoted
         <?php else: ?>
             Not enrolled yet
         <?php endif; ?>

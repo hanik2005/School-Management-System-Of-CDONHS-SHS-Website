@@ -115,6 +115,7 @@ include "../../Back_End_Files/PHP_Files/save_grades.php";
 
             <tr>
                 <th>No</th>
+                <th>LRN</th>
                 <th>Student Name</th>
                 <th>Grade</th>
             </tr>
@@ -126,6 +127,9 @@ include "../../Back_End_Files/PHP_Files/save_grades.php";
                     <tr>
                         <td><?= $count++ ?></td>
 
+                         <td>
+                            <?= htmlspecialchars($student['lrn']) ?>
+                        </td>
                         <td>
                             <?= htmlspecialchars($student['student_name']) ?>
                         </td>

@@ -65,6 +65,8 @@ include "../../Back_End_Files/PHP_Files/check_enrollment.php";
         Pending Enlistment
     <?php elseif($isRejected):?>
         Rejected Enlistment
+    <?php elseif($Promoted):?>
+        Promoted
     <?php else: ?>
         Not enrolled yet
     <?php endif; ?>
@@ -116,12 +118,21 @@ include "../../Back_End_Files/PHP_Files/check_enrollment.php";
     <?php endif; ?>
     </div>
 
+    <?php if ($isEnlisted): ?>
     <div class="dashboard-container">
         <a href="my_grades_page.php" class="dashboard-card">
             <img src="../../Assets/grades_button.png">
             <h3>My Grades</h3>
         </a>
     </div>
+    <?php else: ?>    
+     <div class="dashboard-container" style="opacity:0.5; pointer-events:none;">
+        <a href="my_grades_page.php" class="dashboard-card">
+            <img src="../../Assets/grades_button.png">
+            <h3>Pending Grade</h3>
+        </a>
+    </div>
+    <?php endif; ?>
 
 </div>
 
