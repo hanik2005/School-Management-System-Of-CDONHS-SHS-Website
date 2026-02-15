@@ -13,6 +13,7 @@ include "../../Back_End_Files/PHP_Files/my_grades_backend.php";
     <link rel="stylesheet" href="../../Design/dashboard_design.css">
     <link rel="stylesheet" href="../../Design/student/my_grades_design.css">
     <title>Student My Grades Page</title>
+    <link rel="icon" href="../../Assets/LOGO.png" type="image/jpg">
 </head>
 <body>
 

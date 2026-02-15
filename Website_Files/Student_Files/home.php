@@ -43,6 +43,7 @@ include "../../Back_End_Files/PHP_Files/check_enrollment.php";
      <link rel="stylesheet" href="../../Design/profile_dropdown.css">
      <link rel="stylesheet" href="../../Design/dashboard_design.css">
     <title>Student Home</title>
+    <link rel="icon" href="../../Assets/LOGO.png" type="image/jpg">
 </head>
 <body>
 

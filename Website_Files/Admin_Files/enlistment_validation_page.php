@@ -111,6 +111,7 @@ $students = $stmt->get_result();
     <script src="../../Back_End_Files/JSCRIPT_Files/timer-logout.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Enlistment Validation</title>
+    <link rel="icon" href="../../Assets/LOGO.png" type="image/jpg">
     <link rel="stylesheet" href="../../Design/main_design.css">
     <link rel="stylesheet" href="../../Design/profile_dropdown.css">
     <link rel="stylesheet" href="../../Design/dashboard_design.css">

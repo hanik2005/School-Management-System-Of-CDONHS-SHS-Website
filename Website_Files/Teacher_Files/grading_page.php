@@ -44,6 +44,7 @@ include "../../Back_End_Files/PHP_Files/save_grades.php";
  <link rel="stylesheet" href="../../Design/profile_dropdown.css">
  <link rel="stylesheet" href="../../Design/teacher/grading_design.css">
  <title>Grading Dashboard</title>
+ <link rel="icon" href="../../Assets/LOGO.png" type="image/jpg">
 
 </head>
 

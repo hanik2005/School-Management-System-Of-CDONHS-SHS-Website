@@ -48,6 +48,7 @@ if($isEnlisted){
      <link rel="stylesheet" href="../../Design/dashboard_design.css">
      <link rel="stylesheet" href="../../Design/student/enlistment.css">
     <title>Student Enlistment</title>
+    <link rel="icon" href="../../Assets/LOGO.png" type="image/jpg">
 </head>
 <body>
 

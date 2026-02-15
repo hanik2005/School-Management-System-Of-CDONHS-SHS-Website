@@ -1,0 +1,106 @@
+/* HERO SECTION WITH BACKGROUND IMAGE */
+.hero-section {
+    background: url('../Assets/guest_image_1.png') no-repeat center center/cover;
+    height: 80vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+.hero-overlay {
+    background: rgba(0, 0, 0, 0.65);
+    padding: 50px;
+    border-radius: 10px;
+    color: white;
+}
+
+.hero-overlay h1 {
+    font-size: 2.8em;
+    margin-bottom: 15px;
+}
+
+.hero-overlay p {
+    font-size: 1.2em;
+    margin-bottom: 25px;
+    color: #fbbf24;
+}
+
+
+.primary-btn, .secondary-btn, .login-btn {
+    text-decoration: none;
+    padding: 12px 25px;
+    font-weight: bold;
+    border-radius: 6px;
+    transition: 0.3s ease;
+}
+
+.primary-btn {
+    background: #fbbf24;
+    color: #111827;
+}
+
+.primary-btn:hover {
+    background: white;
+}
+
+.secondary-btn {
+    background: white;
+    color: #1e3a8a;
+}
+
+.secondary-btn:hover {
+    background: #fbbf24;
+    color: #111827;
+}
+
+.login-btn {
+    background: #fbbf24;
+    color: #111827;
+}
+
+.login-btn:hover {
+    background: white;
+}
+
+/* ABOUT SECTION */
+.about-section {
+    padding: 60px 20px;
+    text-align: center;
+    background: #f3f4f6;
+}
+
+.about-section h2 {
+    color: #1e3a8a;
+    margin-bottom: 20px;
+}
+
+.about-section p {
+    max-width: 800px;
+    margin: auto;
+    font-size: 1.1em;
+}
+
+/* VISION MISSION */
+.vision-mission {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    padding: 60px 20px;
+    flex-wrap: wrap;
+}
+
+.vm-box {
+    background: white;
+    max-width: 450px;
+    padding: 30px;
+    border-radius: 12px;
+    border-left: 6px solid #fbbf24;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.vm-box h2 {
+    color: #1e3a8a;
+    margin-bottom: 15px;
+}

@@ -7,6 +7,7 @@ include '../Back_End_Files/PHP_Files/login_backend.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Cagayan De Oro National High School Senior High</title>
+    <link rel="icon" href="../Assets/LOGO.png" type="image/jpg">
     <link rel="stylesheet" href="../Design/login_design.css">
     <script src="../Back_End_Files/JSCRIPT_Files/login_script.js"></script>
     <script src="../Back_End_Files/JSCRIPT_Files/login_captcha.js"></script>

@@ -1,0 +1,82 @@
+body {
+    font-family: "Times New Roman", serif;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.thankyou-container {
+    background: white;
+    padding: 40px;
+    border: 2px solid #1e3a8a;
+    text-align: center;
+    max-width: 600px;
+    width: 90%;
+}
+
+.thankyou-container img {
+    width: 100px;
+    margin-bottom: 15px;
+}
+
+h1 {
+    color: #1e3a8a;
+    margin-bottom: 15px;
+}
+
+h2 {
+    margin: 5px 0;
+}
+
+h3 {
+    margin: 3px 0;
+}
+
+.success-box {
+    margin-top: 25px;
+}
+
+.success-box p {
+    font-size: 16px;
+    margin-bottom: 25px;
+}
+
+/* BUTTONS */
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    text-decoration: none;
+    padding: 12px 25px;
+    font-weight: bold;
+    border-radius: 4px;
+    transition: 0.3s ease;
+}
+
+/* Primary Button */
+.primary-btn {
+    background-color: #1e3a8a;
+    color: white;
+}
+
+.primary-btn:hover {
+    background-color: #fbbf24;
+    color: black;
+}
+
+/* Secondary Button */
+.secondary-btn {
+    background-color: #555;
+    color: white;
+}
+
+.secondary-btn:hover {
+    background-color: #999;
+}

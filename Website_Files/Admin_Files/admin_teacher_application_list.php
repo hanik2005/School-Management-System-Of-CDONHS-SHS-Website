@@ -73,6 +73,7 @@ $currentAdvisoryStmt = $connection->prepare("
 <head>
     <meta charset="UTF-8">
     <title>Admin Teacher Applications</title>
+    <link rel="icon" href="../../Assets/LOGO.png" type="image/jpg">
     <style>
         body { font-family: Arial, sans-serif; }
         table { width: 100%; border-collapse: collapse; }

@@ -44,6 +44,7 @@ if (!$result) {
 <head>
     <meta charset="UTF-8">
     <title>Admin Student Application List</title>
+    <link rel="icon" href="../../Assets/LOGO.png" type="image/jpg">
 
     <style>
         body {

@@ -2,108 +2,180 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <link rel="stylesheet" href="../Design/Online_Form_Design.css">
-    <title>Teacher Applications</title>
+    <title>Teacher Registration Application</title>
+    <link rel="icon" href="../Assets/LOGO.png" type="image/jpg">
+    <link rel="stylesheet" href="../Design/Online_Form_Design.css">
 </head>
 <body>
-    <form action="../Back_End_Files/PHP_Files/teacher_enrollment_backend.php" 
+
+<form action="../Back_End_Files/PHP_Files/teacher_enrollment_backend.php" 
       method="POST" enctype="multipart/form-data">
 
-        <h1>CDONHS-SHS Teacher Application</h1>
-        <img src="../Assets/LOGO.png" alt="CDONHS-SHS Logo">
-        
-        <h2>Personal Information</h2>
-        
-        <label for="firstName">First Name:</label>
-        <input type="text" id="firstName" name="firstName" required><br><br>
+    <!-- HEADER -->
+    <div class="form-header">
+        <img src="../Assets/LOGO.png" alt="School Logo">
+        <div class="header-text">
+            <h3>Republic of the Philippines</h3>
+            <h3>Department of Education</h3>
+            <h2>CAGAYAN DE ORO NATIONAL HIGH SCHOOL - SENIOR HIGH</h2>
+            <h1>TEACHER REGISTRATION APPLICATION FORM</h1>
+        </div>
+    </div>
 
-        <label for="lastName">Last Name:</label>
-        <input type="text" id="lastName" name="lastName" required><br><br>
+    <hr>
 
-        <label for="middleName">Middle Name:</label>
-        <input type="text" id="middleName" name="middleName"><br><br>
+    <!-- PERSONAL INFORMATION -->
+    <h2>PERSONAL INFORMATION</h2>
 
-        <label for="extensionName">Extension Name:</label>
-        <input type="text" id="extensionName" name="extensionName"><br><br>
+    <div class="form-grid">
 
-        <label for="dob">Date of Birth:</label>
-        <input type="date" id="dob" name="dob" required><br><br>
+        <div>
+            <label>First Name</label>
+            <input type="text" name="firstName" required>
+        </div>
 
-        <label for="gender">Gender:</label>
-        <select id="gender" name="gender" required>
-            <option value="">Select</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-            <option value="other">Other</option>
-        </select><br><br>
+        <div>
+            <label>Last Name</label>
+            <input type="text" name="lastName" required>
+        </div>
 
-        <label for="civilStatus">Civil Status:</label>
-        <select id="civilStatus" name="civilStatus" required>
-            <option value="">Select</option>
-            <option value="single">Single</option>
-            <option value="married">Married</option>
-            <option value="divorced">Divorced</option>
-            <option value="widowed">Widowed</option>
-        </select><br><br>
+        <div>
+            <label>Middle Name</label>
+            <input type="text" name="middleName">
+        </div>
 
-        <label for="houseNumberStreet">House Number & Street:</label>
-        <input type="text" id="houseNumberStreet" name="houseNumberStreet" required><br><br>
+        <div>
+            <label>Extension Name</label>
+            <input type="text" name="extensionName">
+        </div>
 
-        <label for="barangay">Barangay:</label>
-        <input type="text" id="barangay" name="barangay" required><br><br>
+        <div>
+            <label>Date of Birth</label>
+            <input type="date" name="dob" required>
+        </div>
 
-        <label for="cityMunicipality">City/Municipality:</label>
-        <input type="text" id="cityMunicipality" name="cityMunicipality" required><br><br>
+        <div>
+            <label>Gender</label>
+            <select name="gender" required>
+                <option value="">Select</option>
+                <option>Male</option>
+                <option>Female</option>
+                <option>Other</option>
+            </select>
+        </div>
 
-        <label for="province">Province:</label>
-        <input type="text" id="province" name="province" required><br><br>
+        <div>
+            <label>Civil Status</label>
+            <select name="civilStatus" required>
+                <option value="">Select</option>
+                <option>Single</option>
+                <option>Married</option>
+                <option>Widowed</option>
+            </select>
+        </div>
 
-        <label for="contactNumber">Contact Number:</label>
-        <input type="tel" id="contactNumber" name="contactNumber" required><br><br>
+        <div>
+            <label>Contact Number</label>
+            <input type="tel" name="contactNumber" required>
+        </div>
 
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required><br><br>
+        <div>
+            <label>Email Address</label>
+            <input type="email" name="email" required>
+        </div>
 
-        <label for="facebookProfile">Facebook Name or Link:</label>
-        <input type="url" id="facebookProfile" name="facebookProfile"><br><br>
+        <div>
+            <label>Facebook Profile (Optional)</label>
+            <input type="url" name="facebookProfile">
+        </div>
 
-        <h2>Education Background</h2>
+    </div>
 
-        <label for="currentSchool">Current/Last School Taught:</label>
-        <input type="text" id="currentSchool" name="currentSchool" required><br><br>
+    <!-- ADDRESS -->
+    <h2>HOME ADDRESS</h2>
 
-        <label for="highestEducation">Highest Education:</label>
-        <select id="highestEducation" name="highestEducation" required>
-            <option value="">Select</option>
-            <option value="Bachelors">Bachelors</option>
-            <option value="Masters">Masters</option>
-            <option value="Doctorate">Doctorate</option>
-            <option value="Other">Other</option>
-        </select><br><br>
+    <div class="form-grid">
 
-        <label for="specialization">Subject Specialization:</label>
-        <input type="text" id="specialization" name="specialization" required><br><br>
+        <div>
+            <label>House No. / Street</label>
+            <input type="text" name="houseNumberStreet" required>
+        </div>
 
-        <h2>Supporting Documents (Optional)</h2>
-        <p>Upload if available:</p>
+        <div>
+            <label>Barangay</label>
+            <input type="text" name="barangay" required>
+        </div>
 
-        <label for="resumeCV">Resume/CV:</label>
-        <input type="file" id="resumeCV" name="resumeCV" accept=".pdf,.doc,.docx"><br><br>
+        <div>
+            <label>City / Municipality</label>
+            <input type="text" name="cityMunicipality" required>
+        </div>
 
-        <label for="prcId">PRC ID (If Applicable):</label>
-        <input type="file" id="prcId" name="prcId" accept=".pdf,.jpg,.png"><br><br>
+        <div>
+            <label>Province</label>
+            <input type="text" name="province" required>
+        </div>
 
-        <label for="certifications">Certificates (Training/Seminars):</label>
-        <input type="file" id="certifications" name="certifications" accept=".pdf,.jpg,.png" multiple><br><br>
+    </div>
 
-        <label for="otherDocuments">
-            Other Supporting Documents (Resume/CV, PRC ID, Certificates, Diploma/TOR, NBI, Government ID, etc. — merged in one file)
-        </label>
-        <input type="file" id="otherDocuments" name="otherDocuments" accept=".pdf,.doc,.docx,.jpg,.png">
-<br><br>
+    <!-- EDUCATION BACKGROUND -->
+    <h2>EDUCATIONAL BACKGROUND</h2>
 
-        <button type="submit">Submit</button>
-    </form>
+    <div class="form-grid">
+
+        <div>
+            <label>Current / Last School Taught</label>
+            <input type="text" name="currentSchool" required>
+        </div>
+
+        <div>
+            <label>Highest Educational Attainment</label>
+            <select name="highestEducation" required>
+                <option value="">Select</option>
+                <option>Bachelor's Degree</option>
+                <option>Master's Degree</option>
+                <option>Doctorate Degree</option>
+                <option>Other</option>
+            </select>
+        </div>
+
+        <div>
+            <label>Subject Specialization</label>
+            <input type="text" name="specialization" required>
+        </div>
+
+    </div>
+
+    <!-- SUPPORTING DOCUMENTS -->
+    <h2>SUPPORTING DOCUMENTS (Optional)</h2>
+
+    <div class="form-grid">
+
+        <div>
+            <label>Resume / Curriculum Vitae</label>
+            <input type="file" name="resumeCV" accept=".pdf,.doc,.docx">
+        </div>
+
+        <div>
+            <label>PRC ID (If Applicable)</label>
+            <input type="file" name="prcId" accept=".pdf,.jpg,.png">
+        </div>
+
+        <div>
+            <label>Certificates (Trainings / Seminars)</label>
+            <input type="file" name="certifications" accept=".pdf,.jpg,.png" multiple>
+        </div>
+
+        <div>
+            <label>Other Supporting Documents (Merged File)</label>
+            <input type="file" name="otherDocuments" accept=".pdf,.doc,.docx,.jpg,.png">
+        </div>
+
+    </div>
+
+    <button type="submit">SUBMIT REGISTRATION APPLICATION</button>
+
+</form>
+
 </body>
 </html>

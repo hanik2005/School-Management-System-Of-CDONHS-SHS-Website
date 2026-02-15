@@ -42,6 +42,7 @@ if (!$user) {
      <link rel="stylesheet" href="../../Design/dashboard_design.css">
      
     <title>Teacher Home</title>
+    <link rel="icon" href="../../Assets/LOGO.png" type="image/jpg">
 </head>
 <body>
     <!-- header -->

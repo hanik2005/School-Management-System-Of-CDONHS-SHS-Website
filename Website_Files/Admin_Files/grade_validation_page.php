@@ -36,7 +36,7 @@ include "../../Back_End_Files/PHP_Files/grade_validation_backend.php";
 <head>
 <meta charset="UTF-8">
 <title>Admin Grade Validation</title>
-
+<link rel="icon" href="../../Assets/LOGO.png" type="image/jpg">
 <link rel="stylesheet" href="../../Design/main_design.css">
 <link rel="stylesheet" href="../../Design/profile_dropdown.css">
 <link rel="stylesheet" href="../../Design/dashboard_design.css">
