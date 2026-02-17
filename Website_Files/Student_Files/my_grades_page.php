@@ -28,9 +28,9 @@ include "../../Back_End_Files/PHP_Files/my_grades_backend.php";
     <div class="center">
         Program:
         <?php if ($isEnlisted): ?>
-            <?php echo htmlspecialchars($gradeLevel); ?>, 
-            <?php echo htmlspecialchars($strandName); ?>, 
-            <?php echo htmlspecialchars($sectionName); ?>
+            <?= htmlspecialchars($gradeLevel) ?>, 
+            <?= htmlspecialchars($strandName) ?>, 
+            <?= htmlspecialchars($sectionName) ?>
         <?php elseif($Promoted):?>
             Promoted
         <?php else: ?>
@@ -107,32 +107,58 @@ include "../../Back_End_Files/PHP_Files/my_grades_backend.php";
     <thead>
         <tr>
             <th>Subject</th>
-            <th>Grade</th>
+            <?php if ($quarter === "all"): ?>
+                <th>1st Quarter</th>
+                <th>2nd Quarter</th>
+                <th>3rd Quarter</th>
+                <th>4th Quarter</th>
+            <?php else: ?>
+                <th><?= $quarters[$quarter] ?></th>
+            <?php endif; ?>
         </tr>
     </thead>
     <tbody>
     <?php if (count($grades) > 0): ?>
-        <?php foreach ($grades as $row): ?>
+        <?php foreach ($grades as $subject): ?>
             <tr>
-                <td><?= htmlspecialchars($row['subject_name']) ?></td>
-                <td><?= htmlspecialchars($row['grade']) ?></td>
+                <td><?= htmlspecialchars($subject['subject_name']) ?></td>
+
+                <?php if ($quarter === "all"): ?>
+                    <?php for ($q = 1; $q <= 4; $q++): ?>
+                        <td>
+                            <?= isset($subject['grades'][$q]) && $subject['grades'][$q] !== null ? 
+                                htmlspecialchars($subject['grades'][$q]) : '-' ?>
+                        </td>
+                    <?php endfor; ?>
+                <?php else: ?>
+                    <td>
+                        <?php 
+                        $qNum = (int)$quarter;
+                        echo isset($subject['grades'][$qNum]) && $subject['grades'][$qNum] !== null ? 
+                            htmlspecialchars($subject['grades'][$qNum]) : '-';
+                        ?>
+                    </td>
+                <?php endif; ?>
+
             </tr>
         <?php endforeach; ?>
     <?php else: ?>
         <tr>
-            <td colspan="2">No grades found.</td>
+            <td colspan="<?= $quarter === 'all' ? 5 : 2 ?>">No grades found.</td>
         </tr>
     <?php endif; ?>
     </tbody>
 </table>
 
 <div class="average-box">
-    Quarter Average: <?= $quarterAverage ?>
+    <?php if ($quarter !== 'all'): ?>
+        Quarter Average: <?= $quarterAverage ?? '-' ?>
+    <?php endif; ?>
 </div>
 
 <?php if ($quarter === "all"): ?>
 <div class="overall-average">
-    Overall Average: <?= $overallAverage ?>
+    Overall Average: <?= $overallAverage ?? '-' ?>
 </div>
 <?php endif; ?>
 </div>

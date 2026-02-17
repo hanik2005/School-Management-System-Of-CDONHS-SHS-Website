@@ -10,18 +10,16 @@ include "../../DB_Connection/Connection.php";
 
 /* Verify student session */
 $stmt = $connection->prepare("
-    SELECT * FROM users 
-    WHERE user_id = ? 
-    AND school_id = ? 
-    AND role_id = 1
+    SELECT u.* 
+    FROM users u
+    INNER JOIN students s ON s.user_id = u.user_id
+    WHERE u.user_id = ? AND u.school_id = ? AND u.role_id = 1
 ");
 
-$stmt->execute([
-    $_SESSION['user_id'],
-    $_SESSION['school_id']
-]);
-
-$user = $stmt->fetch();
+$stmt->bind_param("ii", $_SESSION['user_id'], $_SESSION['school_id']);
+$stmt->execute();
+$result = $stmt->get_result();
+$user = $result->fetch_assoc();
 
 if (!$user) {
     session_destroy();

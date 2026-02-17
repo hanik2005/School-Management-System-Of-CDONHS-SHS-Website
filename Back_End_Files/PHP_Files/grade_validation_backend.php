@@ -64,13 +64,12 @@ $whereSQL = $where ? "WHERE " . implode(" AND ", $where) : "";
 ================================ */
 $query = "
 SELECT 
+    sec.section_id,           -- ADD THIS
     sec.grade_level,
     st.strand_name,
     sec.section_name,
     ge.quarter,
-
     COUNT(DISTINCT ge.subject_id) AS subject_count,
-
     CASE
         WHEN SUM(ge.grade_status = 'Draft') > 0 THEN 'Draft'
         WHEN SUM(ge.grade_status = 'Submitted') > 0 
@@ -79,21 +78,22 @@ SELECT
              AND SUM(ge.grade_status != 'Approved') = 0 THEN 'Approved'
         ELSE 'Draft'
     END AS status
-
 FROM grade_entry ge
 JOIN section sec ON sec.section_id = ge.section_id
 JOIN strands st ON st.strand_id = sec.strand_id
-
 $whereSQL
-
 GROUP BY 
+    sec.section_id,           -- ALSO ADD TO GROUP BY
     sec.grade_level,
     st.strand_name,
     sec.section_name,
     ge.quarter
-ORDER BY sec.grade_level, st.strand_name, sec.section_name, ge.quarter
+ORDER BY 
+    sec.grade_level, 
+    st.strand_name, 
+    sec.section_name, 
+    ge.quarter
 ";
-
 $stmt = $connection->prepare($query);
 
 if (!empty($params)) {

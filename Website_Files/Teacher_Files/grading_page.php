@@ -11,17 +11,16 @@ include "../../DB_Connection/Connection.php";
 
 /* VERIFY TEACHER SESSION */
 $stmt = $connection->prepare("
-    SELECT * FROM users
-    WHERE user_id = ?
-    AND school_id = ?
-    AND role_id = 3
+    SELECT u.* 
+    FROM users u
+    INNER JOIN teachers s ON s.user_id = u.user_id
+    WHERE u.user_id = ? AND u.school_id = ? AND u.role_id = 3
 ");
 
 $stmt->bind_param("ii", $_SESSION['user_id'], $_SESSION['school_id']);
 $stmt->execute();
 $result = $stmt->get_result();
 $user = $result->fetch_assoc();
-$stmt->close();
 
 if (!$user) {
     session_destroy();

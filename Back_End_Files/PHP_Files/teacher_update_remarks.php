@@ -35,10 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $getTeacher->execute();
     $teacher = $getTeacher->get_result()->fetch_assoc();
 
-    // ===============================
-    // IF APPROVED OR PENDING
-    // ===============================
-    if ($status === 'Approved' || $status === 'Pending') {
+    if ($status === 'Approved') {
 
         $connection->begin_transaction();
 
@@ -48,8 +45,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             // Check if teacher already exists
             // ===============================
             $check = $connection->prepare(
-                "SELECT teacher_id, school_id 
-                 FROM teachers 
+                "SELECT teacher_id, school_id, user_id
+                 FROM teachers
                  WHERE application_id = ?"
             );
             $check->bind_param("i", $application_id);
@@ -58,11 +55,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             if ($checkResult->num_rows > 0) {
 
+                // Already created
                 $existingTeacher = $checkResult->fetch_assoc();
                 $teacher_id = $existingTeacher['teacher_id'];
                 $school_id  = $existingTeacher['school_id'];
-
-                $username = (string)$school_id;
+                $username   = (string)$school_id;
                 $tempPassword = "Already Created";
 
             } else {
@@ -77,49 +74,70 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $school_id = ($row['max_id'] ?? 502300) + 1;
 
                 // ===============================
-                // Insert teacher
+                // Get Teacher role_id
                 // ===============================
-                $insertTeacher = $connection->prepare(
-                    "INSERT INTO teachers (application_id, school_id)
-                     VALUES (?, ?)"
+                $roleResult = $connection->query(
+                    "SELECT role_id FROM roles WHERE role_name = 'Teacher'"
                 );
-                $insertTeacher->bind_param("ii", $application_id, $school_id);
-                $insertTeacher->execute();
-
-                $teacher_id = $connection->insert_id;
+                $role_id = $roleResult->fetch_assoc()['role_id'];
 
                 // ===============================
-                // Create login account
+                // Create login account FIRST
                 // ===============================
-                $username = (string)$school_id;
-
+                $username = "T_" . $school_id;
                 $tempPassword = bin2hex(random_bytes(4));
                 $passwordHash = password_hash($tempPassword, PASSWORD_DEFAULT);
 
-                $insertAccount = $connection->prepare(
-                    "INSERT INTO users 
+                $insertUser = $connection->prepare(
+                    "INSERT INTO users
                         (school_id, username, password, role_id, status)
-                     VALUES (?, ?, ?, 3, 'Active')"
+                     VALUES (?, ?, ?, ?, 'Active')"
                 );
-                $insertAccount->bind_param("iss", $school_id, $username, $passwordHash);
-                $insertAccount->execute();
+                $insertUser->bind_param(
+                    "issi",
+                    $school_id,
+                    $username,
+                    $passwordHash,
+                    $role_id
+                );
+                $insertUser->execute();
+
+                $user_id = $connection->insert_id;
+
+                // ===============================
+                // Insert teacher WITH user_id
+                // ===============================
+                $insertTeacher = $connection->prepare(
+                    "INSERT INTO teachers (user_id, application_id, school_id)
+                     VALUES (?, ?, ?)"
+                );
+                $insertTeacher->bind_param(
+                    "iii",
+                    $user_id,
+                    $application_id,
+                    $school_id
+                );
+                $insertTeacher->execute();
+
+                $teacher_id = $connection->insert_id;
             }
 
             // ===============================
-            // INSERT TEACHER ADVISORY
+            // HANDLE ADVISORY
             // ===============================
-            if (!empty($advisory_assignment) && $status === 'Approved') {
+            if (!empty($advisory_assignment)) {
 
-                list($strand_id, $grade_level, $section_id) = explode("|", $advisory_assignment);
+                list($strand_id, $grade_level, $section_id) =
+                    explode("|", $advisory_assignment);
 
-                // 🔥 Check if another teacher already handles this section
+                // Check if section already assigned
                 $checkSection = $connection->prepare(
-                    "SELECT teacher_advisory_id 
-                    FROM teacher_advisory 
-                    WHERE strand_id = ? 
-                    AND grade_level = ? 
-                    AND section_id = ?
-                    AND teacher_id != ?"
+                    "SELECT teacher_advisory_id
+                     FROM teacher_advisory
+                     WHERE strand_id = ?
+                     AND grade_level = ?
+                     AND section_id = ?
+                     AND teacher_id != ?"
                 );
 
                 $checkSection->bind_param(
@@ -131,32 +149,26 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 );
 
                 $checkSection->execute();
-                $sectionExists = $checkSection->get_result();
-
-                if ($sectionExists->num_rows > 0) {
+                if ($checkSection->get_result()->num_rows > 0) {
                     throw new Exception("This section already has an adviser.");
                 }
 
-                // 🔥 Check if THIS teacher already has advisory
+                // Insert or update advisory
                 $checkTeacherAdv = $connection->prepare(
-                    "SELECT teacher_advisory_id 
-                    FROM teacher_advisory 
-                    WHERE teacher_id = ?"
+                    "SELECT teacher_advisory_id
+                     FROM teacher_advisory
+                     WHERE teacher_id = ?"
                 );
-
                 $checkTeacherAdv->bind_param("i", $teacher_id);
                 $checkTeacherAdv->execute();
-                $teacherAdvResult = $checkTeacherAdv->get_result();
 
-                if ($teacherAdvResult->num_rows > 0) {
+                if ($checkTeacherAdv->get_result()->num_rows > 0) {
 
-                    // 👉 UPDATE advisory
                     $updateAdvisory = $connection->prepare(
                         "UPDATE teacher_advisory
-                        SET strand_id = ?, grade_level = ?, section_id = ?
-                        WHERE teacher_id = ?"
+                         SET strand_id = ?, grade_level = ?, section_id = ?
+                         WHERE teacher_id = ?"
                     );
-
                     $updateAdvisory->bind_param(
                         "iiii",
                         $strand_id,
@@ -164,18 +176,15 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         $section_id,
                         $teacher_id
                     );
-
                     $updateAdvisory->execute();
 
                 } else {
 
-                    // 👉 INSERT new advisory
                     $insertAdvisory = $connection->prepare(
                         "INSERT INTO teacher_advisory
-                        (teacher_id, strand_id, grade_level, section_id)
-                        VALUES (?, ?, ?, ?)"
+                         (teacher_id, strand_id, grade_level, section_id)
+                         VALUES (?, ?, ?, ?)"
                     );
-
                     $insertAdvisory->bind_param(
                         "iiii",
                         $teacher_id,
@@ -183,7 +192,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                         $grade_level,
                         $section_id
                     );
-
                     $insertAdvisory->execute();
                 }
             }
@@ -217,7 +225,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         <p>$remarks</p>
         ";
 
-        if ($status === 'Approved' || $status === 'Pending') {
+        if ($status === 'Approved') {
             $mail->Body .= "
             <hr>
             <p><b>Your Login Credentials:</b></p>

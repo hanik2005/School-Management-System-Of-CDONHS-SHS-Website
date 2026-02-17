@@ -1,7 +1,7 @@
 // ==============================
 // Grade Validation Functionality
 // ==============================
-
+console.log("Hello from grade_validation_function.js");
 // Clear dashboard helper
 function clearDashboard() {
     document.getElementById("dashboardContent").innerHTML =
@@ -31,8 +31,13 @@ document.querySelectorAll(".validation-row").forEach(row => {
     row.addEventListener("click", function(){
         let grade   = this.dataset.grade;
         let section = this.dataset.section;
+        let quarter = this.dataset.quarter; 
 
-        fetch(`../../Back_End_Files/PHP_Files/fetch_teacher_grades.php?grade=${grade}&section=${section}`)
+        console.log("GRADE:", grade);
+        console.log("SECTION:", section);
+        console.log("QUARTER:", quarter);
+
+        fetch(`../../Back_End_Files/PHP_Files/fetch_teacher_grades.php?grade=${grade}&section=${section}&quarter=${quarter}`)
         .then(res => res.json())
         .then(data => {
             const dashboard = document.getElementById("dashboardContent");

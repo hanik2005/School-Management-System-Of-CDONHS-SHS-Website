@@ -138,8 +138,18 @@
         </div>
 
         <div>
+            <label>Enrollment Type</label>
+            <select name="enrollmentType" required>
+                <option value="New">New</option>
+                <option value="Transferee">Transferee</option>
+                <option value="Balik-Eskwela">Balik-Eskwela</option>
+            </select>
+        </div>
+
+
+        <div>
             <label>Year Graduated</label>
-            <input type="number" name="yearGraduated" min="1900" max="2030" required>
+            <input type="number" name="yearGraduated" min="1900" max="2026" required>
         </div>
 
     </div>

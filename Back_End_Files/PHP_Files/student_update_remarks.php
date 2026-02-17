@@ -35,50 +35,70 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $student = $getStudent->get_result()->fetch_assoc();
 
     // ===============================
-    // IF APPROVED → CREATE STUDENT + USER
+    // IF APPROVED → CREATE USER + STUDENT
     // ===============================
-    if ($status === 'Approved' || $status === 'Pending') {
+    if ($status === 'Approved') {
 
         $connection->begin_transaction();
 
-        // Generate school_id
-        $result = $connection->query("SELECT MAX(school_id) AS max_id FROM students");
-        $row = $result->fetch_assoc();
-        $school_id = ($row['max_id'] ?? 304110) + 1;
+        try {
 
-        // Insert into students table
-        $insertStudent = $connection->prepare(
-            "INSERT INTO students (application_id, school_id)
-             VALUES (?, ?)"
-        );
-        $insertStudent->bind_param("ii", $application_id, $school_id);
-        $insertStudent->execute();
+            // Generate school_id
+            $result = $connection->query("SELECT MAX(school_id) AS max_id FROM students");
+            $row = $result->fetch_assoc();
+            $school_id = ($row['max_id'] ?? 304111) + 1;
 
-        // Get Student role_id
-        $roleResult = $connection->query(
-            "SELECT role_id FROM roles WHERE role_name = 'Student'"
-        );
-        $role_id = $roleResult->fetch_assoc()['role_id'];
+            // Get Student role_id
+            $roleResult = $connection->query(
+                "SELECT role_id FROM roles WHERE role_name = 'Student'"
+            );
+            $role_id = $roleResult->fetch_assoc()['role_id'];
 
-        // Create user account
-        $username = $student['lrn'];
-        $defaultPassword = substr($student['lrn'], -6);
-        $hashedPassword = password_hash($defaultPassword, PASSWORD_DEFAULT);
+            // Create login credentials
+            $username = $student['lrn'];
+            $defaultPassword = substr($student['lrn'], -6);
+            $hashedPassword = password_hash($defaultPassword, PASSWORD_DEFAULT);
 
-        $insertUser = $connection->prepare(
-            "INSERT INTO users (school_id, username, password, role_id)
-             VALUES (?, ?, ?, ?)"
-        );
-        $insertUser->bind_param(
-            "issi",
-            $school_id,
-            $username,
-            $hashedPassword,
-            $role_id
-        );
-        $insertUser->execute();
+            // ===============================
+            // 1️⃣ INSERT INTO USERS FIRST
+            // ===============================
+            $insertUser = $connection->prepare(
+                "INSERT INTO users (school_id, username, password, role_id)
+                 VALUES (?, ?, ?, ?)"
+            );
+            $insertUser->bind_param(
+                "issi",
+                $school_id,
+                $username,
+                $hashedPassword,
+                $role_id
+            );
+            $insertUser->execute();
 
-        $connection->commit();
+            // Get generated user_id
+            $user_id = $connection->insert_id;
+
+            // ===============================
+            // 2️⃣ INSERT INTO STUDENTS WITH user_id
+            // ===============================
+            $insertStudent = $connection->prepare(
+                "INSERT INTO students (user_id, application_id, school_id)
+                 VALUES (?, ?, ?)"
+            );
+            $insertStudent->bind_param(
+                "iii",
+                $user_id,
+                $application_id,
+                $school_id
+            );
+            $insertStudent->execute();
+
+            $connection->commit();
+
+        } catch (Exception $e) {
+            $connection->rollback();
+            die("Transaction failed: " . $e->getMessage());
+        }
     }
 
     // ===============================
@@ -98,7 +118,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $loginInfo = ($status === 'Approved') ? "
         <p><b>Login Credentials:</b></p>
         <ul>
-            <li><b>Username:</b> {$student['lrn']}</li>
+            <li><b>Username:</b> {$username}</li>
             <li><b>Temporary Password:</b> {$defaultPassword}</li>
         </ul>
         <p>Please change your password after first login.</p>

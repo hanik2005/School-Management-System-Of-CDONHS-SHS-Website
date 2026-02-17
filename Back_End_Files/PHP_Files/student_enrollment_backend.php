@@ -5,6 +5,7 @@ use PHPMailer\PHPMailer\Exception;
 
 include $_SERVER['DOCUMENT_ROOT'] . '/SMS_CDONHS-SHS_WEBSITE/DB_Connection/Connection.php';
 include $_SERVER['DOCUMENT_ROOT'] . '/SMS_CDONHS-SHS_WEBSITE/Back_End_Files/PHP_Files/mailer_details.php';
+include "student_enrollment_validation.php";
 
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
@@ -29,12 +30,32 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $currentSchool = $_POST['currentSchool'];
     $schoolClassification = $_POST['schoolClassification'];
+    $enrollmentType = $_POST['enrollmentType'];
     $yearGraduated = $_POST['yearGraduated'];
 
     $fatherGuardianName = $_POST['fatherGuardianName'];
     $fatherGuardianContact = $_POST['fatherGuardianContact'];
     $motherGuardianName = $_POST['motherGuardianName'];
     $motherGuardianContact = $_POST['motherGuardianContact'];
+
+     // ===============================
+    // VALIDATION
+    // ===============================
+    $data = [
+        'lrn' => $lrn,
+        'email' => $email
+    ];
+
+    $errors = validateStudentEnrollment($connection, $data);
+
+    if (!empty($errors)) {
+
+        echo "<script>
+                alert('" . implode("\\n", $errors) . "');
+                window.history.back();
+              </script>";
+        exit;
+    }
 
 
     $uploadDir = $_SERVER['DOCUMENT_ROOT'] . "/SMS_CDONHS-SHS_WEBSITE/uploads/";
@@ -69,22 +90,22 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 date_of_birth, gender, civil_status,
                 house_number_street, barangay, city_municipality, province,
                 contact_number, email, facebook_profile,
-                current_school, school_classification, year_graduated,
+                current_school, school_classification, enrollment_type, year_graduated,
                 father_guardian_name, father_guardian_contact,
                 mother_guardian_name, mother_guardian_contact,
                 psa_birth_certificate, form_138, student_id_copy,
                 application_status
-            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending')";
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'Pending')";
 
     $stmt = $connection->prepare($sql);
 
     $stmt->bind_param(
-        "ssssissssssssssssisssssss",
+        "ssssisssssssssssssisssssss",
         $firstName, $lastName, $middleName, $extensionName, $lrn,
         $dob, $gender, $civilStatus,
         $houseNumberStreet, $barangay, $cityMunicipality, $province,
         $contactNumber, $email, $facebookName,
-        $currentSchool, $schoolClassification, $yearGraduated,
+        $currentSchool, $schoolClassification, $enrollmentType, $yearGraduated,
         $fatherGuardianName, $fatherGuardianContact,
         $motherGuardianName, $motherGuardianContact,
         $psaBirthCertificate, $form138, $studentID
@@ -138,7 +159,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 window.location.href='../../Website_Files/thank_you.php';
               </script>";
     } else {
-        echo "Error: " . $stmt->error;
+        echo "<script>
+                alert('Error submitting enrollment.');
+                window.history.back();
+              </script>";
     }
 
     $stmt->close();

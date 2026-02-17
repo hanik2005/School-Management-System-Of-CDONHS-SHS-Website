@@ -1,25 +1,56 @@
 <?php
+ob_start(); // start output buffering
+error_reporting(E_ERROR | E_PARSE);  // only fatal errors
+header('Content-Type: application/json');
+
 include "../../DB_Connection/Connection.php";
 
+// read JSON from frontend
 $data = json_decode(file_get_contents("php://input"), true);
 
-if(!$data || !isset($data['updates'])){
-    echo json_encode(['success'=>false,'message'=>'No data received']);
+if (!$data || !isset($data['updates'])) {
+    echo json_encode(['success' => false, 'message' => 'No data received']);
     exit;
 }
 
-foreach($data['updates'] as $item){
+$updatedCount = 0;
+
+foreach ($data['updates'] as $item) {
+
+    // validate item
+    if (!isset($item['status'], $item['section'], $item['quarter'])) {
+        continue; // skip invalid items
+    }
+
+    $status = $item['status'];
+    $section_id = (int)$item['section'];
+    $quarter = (int)$item['quarter'];
+
+    // prepare query
     $stmt = $connection->prepare("
         UPDATE grade_entry ge
         JOIN section sec ON sec.section_id = ge.section_id
         SET ge.grade_status = ?
-        WHERE sec.grade_level = ?
-        AND sec.section_name = ?
+        WHERE sec.section_id = ?
         AND ge.quarter = ?
     ");
-    $stmt->bind_param("sisi", $item['status'], $item['grade'], $item['section'], $item['quarter']);
+
+    if (!$stmt) {
+        echo json_encode(['success' => false, 'message' => 'Prepare failed: '.$connection->error]);
+        exit;
+    }
+
+    $stmt->bind_param("sii", $status, $section_id, $quarter);
     $stmt->execute();
+
+    $updatedCount += $stmt->affected_rows; // count updated rows
     $stmt->close();
 }
 
-echo json_encode(['success'=>true,'message'=>'Grades updated successfully']);
+ob_end_clean(); // clear any stray output
+
+echo json_encode([
+    'success' => true,
+    'message' => "Grades updated successfully. Total rows updated: $updatedCount"
+]);
+exit;

@@ -8,22 +8,25 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['school_id'])) {
 
 include "../../DB_Connection/Connection.php";
 
-/* Verify student session */
-$stmt = $connection->prepare("
+/* ========================= */
+/* VERIFY ADMIN SESSION      */
+/* ========================= */
+$user_id = $_SESSION['user_id'];
+$school_id = $_SESSION['school_id'];
+
+// Prepare statement
+$stmt = mysqli_prepare($connection, "
     SELECT * FROM users 
     WHERE user_id = ? 
     AND school_id = ? 
     AND role_id = 2
 ");
+mysqli_stmt_bind_param($stmt, "ii", $user_id, $school_id);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
+$admin = mysqli_fetch_assoc($result);
 
-$stmt->execute([
-    $_SESSION['user_id'],
-    $_SESSION['school_id']
-]);
-
-$user = $stmt->fetch();
-
-if (!$user) {
+if (!$admin) {
     session_destroy();
     header("Location: ../login.php");
     exit;

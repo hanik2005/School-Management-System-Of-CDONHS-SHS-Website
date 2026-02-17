@@ -8,22 +8,25 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['school_id'])) {
 
 include "../../DB_Connection/Connection.php";
 
-/* Verify student session */
-$stmt = $connection->prepare("
+/* ========================= */
+/* VERIFY ADMIN SESSION      */
+/* ========================= */
+$user_id = $_SESSION['user_id'];
+$school_id = $_SESSION['school_id'];
+
+// Prepare statement
+$stmt = mysqli_prepare($connection, "
     SELECT * FROM users 
     WHERE user_id = ? 
     AND school_id = ? 
     AND role_id = 2
 ");
+mysqli_stmt_bind_param($stmt, "ii", $user_id, $school_id);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
+$admin = mysqli_fetch_assoc($result);
 
-$stmt->execute([
-    $_SESSION['user_id'],
-    $_SESSION['school_id']
-]);
-
-$user = $stmt->fetch();
-
-if (!$user) {
+if (!$admin) {
     session_destroy();
     header("Location: ../login.php");
     exit;
@@ -35,6 +38,7 @@ include "../../Back_End_Files/PHP_Files/grade_validation_backend.php";
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<script src="../../Back_End_Files/JSCRIPT_Files/timer-logout.js"></script>
 <title>Admin Grade Validation</title>
 <link rel="icon" href="../../Assets/LOGO.png" type="image/jpg">
 <link rel="stylesheet" href="../../Design/main_design.css">
@@ -118,7 +122,7 @@ include "../../Back_End_Files/PHP_Files/grade_validation_backend.php";
         <tbody>
         <?php if($validationData): ?>
             <?php foreach($validationData as $row): ?>
-            <tr class="validation-row" data-grade="<?= $row['grade_level'] ?>" data-section="<?= $row['section_name'] ?>" data-quarter="<?= $row['quarter'] ?>">
+            <tr class="validation-row" data-grade="<?= $row['grade_level'] ?>" data-section="<?= $row['section_id'] ?>" data-quarter="<?= $row['quarter'] ?>">
                 <td><?= $row['grade_level'] ?></td>
                 <td><?= $row['strand_name'] ?></td>
                 <td><?= $row['section_name'] ?></td>

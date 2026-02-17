@@ -3,18 +3,19 @@ session_start();
 header('Content-Type: application/json');
 include "../../DB_Connection/Connection.php";
 
-// Get student_id from session (adjust if you store it differently)
-$student_id = $_SESSION['user_id'] ?? null;
+// Get user_id from session
+$user_id = $_SESSION['user_id'] ?? null;
+$school_id = $_SESSION['school_id'] ?? null;
 
 $grade_level = $_GET['grade_level'] ?? '';
 $strand_id   = $_GET['strand_id'] ?? '';
 
-if (!$student_id || !$grade_level || !$strand_id) {
+if (!$user_id || !$grade_level || !$strand_id) {
     echo json_encode([
         'success' => false,
-        'message' => 'Missing student ID, grade level, or strand',
+        'message' => 'Missing user ID, grade level, or strand',
         'debug' => [
-            'student_id' => $student_id,
+            'user_id' => $user_id,
             'grade_level' => $grade_level,
             'strand_id' => $strand_id
         ],
@@ -24,12 +25,30 @@ if (!$student_id || !$grade_level || !$strand_id) {
 }
 
 try {
-    // Get all subjects for the grade and strand
+    // 1️⃣ Get student_id from students table
+    $stmtStudent = $connection->prepare("
+        SELECT student_id 
+        FROM students 
+        WHERE user_id = ? AND school_id = ?
+        LIMIT 1
+    ");
+    $stmtStudent->bind_param("ii", $user_id, $school_id);
+    $stmtStudent->execute();
+    $resultStudent = $stmtStudent->get_result();
+    $studentRow = $resultStudent->fetch_assoc();
+
+    if (!$studentRow) {
+        throw new Exception("Student not found for this user.");
+    }
+
+    $student_id = $studentRow['student_id'];
+
+    // 2️⃣ Get all subjects for the grade and strand
     $stmt = $connection->prepare("
-        SELECT s.subject_id, s.subject_name
-        FROM subject s
-        WHERE s.grade_level = ? AND s.strand_id = ?
-        ORDER BY s.subject_name
+        SELECT subject_id, subject_name
+        FROM subject
+        WHERE grade_level = ? AND strand_id = ?
+        ORDER BY subject_name
     ");
     $stmt->bind_param("ii", $grade_level, $strand_id);
     $stmt->execute();
@@ -40,47 +59,47 @@ try {
         $subjects[] = $row;
     }
 
-      $stmt_sy = $connection->prepare("
+    // 3️⃣ Get current school year
+    $stmtSY = $connection->prepare("
         SELECT MAX(school_year) AS current_sy
         FROM student_subjects
         WHERE student_id = ?
     ");
-    $stmt_sy->bind_param("i", $student_id);
-    $stmt_sy->execute();
-    $result_sy = $stmt_sy->get_result();
-    $row_sy = $result_sy->fetch_assoc();
+    $stmtSY->bind_param("i", $student_id);
+    $stmtSY->execute();
+    $resultSY = $stmtSY->get_result();
+    $rowSY = $resultSY->fetch_assoc();
 
-    // If no record exists, fall back to the calendar-based function
-    $current_sy = $row_sy['current_sy'] ?? getCurrentSchoolYear();
+    $current_sy = $rowSY['current_sy'] ?? getCurrentSchoolYear();
 
-    // Get subjects the student is already enrolled in
-    $stmt2 = $connection->prepare("
+    // 4️⃣ Get subjects student is already enrolled in for the current SY
+    $stmtEnrolled = $connection->prepare("
         SELECT subject_id 
         FROM student_subjects 
-        WHERE student_id = ? 
-        AND school_year = ?
+        WHERE student_id = ? AND school_year = ?
     ");
-    $stmt2->bind_param("is", $student_id, $current_sy);
-    $stmt2->execute();
-    $enrolled_result = $stmt2->get_result();
+    $stmtEnrolled->bind_param("is", $student_id, $current_sy);
+    $stmtEnrolled->execute();
+    $enrolledResult = $stmtEnrolled->get_result();
 
     $enrolled_subjects = [];
-    while ($row = $enrolled_result->fetch_assoc()) {
+    while ($row = $enrolledResult->fetch_assoc()) {
         $enrolled_subjects[] = $row['subject_id'];
     }
 
-    // Mark which subjects are already enrolled
+    // 5️⃣ Auto-check enrolled subjects
     foreach ($subjects as &$subj) {
         $subj['enrolled'] = in_array($subj['subject_id'], $enrolled_subjects);
     }
 
     echo json_encode([
         'success' => true,
-        'message' => 'Subjects loaded',
+        'message' => 'Subjects loaded successfully',
         'debug' => [
             'student_id' => $student_id,
             'grade_level' => $grade_level,
             'strand_id' => $strand_id,
+            'current_sy' => $current_sy,
             'enrolled_subjects' => $enrolled_subjects
         ],
         'subjects' => $subjects
@@ -91,7 +110,7 @@ try {
         'success' => false,
         'message' => $e->getMessage(),
         'debug' => [
-            'student_id' => $student_id,
+            'user_id' => $user_id,
             'grade_level' => $grade_level,
             'strand_id' => $strand_id
         ],
@@ -99,11 +118,10 @@ try {
     ]);
 }
 
-
-
+// Helper function to get current school year
 function getCurrentSchoolYear() {
     $month = date('n'); // Numeric month 1-12
-    $year = date('Y');  // Current year
+    $year = date('Y');
 
     if ($month >= 6) { // Assuming school year starts in June
         return $year . '-' . ($year + 1);

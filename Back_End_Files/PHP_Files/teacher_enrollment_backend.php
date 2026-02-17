@@ -5,6 +5,7 @@ use PHPMailer\PHPMailer\Exception;
 
 include $_SERVER['DOCUMENT_ROOT'] . '/SMS_CDONHS-SHS_WEBSITE/DB_Connection/Connection.php';
 include $_SERVER['DOCUMENT_ROOT'] . '/SMS_CDONHS-SHS_WEBSITE/Back_End_Files/PHP_Files/mailer_details.php';
+include "teacher_registration_validation.php";
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
@@ -40,6 +41,25 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $currentSchool  = $_POST['currentSchool'];
     $education      = $_POST['highestEducation'];
     $specialization = $_POST['specialization'];
+
+     // ===============================
+    // VALIDATION
+    // ===============================
+    $data = [
+        'email' => $email,
+        'contactNumber' => $contactNumber
+    ];
+
+    $errors = validateTeacherEnrollment($connection, $data);
+
+    if (!empty($errors)) {
+
+        echo "<script>
+                alert('" . implode("\\n", $errors) . "');
+                window.history.back();
+              </script>";
+        exit;
+    }
 
     // ===============================
     // Uploads
@@ -127,7 +147,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
               </script>";
 
     } else {
-        echo "Error: " . $stmt->error;
+         echo "<script>
+                alert('Error submitting teacher application.');
+                window.history.back();
+              </script>";
     }
 
     $stmt->close();
