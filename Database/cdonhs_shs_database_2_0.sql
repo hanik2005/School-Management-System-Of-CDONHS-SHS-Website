@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 17, 2026 at 07:44 AM
+-- Generation Time: Feb 19, 2026 at 03:46 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -106,6 +106,15 @@ CREATE TABLE `password_resets` (
   `is_used` tinyint(1) DEFAULT 0,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `password_resets`
+--
+
+INSERT INTO `password_resets` (`reset_id`, `user_id`, `email`, `otp_code`, `expires_at`, `is_used`, `created_at`) VALUES
+(10, 11, 'nickcharlesclarito@gmail.com', 'D1FA29', '2026-02-19 11:31:47', 1, '2026-02-19 02:31:47'),
+(12, 12, 'nidu.clarito.coc@phinmaed.com', 'B89731', '2026-02-19 11:36:35', 1, '2026-02-19 02:36:35'),
+(13, 11, 'nickcharlesclarito@gmail.com', 'CDAEFB', '2026-02-19 11:40:31', 1, '2026-02-19 02:40:31');
 
 -- --------------------------------------------------------
 
@@ -581,8 +590,8 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`user_id`, `school_id`, `username`, `password`, `role_id`, `status`) VALUES
 (2, 5362, 'admin', '$2y$10$T1Qkc.zE1PWpRQX4FmIznepx1GJRGUzaVWsVMjdb8hj.Ve2MkQoAu', 2, 'Active'),
-(11, 304112, '405220150089', '$2y$10$9/R9aDuPBEVP0WWqUe4PB.eaSeIHI0jqfiqBsuqm.X8coTZFH6/TG', 1, 'Active'),
-(12, 502301, 'T_502301', '$2y$10$hhZN3loEXBKXe6063rGcleE..Dm2XqagSqDHKJqrMYp9egIlHrrW.', 3, 'Active');
+(11, 304112, '405220150089', '$2y$10$wYd0hjZGOyUR5paZMqZzQ.2hT4uF3VzQrriaJ2ZugKBjO44tnWloS', 1, 'Active'),
+(12, 502301, 'T_502301', '$2y$10$CmbjyzbGpha4yj7y0t6P8.q/Ql1tj99ehHKutXFKk2pcDSrHCMzWy', 3, 'Active');
 
 --
 -- Indexes for dumped tables
@@ -729,7 +738,7 @@ ALTER TABLE `grade_entry`
 -- AUTO_INCREMENT for table `password_resets`
 --
 ALTER TABLE `password_resets`
-  MODIFY `reset_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `reset_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `roles`
