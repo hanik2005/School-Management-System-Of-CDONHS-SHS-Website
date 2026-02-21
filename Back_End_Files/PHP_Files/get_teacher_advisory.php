@@ -14,6 +14,9 @@ $getTeacher->execute();
 $teacherResult = $getTeacher->get_result()->fetch_assoc();
 
 $advisoryText = "No Advisory Assigned";
+$advisorySectionId = null;
+$advisoryGradeLevel = null;
+$advisoryStrandId = null;
 
 if ($teacherResult) {
 
@@ -22,6 +25,8 @@ if ($teacherResult) {
     $getAdvisory = $connection->prepare("
         SELECT 
             ta.grade_level,
+            ta.strand_id,
+            ta.section_id,
             s.strand_name,
             sec.section_name
         FROM teacher_advisory ta
@@ -40,6 +45,9 @@ if ($teacherResult) {
             "Grade " . $advisory['grade_level'] .
             " - " . $advisory['strand_name'] .
             " - " . $advisory['section_name'];
+        $advisorySectionId = $advisory['section_id'];
+        $advisoryGradeLevel = $advisory['grade_level'];
+        $advisoryStrandId = $advisory['strand_id'];
     }
 }
 

@@ -109,6 +109,13 @@ $profileImagePath = !empty($user['profile_image'])
         </a>
     </div>
 
+    <div class="dashboard-container">
+        <a href="honor_list.php" class="dashboard-card">
+            <img src="../../Assets/honors_list_image.png">
+            <h3>Honor List</h3>
+        </a>
+    </div>
+
 </div>
 </div>
 
