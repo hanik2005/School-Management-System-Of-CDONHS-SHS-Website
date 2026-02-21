@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'];
 
     // Get user by username ONLY
-    $stmt = $connection->prepare("SELECT user_id, username, password, role_id, school_id, status FROM users WHERE username = ?");
+    $stmt = $connection->prepare("SELECT user_id, username, password, role_id, school_id, status, first_login FROM users WHERE username = ?");
     $stmt->bind_param("s", $username);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -38,6 +38,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['role_id'] = $user['role_id'];
             $_SESSION['school_id'] = $user['school_id'];
             $_SESSION['status'] = $user['status'];
+            $_SESSION['first_login'] = $user['first_login'];
+
+            if ($user['first_login'] == 1) {
+                header("Location: /SMS_CDONHS-SHS_WEBSITE/Website_Files/change_password.php");
+                exit();
+            }
 
             switch ($user['role_id']) {
                 case 1: // Student

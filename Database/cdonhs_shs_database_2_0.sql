@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 19, 2026 at 03:46 AM
+-- Generation Time: Feb 21, 2026 at 07:44 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -114,7 +114,9 @@ CREATE TABLE `password_resets` (
 INSERT INTO `password_resets` (`reset_id`, `user_id`, `email`, `otp_code`, `expires_at`, `is_used`, `created_at`) VALUES
 (10, 11, 'nickcharlesclarito@gmail.com', 'D1FA29', '2026-02-19 11:31:47', 1, '2026-02-19 02:31:47'),
 (12, 12, 'nidu.clarito.coc@phinmaed.com', 'B89731', '2026-02-19 11:36:35', 1, '2026-02-19 02:36:35'),
-(13, 11, 'nickcharlesclarito@gmail.com', 'CDAEFB', '2026-02-19 11:40:31', 1, '2026-02-19 02:40:31');
+(13, 11, 'nickcharlesclarito@gmail.com', 'CDAEFB', '2026-02-19 11:40:31', 1, '2026-02-19 02:40:31'),
+(14, 11, 'nickcharlesclarito@gmail.com', '211F6F', '2026-02-21 11:07:43', 1, '2026-02-21 02:07:43'),
+(15, 11, 'nickcharlesclarito@gmail.com', '5EC4FD', '2026-02-21 14:12:57', 1, '2026-02-21 05:12:57');
 
 -- --------------------------------------------------------
 
@@ -294,15 +296,16 @@ CREATE TABLE `student_applications` (
   `student_id_copy` varchar(255) DEFAULT NULL,
   `application_status` enum('Pending','Approved','Rejected') DEFAULT 'Pending',
   `remarks` text DEFAULT NULL,
-  `date_submitted` timestamp NOT NULL DEFAULT current_timestamp()
+  `date_submitted` timestamp NOT NULL DEFAULT current_timestamp(),
+  `profile_image` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `student_applications`
 --
 
-INSERT INTO `student_applications` (`application_id`, `first_name`, `last_name`, `middle_name`, `extension_name`, `lrn`, `date_of_birth`, `gender`, `civil_status`, `house_number_street`, `barangay`, `city_municipality`, `province`, `contact_number`, `email`, `facebook_profile`, `current_school`, `school_classification`, `enrollment_type`, `year_graduated`, `father_guardian_name`, `father_guardian_contact`, `mother_guardian_name`, `mother_guardian_contact`, `psa_birth_certificate`, `form_138`, `student_id_copy`, `application_status`, `remarks`, `date_submitted`) VALUES
-(20, 'Nick Charles', 'Clarito', 'Durangparang', '', '405220150089', '2005-08-20', 'male', 'single', 'Blk 4 Lot 3 Buena Oro', 'Macasandig', 'Cagayan De Oro City', 'Misamis Oriental', '09944719534', 'nickcharlesclarito@gmail.com', NULL, 'Cagayan De Oro National High School', 'public', 'New', '2020', 'papa', '09798373621', 'mama', '0974832472482', NULL, NULL, NULL, 'Approved', 'Your done', '2026-02-17 03:08:50');
+INSERT INTO `student_applications` (`application_id`, `first_name`, `last_name`, `middle_name`, `extension_name`, `lrn`, `date_of_birth`, `gender`, `civil_status`, `house_number_street`, `barangay`, `city_municipality`, `province`, `contact_number`, `email`, `facebook_profile`, `current_school`, `school_classification`, `enrollment_type`, `year_graduated`, `father_guardian_name`, `father_guardian_contact`, `mother_guardian_name`, `mother_guardian_contact`, `psa_birth_certificate`, `form_138`, `student_id_copy`, `application_status`, `remarks`, `date_submitted`, `profile_image`) VALUES
+(20, 'Nick Charles', 'Clarito', 'Durangparang', '', '405220150089', '2005-08-20', 'male', 'single', 'Blk 4 Lot 3 Buena Oro', 'Macasandig', 'Cagayan De Oro City', 'Misamis Oriental', '09944719534', 'nickcharlesclarito@gmail.com', 'https://www.hostitsmart.com/manage/knowledgebase/388/How-to-Change-Table-Name-in-phpMyAdmin.html', 'Cagayan De Oro National High School', 'public', 'New', '2020', 'papa', '09798373621', 'mama', '0974832472482', '1771644036_PSA_BIRTH_CERTIFICATE_20.pdf', NULL, NULL, 'Approved', 'Your done', '2026-02-17 03:08:50', '1771650078_PROFILE_20.png');
 
 -- --------------------------------------------------------
 
@@ -559,15 +562,17 @@ CREATE TABLE `teacher_applications` (
   `resume_cv` varchar(255) DEFAULT NULL,
   `prc_id_copy` varchar(255) DEFAULT NULL,
   `certificates` varchar(255) DEFAULT NULL,
-  `other_documents` varchar(255) DEFAULT NULL
+  `other_documents` varchar(255) DEFAULT NULL,
+  `profile_image` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `teacher_applications`
 --
 
-INSERT INTO `teacher_applications` (`teacher_application_id`, `first_name`, `last_name`, `middle_name`, `extension_name`, `date_of_birth`, `gender`, `civil_status`, `contact_number`, `email`, `facebook_profile`, `house_number_street`, `barangay`, `city_municipality`, `province`, `current_school`, `highest_education`, `specialization`, `application_status`, `remarks`, `date_submitted`, `resume_cv`, `prc_id_copy`, `certificates`, `other_documents`) VALUES
-(3, 'Andry', 'Clarito', 'Durangparang', 'Jr', '1995-07-13', 'male', 'single', '09262360968', 'nidu.clarito.coc@phinmaed.com', 'https://www.hostitsmart.com/manage/knowledgebase/388/How-to-Change-Table-Name-in-phpMyAdmin.html', 'Blk7 Lot 3', 'Macasandig', 'Cagayan De Oro City', 'Misamis Oriental', 'Cagayan De Oro National High School', '', 'Math', 'Approved', 'Your ready for deployment', '2026-02-17 03:21:21', NULL, NULL, NULL, NULL);
+INSERT INTO `teacher_applications` (`teacher_application_id`, `first_name`, `last_name`, `middle_name`, `extension_name`, `date_of_birth`, `gender`, `civil_status`, `contact_number`, `email`, `facebook_profile`, `house_number_street`, `barangay`, `city_municipality`, `province`, `current_school`, `highest_education`, `specialization`, `application_status`, `remarks`, `date_submitted`, `resume_cv`, `prc_id_copy`, `certificates`, `other_documents`, `profile_image`) VALUES
+(3, 'Andry', 'Clarito', 'Durangparang', 'Jr', '1995-07-13', 'male', 'single', '09262360968', 'nidu.clarito.coc@phinmaed.com', 'https://www.hostitsmart.com/manage/knowledgebase/388/How-to-Change-Table-Name-in-phpMyAdmin.html', 'Blk7 Lot 3', 'Macasandig', 'Cagayan De Oro City', 'Misamis Oriental', 'Cagayan De Oro National High School', 'Bachelors', 'Math', 'Approved', 'Your ready for deployment', '2026-02-17 03:21:21', '1771646573_RESUME_CV_TEACHER_3.pdf', NULL, NULL, NULL, '1771647255_PROFILE_TEACHER_3.jpg'),
+(4, 'Maria Cristina', 'Clarito', 'Durangparang', '', '1987-11-19', 'female', 'married', '09542376513', 'clarito.nickcharles@gmail.com', '', 'Blk9', 'Barangay 10', 'Cagayan De Oro City', 'Misamis Oriental', 'Cagayan De Oro National High School', '', 'ESP', 'Pending', NULL, '2026-02-21 05:36:58', NULL, NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -581,17 +586,18 @@ CREATE TABLE `users` (
   `username` varchar(50) NOT NULL,
   `password` varchar(255) NOT NULL,
   `role_id` int(11) NOT NULL,
-  `status` enum('Active','Inactive') DEFAULT 'Active'
+  `status` enum('Active','Inactive') DEFAULT 'Active',
+  `first_login` tinyint(1) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`user_id`, `school_id`, `username`, `password`, `role_id`, `status`) VALUES
-(2, 5362, 'admin', '$2y$10$T1Qkc.zE1PWpRQX4FmIznepx1GJRGUzaVWsVMjdb8hj.Ve2MkQoAu', 2, 'Active'),
-(11, 304112, '405220150089', '$2y$10$wYd0hjZGOyUR5paZMqZzQ.2hT4uF3VzQrriaJ2ZugKBjO44tnWloS', 1, 'Active'),
-(12, 502301, 'T_502301', '$2y$10$CmbjyzbGpha4yj7y0t6P8.q/Ql1tj99ehHKutXFKk2pcDSrHCMzWy', 3, 'Active');
+INSERT INTO `users` (`user_id`, `school_id`, `username`, `password`, `role_id`, `status`, `first_login`) VALUES
+(2, 5362, 'admin', '$2y$10$udsqs05fAP8ZmNbRgmCfw.rTOFG2/WYYe98/dQsZ21hlZb1TI3Z4m', 2, 'Active', 0),
+(11, 304112, '405220150089', '$2y$10$3ljRHajXoforziG.r6MqFeJXYVNQVZbErikYo52fVfMpm/c2.16h2', 1, 'Active', 0),
+(12, 502301, 'T_502301', '$2y$10$qWTGKU/JsKRwffkmkNO/LOOPyaNyZuYe0w0EgSqPDTlKKTFfBEvMO', 3, 'Active', 0);
 
 --
 -- Indexes for dumped tables
@@ -738,7 +744,7 @@ ALTER TABLE `grade_entry`
 -- AUTO_INCREMENT for table `password_resets`
 --
 ALTER TABLE `password_resets`
-  MODIFY `reset_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `reset_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `roles`
@@ -792,7 +798,7 @@ ALTER TABLE `teacher_advisory`
 -- AUTO_INCREMENT for table `teacher_applications`
 --
 ALTER TABLE `teacher_applications`
-  MODIFY `teacher_application_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `teacher_application_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `users`

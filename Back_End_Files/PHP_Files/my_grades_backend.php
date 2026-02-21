@@ -18,9 +18,10 @@ $school_id = $_SESSION['school_id'];
 /* GET STUDENT ACCOUNT       */
 /* ========================= */
 $sqlStudent = "
-    SELECT s.student_id, s.school_id, ss.strand_id, ss.grade_level, ss.section_id
+    SELECT s.student_id, s.school_id, ss.strand_id, ss.grade_level, ss.section_id, sa.profile_image
     FROM students s
     JOIN student_strand ss ON s.student_id = ss.student_id
+    JOIN student_applications sa ON s.application_id = sa.application_id
     WHERE s.user_id = ? AND s.school_id = ?
 ";
 $stmtStudent = mysqli_prepare($connection, $sqlStudent);
@@ -39,6 +40,11 @@ $student_id = $student['student_id'];
 $grade_level_default = $student['grade_level'];
 $strand_default = $student['strand_id'];
 $section_id = $student['section_id'];
+
+// Set profile image path
+$profileImagePath = !empty($student['profile_image']) 
+    ? "../../uploads/" . htmlspecialchars($student['profile_image']) 
+    : "../../Assets/profile_button.png";
 
 /* ========================= */
 /* GET FILTER VALUES         */

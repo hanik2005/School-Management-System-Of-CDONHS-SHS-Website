@@ -8,11 +8,12 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['school_id'])) {
 
 include "../../DB_Connection/Connection.php";
 
-/* Verify student session */
+/* Verify student session and get profile image */
 $stmt = $connection->prepare("
-    SELECT u.* 
+    SELECT u.*, sa.profile_image 
     FROM users u
     INNER JOIN students s ON s.user_id = u.user_id
+    INNER JOIN student_applications sa ON s.application_id = sa.application_id
     WHERE u.user_id = ? AND u.school_id = ? AND u.role_id = 1
 ");
 
@@ -26,6 +27,12 @@ if (!$user) {
     header("Location: ../login.php");
     exit;
 }
+
+// Set profile image path
+$profileImagePath = !empty($user['profile_image']) 
+    ? "../../uploads/" . htmlspecialchars($user['profile_image']) 
+    : "../../Assets/profile_button.png";
+
 include "../../Back_End_Files/PHP_Files/check_enrollment.php";
 
 if($isEnlisted){
@@ -77,7 +84,7 @@ if($isEnlisted){
     <div class="right">
 
     <button class="profile-btn" type="button">
-        <img src="../../Assets/profile_button.png">
+         <img src="<?php echo $profileImagePath; ?>">
     </button>
 
     <div class="profile-dropdown">

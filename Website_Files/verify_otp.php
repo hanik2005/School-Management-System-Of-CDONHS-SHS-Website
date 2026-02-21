@@ -11,6 +11,7 @@ if (!isset($_SESSION['reset_email'])) {
 date_default_timezone_set('Asia/Manila');
 
 $message = "";
+$messageType = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
@@ -36,6 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (!$valid) {
         $message = "Invalid or expired OTP. Please check your email.";
+        $messageType = "error";
     } else {
         // OTP is valid — save info for reset_password.php
         $_SESSION['valid_reset_id'] = $valid['reset_id'];
@@ -49,16 +51,50 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verify OTP - CDONHS-SHS</title>
+    <link rel="stylesheet" href="../Design/forgot_password_design.css">
+    <link rel="icon" href="../Assets/LOGO.png" type="image/jpg">
 </head>
 <body>
-    <h2>Verify OTP</h2>
-    <form method="POST">
-        <input type="text" name="otp" placeholder="Enter OTP" required>
-        <button type="submit">Verify</button>
-    </form>
-    <p style="color:red;"><?php echo $message; ?></p>
+    <div class="wrapper">
+        <!-- Left Panel -->
+        <div class="left-panel">
+            <img src="../Assets/LOGO.png" alt="CDONHS-SHS Logo" class="logo">
+            <h1>CDONHS-SHS</h1>
+            <p>Cagayan De Oro National High School - Senior High School</p>
+            <p>School Management System</p>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="right-panel">
+            <div class="form-container">
+                <div class="icon-container">
+                    <img src="../Assets/logo_remBac.png" alt="Icon">
+                </div>
+                <h2>Verify OTP</h2>
+                <p class="subtitle">We've sent a One-Time Password (OTP) to your email. Please enter it below.</p>
+                
+                <?php if (!empty($message)): ?>
+                    <div class="message message-<?php echo $messageType; ?>">
+                        <?php echo $message; ?>
+                    </div>
+                <?php endif; ?>
+
+                <form method="POST">
+                    <label for="otp">Enter OTP Code</label>
+                    <input type="text" id="otp" name="otp" class="otp-input" placeholder="XXXXXX" maxlength="6" required>
+                    <button type="submit">Verify OTP</button>
+                </form>
+
+                <div class="back-link">
+                    <a href="forgot_password.php">← Resend OTP</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

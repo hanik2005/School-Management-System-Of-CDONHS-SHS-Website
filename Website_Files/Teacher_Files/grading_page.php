@@ -11,9 +11,10 @@ include "../../DB_Connection/Connection.php";
 
 /* VERIFY TEACHER SESSION */
 $stmt = $connection->prepare("
-    SELECT u.* 
+    SELECT u.*, ta.profile_image 
     FROM users u
     INNER JOIN teachers s ON s.user_id = u.user_id
+    INNER JOIN teacher_applications ta ON s.application_id = ta.teacher_application_id
     WHERE u.user_id = ? AND u.school_id = ? AND u.role_id = 3
 ");
 
@@ -27,6 +28,11 @@ if (!$user) {
     header("Location: ../login.php");
     exit;
 }
+
+// Set profile image path
+$profileImagePath = !empty($user['profile_image']) 
+    ? "../../uploads/" . htmlspecialchars($user['profile_image']) 
+    : "../../Assets/profile_button.png";
 
 include "../../Back_End_Files/PHP_Files/get_grading_data.php";
 include "../../Back_End_Files/PHP_Files/save_grades.php";
@@ -64,11 +70,11 @@ include "../../Back_End_Files/PHP_Files/save_grades.php";
 
     <div class="right">
        <button class="profile-btn" type="button">
-        <img src="../../Assets/profile_button.png">
-    </button>
+         <img src="<?php echo $profileImagePath; ?>">
+     </button>
 
     <div class="profile-dropdown">
-        <a href="student_profile.php">View Profile</a>
+        <a href="profile_page.php">View Profile</a>
         <a href="../../Back_End_Files/PHP_Files/logout.php">Logout</a>
 
     </div>

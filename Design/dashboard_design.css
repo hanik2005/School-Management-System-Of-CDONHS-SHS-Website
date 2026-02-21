@@ -67,3 +67,36 @@
 .dashboard-card h3 {
   color: #fbbf24;
 }
+
+/* Back Button */
+.back-button-container {
+  padding: 20px 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 1100px;
+  margin: 0 auto;
+  border-radius: 15px 15px 0 0;
+}
+
+.back-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #1e3a8a, #111827);
+  color: #fbbf24;
+  text-decoration: none;
+  border-radius: 8px;
+  border: 2px solid #fbbf24;
+  font-weight: bold;
+  font-size: 14px;
+  transition: 0.3s ease;
+  cursor: pointer;
+}
+
+.back-button:hover {
+  transform: translateX(-5px);
+  box-shadow: 0 5px 15px rgba(251,191,36,0.4);
+  background: linear-gradient(135deg, #1e3a8a, #1e3a8a);
+}

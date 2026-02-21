@@ -40,10 +40,10 @@ include "../../Back_End_Files/PHP_Files/my_grades_backend.php";
 
     <div class="right">
         <button class="profile-btn" type="button">
-            <img src="../../Assets/profile_button.png">
+            <img src="<?php echo $profileImagePath; ?>">
         </button>
         <div class="profile-dropdown">
-            <a href="student_profile.php">View Profile</a>
+            <a href="profile_page.php">View Profile</a>
             <a href="../../Back_End_Files/PHP_Files/logout.php">Logout</a>
         </div>
     </div>

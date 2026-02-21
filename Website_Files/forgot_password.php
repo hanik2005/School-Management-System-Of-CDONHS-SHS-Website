@@ -7,6 +7,7 @@ require "../Back_End_Files/PHP_Files/mailer_details.php"; // include PHPMailer s
 date_default_timezone_set('Asia/Manila');
 
 $message = "";
+$messageType = "";
 
 if (isset($_POST['submit'])) {
 
@@ -73,8 +74,10 @@ if (isset($_POST['submit'])) {
             ";
             $mail->send();
             $message = "OTP has been sent to your email.";
+            $messageType = "success";
         } catch (Exception $e) {
             $message = "Mailer Error: " . $mail->ErrorInfo;
+            $messageType = "error";
         }
 
         // DEBUG: show OTP on page (optional)
@@ -85,31 +88,64 @@ if (isset($_POST['submit'])) {
 
     } else {
         $message = "Email not found in the system.";
+        $messageType = "error";
     }
 }
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Forgot Password - CDONHS-SHS</title>
+    <link rel="stylesheet" href="../Design/forgot_password_design.css">
+    <link rel="icon" href="../Assets/LOGO.png" type="image/jpg">
 </head>
 <body>
-    <h2>Forgot Password</h2>
-    <form method="POST">
-        <input type="email" name="email" placeholder="Enter your email" required>
-        <button type="submit" name="submit">Send OTP</button>
-    </form>
-    <?php if (!empty($message)) { ?>
-        <p style="color:red;"><?php echo $message; ?></p>
-    <?php } ?>
+    <div class="wrapper">
+        <!-- Left Panel -->
+        <div class="left-panel">
+            <img src="../Assets/LOGO.png" alt="CDONHS-SHS Logo" class="logo">
+            <h1>CDONHS-SHS</h1>
+            <p>Cagayan De Oro National High School - Senior High School</p>
+            <p>School Management System</p>
+        </div>
 
-    <?php
-    // Show OTP for debugging (remove on production)
-    if (isset($_SESSION['otp_debug'])) {
-        echo "<p style='color:green;'>DEBUG OTP: " . $_SESSION['otp_debug'] . "</p>";
-        unset($_SESSION['otp_debug']);
-    }
-    ?>
+        <!-- Right Panel -->
+        <div class="right-panel">
+            <div class="form-container">
+                <div class="icon-container">
+                    <img src="../Assets/logo_remBac.png" alt="Icon">
+                </div>
+                <h2>Forgot Password</h2>
+                <p class="subtitle">Enter your email address and we'll send you an OTP to reset your password.</p>
+                
+                <?php if (!empty($message)): ?>
+                    <div class="message message-<?php echo $messageType; ?>">
+                        <?php echo $message; ?>
+                    </div>
+                <?php endif; ?>
+
+                <form method="POST">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" placeholder="Enter your registered email" required>
+                    <button type="submit" name="submit">Send OTP</button>
+                </form>
+
+                <div class="back-link">
+                    <a href="login.php">← Back to Login</a>
+                </div>
+
+                <?php
+                // Show OTP for debugging (remove on production)
+                if (isset($_SESSION['otp_debug'])) {
+                    echo "<div class='debug-info'>DEBUG OTP: " . $_SESSION['otp_debug'] . "</div>";
+                    unset($_SESSION['otp_debug']);
+                }
+                ?>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

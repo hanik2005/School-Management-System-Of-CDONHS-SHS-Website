@@ -9,9 +9,10 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['school_id'])) {
 include "../../DB_Connection/Connection.php";
 
 $stmt = $connection->prepare("
-    SELECT u.* 
+    SELECT u.*, ta.profile_image 
     FROM users u
     INNER JOIN teachers s ON s.user_id = u.user_id
+    INNER JOIN teacher_applications ta ON s.application_id = ta.teacher_application_id
     WHERE u.user_id = ? AND u.school_id = ? AND u.role_id = 3
 ");
 
@@ -25,6 +26,11 @@ if (!$user) {
     header("Location: ../login.php");
     exit;
 }
+
+// Set profile image path
+$profileImagePath = !empty($user['profile_image']) 
+    ? "../../uploads/" . htmlspecialchars($user['profile_image']) 
+    : "../../Assets/profile_button.png";
 
 ?>
 
@@ -57,11 +63,11 @@ if (!$user) {
 
     <div class="right">
        <button class="profile-btn" type="button">
-        <img src="../../Assets/profile_button.png">
-    </button>
+         <img src="<?php echo $profileImagePath; ?>">
+     </button>
 
     <div class="profile-dropdown">
-        <a href="student_profile.php">View Profile</a>
+        <a href="profile_page.php">View Profile</a>
         <a href="../../Back_End_Files/PHP_Files/logout.php">Logout</a>
 
     </div>
@@ -76,7 +82,7 @@ if (!$user) {
     <div class="dashboard-wrapper">
 
     <div class="dashboard-container">
-        <a href="#" class="dashboard-card">
+        <a href="profile_page.php" class="dashboard-card">
             <img src="../../Assets/profile_button.png">
             <h3>My Profile</h3>
         </a>
