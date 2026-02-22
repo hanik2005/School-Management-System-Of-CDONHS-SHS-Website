@@ -81,15 +81,26 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             // ===============================
             // 2️⃣ INSERT INTO STUDENTS WITH user_id
             // ===============================
+            
+            // Get current school year
+            $currentMonth = date('n');
+            $currentYear = date('Y');
+            if ($currentMonth >= 6) {
+                $school_year = $currentYear . '-' . ($currentYear + 1);
+            } else {
+                $school_year = ($currentYear - 1) . '-' . $currentYear;
+            }
+            
             $insertStudent = $connection->prepare(
-                "INSERT INTO students (user_id, application_id, school_id)
-                 VALUES (?, ?, ?)"
+                "INSERT INTO students (user_id, application_id, school_id, school_year)
+                 VALUES (?, ?, ?, ?)"
             );
             $insertStudent->bind_param(
-                "iii",
+                "iiis",
                 $user_id,
                 $application_id,
-                $school_id
+                $school_id,
+                $school_year
             );
             $insertStudent->execute();
 

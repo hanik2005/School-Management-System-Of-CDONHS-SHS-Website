@@ -1,0 +1,306 @@
+/* Student Progress Design */
+
+.progress-container {
+    padding: 30px;
+    background: #e5e7eb;
+    min-height: calc(100vh - 140px);
+}
+
+/* Table Header */
+.table-header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.table-header h2 {
+    color: #1e3a8a;
+    font-size: 24px;
+    margin-bottom: 5px;
+}
+
+.table-header .subtitle {
+    color: #6b7280;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.table-header .advisory-info {
+    color: #111827;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+/* Button Row */
+.button-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+    gap: 15px;
+}
+
+.btn-print {
+    padding: 12px 30px;
+    background: linear-gradient(135deg, #1e3a8a, #111827);
+    color: #fbbf24;
+    border: 2px solid #fbbf24;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-print:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(251, 191, 36, 0.4);
+}
+
+/* Table Wrapper */
+.table-wrapper {
+    background: #ffffff;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
+}
+
+/* Progress Table */
+.progress-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+}
+
+.progress-table th,
+.progress-table td {
+    padding: 12px 10px;
+    text-align: center;
+    border: 1px solid #d1d5db;
+}
+
+.progress-table th {
+    background: linear-gradient(135deg, #1e3a8a, #111827);
+    color: #fbbf24;
+    font-weight: bold;
+    font-size: 13px;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.progress-table tbody tr:nth-child(even) {
+    background: #f3f4f6;
+}
+
+.progress-table tbody tr:hover {
+    background: #e5e7eb;
+}
+
+.progress-table td {
+    font-size: 13px;
+    color: #111827;
+}
+
+/* Grade Cells */
+.grade-cell {
+    font-weight: bold;
+    color: #1e3a8a;
+    font-size: 14px;
+}
+
+.overall-grade {
+    background: #fef3c7;
+    color: #92400e;
+    font-size: 15px;
+}
+
+/* Status Styles */
+.status-promoted {
+    color: #059669;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.status-retained {
+    color: #dc2626;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.status-graduated {
+    color: #2563eb;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.status-pending {
+    color: #d97706;
+    font-style: italic;
+}
+
+.status-incomplete {
+    color: #6b7280;
+    font-style: italic;
+}
+
+/* Action Column */
+.action-column {
+    min-width: 100px;
+}
+
+/* Finalize Form */
+.finalize-form {
+    display: inline;
+}
+
+.btn-finalize {
+    padding: 6px 15px;
+    background: linear-gradient(135deg, #059669, #047857);
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-finalize:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(5, 150, 105, 0.4);
+    background: linear-gradient(135deg, #047857, #065f46);
+}
+
+/* Finalized Badge */
+.finalized-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    background: #dbeafe;
+    color: #1e40af;
+    border-radius: 15px;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.pending-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    background: #fef3c7;
+    color: #92400e;
+    border-radius: 15px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+/* Alert Messages */
+.alert {
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+.alert-success {
+    background: #d1fae5;
+    color: #065f46;
+    border: 2px solid #10b981;
+}
+
+.alert-error {
+    background: #fee2e2;
+    color: #991b1b;
+    border: 2px solid #ef4444;
+}
+
+/* No Results */
+.no-results {
+    text-align: center;
+    padding: 50px;
+    color: #6b7280;
+    font-size: 16px;
+    background: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Back Button */
+.back-button-container {
+    padding: 15px 30px;
+    background: #e5e7eb;
+}
+
+.back-button {
+    display: inline-block;
+    padding: 10px 20px;
+    background: #ffffff;
+    color: #1e3a8a;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+    border: 2px solid #1e3a8a;
+    transition: all 0.3s ease;
+}
+
+.back-button:hover {
+    background: #1e3a8a;
+    color: #fbbf24;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .progress-container {
+        padding: 15px;
+    }
+    
+    .progress-table {
+        font-size: 11px;
+        min-width: 900px;
+    }
+    
+    .progress-table th,
+    .progress-table td {
+        padding: 8px 5px;
+    }
+    
+    .btn-print {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+    
+    .btn-finalize {
+        padding: 5px 10px;
+        font-size: 11px;
+    }
+}
+
+/* Additional Print Styles */
+@media print {
+    .progress-container {
+        padding: 0;
+        background: white;
+    }
+    
+    .table-wrapper {
+        box-shadow: none;
+        padding: 0;
+        border-radius: 0;
+    }
+    
+    .progress-table th {
+        background: #1e3a8a !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    
+    .overall-grade {
+        background: #fef3c7 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    
+    .finalized-badge {
+        background: #dbeafe !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+}

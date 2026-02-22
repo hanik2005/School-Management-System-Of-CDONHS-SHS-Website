@@ -31,6 +31,11 @@ try {
         JOIN subject sub ON sub.subject_id = ge.subject_id
         WHERE ge.section_id = ?
         AND ge.quarter = ?
+        AND NOT EXISTS (
+            SELECT 1 FROM archived_student_strand ass 
+            WHERE ass.student_id = ge.student_id 
+            AND ass.section_id = ge.section_id
+        )
         ORDER BY sub.subject_name, sa.last_name
     ";
 

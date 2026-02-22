@@ -47,7 +47,7 @@ include "../../Back_End_Files/PHP_Files/check_enrollment.php";
      <link rel="stylesheet" href="../../Design/main_design.css">
      <link rel="stylesheet" href="../../Design/profile_dropdown.css">
      <link rel="stylesheet" href="../../Design/dashboard_design.css">
-    <title>Student Home</title>
+    <title>Multiple Enlistment Page</title>
     <link rel="icon" href="../../Assets/LOGO.png" type="image/jpg">
 </head>
 <body>
@@ -99,34 +99,40 @@ include "../../Back_End_Files/PHP_Files/check_enrollment.php";
     <div class="dashboard-wrapper">
 
     <div class="dashboard-container">
-        <a href="profile_page.php" class="dashboard-card">
-            <img src="../../Assets/profile_button.png">
-            <h3>My Profile</h3>
-        </a>
-    </div>
-
-    <div class="dashboard-container">
-        <a href="enlistment_page.php" class="dashboard-card">
+    <?php if (!$isEnlisted && !$isPending && !$Promoted): ?>
+        <a href="student_enlistment.php" class="dashboard-card">
             <img src="../../Assets/enlistment_button.png">
-            <h3>Student Enlistment</h3>
+            <h3>Enlistment</h3>
         </a>
+    <?php elseif ($isPending): ?>
+        <div class="dashboard-card" style="opacity:0.5; pointer-events:none;">
+            <img src="../../Assets/enlistment_button.png">
+            <h3>Pending Enlistment</h3>
+        </div>
+    <?php else: ?>
+        <div class="dashboard-card" style="opacity:0.5; pointer-events:none;">
+            <img src="../../Assets/enlistment_button.png">
+            <h3>Already Enlisted</h3>
+        </div>
+    <?php endif; ?>
     </div>
 
-    <?php if ($isEnlisted): ?>
+
     <div class="dashboard-container">
-        <a href="my_grades_page.php" class="dashboard-card">
-            <img src="../../Assets/grades_button.png">
-            <h3>My Grades</h3>
+        <?php if ($Promoted): ?>
+        <a href="student_promoted_enlistment.php" class="dashboard-card">
+            <img src="../../Assets/enlistment_button.png">
+            <h3>Promoted Enlistment</h3>
         </a>
+        <?php else: ?>
+        <div class="dashboard-card" style="opacity:0.5; pointer-events:none;">
+            <img src="../../Assets/enlistment_button.png">
+            <h3>Not Promoted Yet</h3>
+        </div>
+        <?php endif; ?>
     </div>
-    <?php else: ?>    
-     <div class="dashboard-container" style="opacity:0.5; pointer-events:none;">
-        <a href="my_grades_page.php" class="dashboard-card">
-            <img src="../../Assets/grades_button.png">
-            <h3>Pending Grade</h3>
-        </a>
-    </div>
-    <?php endif; ?>
+
+     
 
 </div>
 
@@ -134,6 +140,11 @@ include "../../Back_End_Files/PHP_Files/check_enrollment.php";
   </div>
 
 </div>
+
+    <!-- Back Button -->
+    <div class="back-button-container">
+        <a href="home.php" class="back-button">← Back to Home</a>
+    </div>
 
 
 

@@ -26,13 +26,18 @@ foreach ($data['updates'] as $item) {
     $section_id = (int)$item['section'];
     $quarter = (int)$item['quarter'];
 
-    // prepare query
+    // prepare query - exclude archived (promoted) students
     $stmt = $connection->prepare("
         UPDATE grade_entry ge
         JOIN section sec ON sec.section_id = ge.section_id
         SET ge.grade_status = ?
         WHERE sec.section_id = ?
         AND ge.quarter = ?
+        AND NOT EXISTS (
+            SELECT 1 FROM archived_student_strand ass 
+            WHERE ass.student_id = ge.student_id 
+            AND ass.section_id = ge.section_id
+        )
     ");
 
     if (!$stmt) {

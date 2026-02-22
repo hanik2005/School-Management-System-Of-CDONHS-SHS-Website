@@ -5,7 +5,7 @@ while ($connection->more_results() && $connection->next_result()) {}
 
 /* ===============================
    APPROVE GRADES
-================================ */
+=============================== */
 if (isset($_POST['approve_list'])) {
 
     foreach ($_POST['approve_list'] as $item) {
@@ -20,6 +20,11 @@ if (isset($_POST['approve_list'])) {
             AND sec.section_name = ?
             AND ge.quarter = ?
             AND ge.grade_status = 'Submitted'
+            AND NOT EXISTS (
+                SELECT 1 FROM archived_student_strand ass 
+                WHERE ass.student_id = ge.student_id 
+                AND ass.section_id = ge.section_id
+            )
         ");
 
         $update->bind_param("isi", $grade, $section, $quarter);
@@ -33,14 +38,14 @@ if (isset($_POST['approve_list'])) {
 
 /* ===============================
    FILTER VALUES
-================================ */
+=============================== */
 $gradeLevel = $_GET['grade_level'] ?? '';
 $quarter    = $_GET['quarter'] ?? '';
 $status     = $_GET['status'] ?? '';
 
 /* ===============================
    BUILD WHERE
-================================ */
+=============================== */
 $where = [];
 $params = [];
 $types  = "";
@@ -57,14 +62,21 @@ if ($quarter !== '') {
     $types .= "i";
 }
 
+// Add filter to exclude students who have been archived (promoted) from this section
+$where[] = "NOT EXISTS (
+    SELECT 1 FROM archived_student_strand ass 
+    WHERE ass.student_id = ge.student_id 
+    AND ass.section_id = ge.section_id
+)";
+
 $whereSQL = $where ? "WHERE " . implode(" AND ", $where) : "";
 
 /* ===============================
    VALIDATION QUERY
-================================ */
+=============================== */
 $query = "
 SELECT 
-    sec.section_id,           -- ADD THIS
+    sec.section_id,
     sec.grade_level,
     st.strand_name,
     sec.section_name,
@@ -83,7 +95,7 @@ JOIN section sec ON sec.section_id = ge.section_id
 JOIN strands st ON st.strand_id = sec.strand_id
 $whereSQL
 GROUP BY 
-    sec.section_id,           -- ALSO ADD TO GROUP BY
+    sec.section_id,
     sec.grade_level,
     st.strand_name,
     sec.section_name,

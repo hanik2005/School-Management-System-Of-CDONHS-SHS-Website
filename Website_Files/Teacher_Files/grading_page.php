@@ -145,7 +145,8 @@ include "../../Back_End_Files/PHP_Files/save_grades.php";
                                    name="grades[<?= $student['student_id'] ?>]"
                                    value="<?= isset($student['grade']) && $student['grade'] ? $student['grade'] : 60 ?>"
                                    min="0"
-                                   max="100">
+                                   max="100"
+                                   step="0.01">
                         </td>
                     </tr>
 

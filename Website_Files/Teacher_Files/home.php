@@ -103,7 +103,7 @@ $profileImagePath = !empty($user['profile_image'])
     </div>
 
     <div class="dashboard-container">
-        <a href="#" class="dashboard-card">
+        <a href="student_progress_page.php" class="dashboard-card">
             <img src="../../Assets/progress_button.png">
             <h3>Student Progress</h3>
         </a>
