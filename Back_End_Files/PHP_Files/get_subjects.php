@@ -73,10 +73,13 @@ try {
     $current_sy = $rowSY['current_sy'] ?? getCurrentSchoolYear();
 
     // 4️⃣ Get subjects student is already enrolled in for the current SY
+    // Only auto-check if status is Enrolled, Withdrawn with Grades, or Withdrawn
+    // Exclude Pending and Dropped statuses
     $stmtEnrolled = $connection->prepare("
         SELECT subject_id 
         FROM student_subjects 
         WHERE student_id = ? AND school_year = ?
+        AND status IN ('Enrolled', 'Withdrawn with Grades', 'Withdrawn')
     ");
     $stmtEnrolled->bind_param("is", $student_id, $current_sy);
     $stmtEnrolled->execute();

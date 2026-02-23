@@ -115,15 +115,26 @@ document.getElementById("enlistment-form")
     const grade_level = document.getElementById("grade_level").value;
     const strand_id   = document.getElementById("strand").value;
     const section_id  = document.getElementById("section").value;
-    const subjectCheckboxes = 
-        document.querySelectorAll('input[name="subjects[]"]:checked');
+    
+    // Get ALL subject checkboxes (both checked and unchecked)
+    const allSubjectCheckboxes = document.querySelectorAll('input[name="subjects[]"]');
+    const checkedSubjects = document.querySelectorAll('input[name="subjects[]"]:checked');
 
-    if (!grade_level || !strand_id || !section_id || subjectCheckboxes.length === 0) {
-        alert("Please select grade level, strand, section, and at least one subject.");
+    if (!grade_level || !strand_id || !section_id) {
+        alert("Please select grade level, strand, and section.");
         return;
     }
 
-    const subjects = Array.from(subjectCheckboxes).map(cb => cb.value);
+    if (checkedSubjects.length === 0) {
+        alert("Please select at least one subject.");
+        return;
+    }
+
+    // Build array with all subjects and their checked state
+    const subjects = Array.from(allSubjectCheckboxes).map(cb => ({
+        subject_id: cb.value,
+        requested: cb.checked ? 1 : 0
+    }));
 
     fetch("/SMS_CDONHS-SHS_WEBSITE/Back_End_Files/PHP_Files/save_enlistment.php", {
         method: "POST",
@@ -138,7 +149,7 @@ document.getElementById("enlistment-form")
     .then(res => res.json())
     .then(data => {
         if (data.success) {
-            alert("Enlistment successfully saved!");
+            alert("Enlistment successfully saved! Status is now pending for admin approval.");
             window.location.href = 
             "/SMS_CDONHS-SHS_WEBSITE/Website_Files/Student_Files/home.php";
         } else {

@@ -87,7 +87,7 @@ try {
             $stmtUpdate->execute();
             $stmtUpdate->close();
         }
-        // Strand change
+        // Strand change - need to withdraw old subjects
         elseif ($current['strand_id'] != $strand_id) {
             // Archive old strand
             $stmtArchive = $connection->prepare("
@@ -116,6 +116,55 @@ try {
             $stmtInsert->bind_param("iiii", $student_id, $strand_id, $grade_level, $section_id);
             $stmtInsert->execute();
             $stmtInsert->close();
+            
+            // 🆕 WITHDRAW OLD SUBJECTS - Check for grades and update status
+            // Get old subjects that are Enrolled or Pending
+            $stmtOldSubj = $connection->prepare("
+                SELECT ss.subject_id
+                FROM student_subjects ss
+                INNER JOIN subject s ON ss.subject_id = s.subject_id
+                WHERE ss.student_id = ? 
+                AND s.strand_id = ?
+                AND ss.status IN ('Enrolled', 'Pending')
+            ");
+            $stmtOldSubj->bind_param("ii", $student_id, $current['strand_id']);
+            $stmtOldSubj->execute();
+            $resultOldSubj = $stmtOldSubj->get_result();
+            $oldSubjects = $resultOldSubj->fetch_all(MYSQLI_ASSOC);
+            $stmtOldSubj->close();
+            
+            // For each old subject, check if there are grades
+            foreach ($oldSubjects as $oldSubj) {
+                $old_subject_id = $oldSubj['subject_id'];
+                
+                // Check if there are grades for this subject
+                $stmtCheckGrades = $connection->prepare("
+                    SELECT COUNT(*) as grade_count
+                    FROM grade_entry
+                    WHERE student_id = ? AND subject_id = ?
+                ");
+                $stmtCheckGrades->bind_param("ii", $student_id, $old_subject_id);
+                $stmtCheckGrades->execute();
+                $gradeResult = $stmtCheckGrades->get_result()->fetch_assoc();
+                $stmtCheckGrades->close();
+                
+                // Set status based on whether grades exist
+                if ($gradeResult['grade_count'] > 0) {
+                    $newStatus = 'Withdrawn with Grades';
+                } else {
+                    $newStatus = 'Withdrawn';
+                }
+                
+                // Update the subject status
+                $stmtUpdateStatus = $connection->prepare("
+                    UPDATE student_subjects
+                    SET status = ?
+                    WHERE student_id = ? AND subject_id = ?
+                ");
+                $stmtUpdateStatus->bind_param("sii", $newStatus, $student_id, $old_subject_id);
+                $stmtUpdateStatus->execute();
+                $stmtUpdateStatus->close();
+            }
         }
         // Already enrolled in same grade & strand
         else {
@@ -140,14 +189,32 @@ try {
         $stmtInsert->close();
     }
 
-    // 3️⃣ Insert subjects
+    // 3️⃣ Insert subjects with Pending status and requested flag
     $stmtSubj = $connection->prepare("
-        INSERT INTO student_subjects (student_id, subject_id, school_year)
-        VALUES (?, ?, ?)
-        ON DUPLICATE KEY UPDATE school_year = VALUES(school_year)
+        INSERT INTO student_subjects (student_id, subject_id, status, requested, school_year)
+        VALUES (?, ?, 'Pending', ?, ?)
+        ON DUPLICATE KEY UPDATE 
+            status = 'Pending',
+            requested = VALUES(requested),
+            school_year = VALUES(school_year)
     ");
-    foreach ($subjects as $subject_id) {
-        $stmtSubj->bind_param("iis", $student_id, $subject_id, $school_year);
+    
+    if (!$stmtSubj) {
+        echo json_encode(['success' => false, 'message' => 'Database prepare error: ' . $connection->error]);
+        exit;
+    }
+    
+    foreach ($subjects as $subject) {
+        // Handle both old format (simple ID) and new format (object with subject_id and requested)
+        if (is_array($subject)) {
+            $subject_id = (int)$subject['subject_id'];
+            $requested = (int)$subject['requested'];
+        } else {
+            // Old format: just a subject ID (assume requested = 1)
+            $subject_id = (int)$subject;
+            $requested = 1;
+        }
+        $stmtSubj->bind_param("iiis", $student_id, $subject_id, $requested, $school_year);
         $stmtSubj->execute();
     }
     $stmtSubj->close();

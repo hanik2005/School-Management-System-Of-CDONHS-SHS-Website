@@ -18,7 +18,7 @@ $school_id = $_SESSION['school_id'];
 /* GET STUDENT ACCOUNT       */
 /* ========================= */
 $sqlStudent = "
-    SELECT s.student_id, s.school_id, ss.strand_id, ss.grade_level, ss.section_id, sa.profile_image
+    SELECT s.student_id, s.school_id, ss.strand_id, ss.grade_level, ss.section_id, sa.profile_image, s.school_year
     FROM students s
     JOIN student_strand ss ON s.student_id = ss.student_id
     JOIN student_applications sa ON s.application_id = sa.application_id
@@ -40,6 +40,7 @@ $student_id = $student['student_id'];
 $grade_level_default = $student['grade_level'];
 $strand_default = $student['strand_id'];
 $section_id = $student['section_id'];
+$student_school_year = $student['school_year'];
 
 // Set profile image path
 $profileImagePath = !empty($student['profile_image']) 
@@ -64,6 +65,7 @@ if ($showTable) {
 
     /* ========================= */
     /* FETCH ALL ENROLLED SUBJECTS + APPROVED GRADES */
+    /* Only show subjects with status: Completed, Enrolled, or Withdrawn with Grades */
     /* ========================= */
     if ($isCurrent) {
         $sql = "
@@ -75,14 +77,12 @@ if ($showTable) {
                 AND ss.subject_id = ge.subject_id
                 AND ge.grade_status = 'Approved'
             WHERE ss.student_id = ? 
-              AND ss.status = 'Enrolled'
+              AND ss.status IN ('Completed', 'Enrolled', 'Withdrawn with Grades')
               AND s.grade_level = ?
               AND s.strand_id = ?
-              AND ss.school_year = ?
         ";
         $stmt = mysqli_prepare($connection, $sql);
-        $school_year = date("Y") . "-" . (date("Y")+1);
-        mysqli_stmt_bind_param($stmt, "iiis", $student_id, $grade_level, $strand, $school_year);
+        mysqli_stmt_bind_param($stmt, "iii", $student_id, $grade_level, $strand);
     } else {
         $sql = "
             SELECT ss.subject_id, s.subject_name, ge.grade, ge.quarter
@@ -94,7 +94,7 @@ if ($showTable) {
                 AND ge.grade_status = 'Approved'
             JOIN archived_student_strand a ON a.student_id = ss.student_id
             WHERE ss.student_id = ?
-              AND ss.status = 'Enrolled'
+              AND ss.status IN ('Completed', 'Enrolled', 'Withdrawn with Grades')
               AND s.grade_level = a.grade_level
               AND s.strand_id = a.strand_id
               AND a.grade_level = ?

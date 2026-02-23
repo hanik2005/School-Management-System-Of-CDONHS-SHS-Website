@@ -174,7 +174,7 @@ if($isEnlisted){
     <br>
     School Management System
     </div>
-<script src="../../Back_End_Files/JSCRIPT_Files/enlistment_get_boxes.js"></script>
+<script src="../../Back_End_Files/JSCRIPT_Files/enlistment_get_boxes.js?v=<?php echo time(); ?>"></script>
 <script src="../../Back_End_Files/JSCRIPT_Files/profile_dropdown_function.js"></script>
 </body>
 </html>

@@ -182,6 +182,7 @@ include "../../Back_End_Files/PHP_Files/student_progress_backend.php";
             </div>
         <?php else: ?>
             <div class="table-wrapper">
+                <form method="POST" id="bulkFinalizeForm">
                 <table class="progress-table" id="progressTable">
                     <thead>
                         <tr>
@@ -192,6 +193,9 @@ include "../../Back_End_Files/PHP_Files/student_progress_backend.php";
                             <th>Overall Average</th>
                             <th>Status</th>
                             <th class="action-column no-print">Action</th>
+                            <th class="no-print" style="text-align:center; min-width:60px;">
+                                <input type="checkbox" id="selectAll" class="select-all-checkbox" title="Select All">
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -227,24 +231,32 @@ include "../../Back_End_Files/PHP_Files/student_progress_backend.php";
                                     <?php echo htmlspecialchars($student['calculated_status']); ?>
                                 </td>
                                 <td class="action-column no-print">
-                                    <?php if (!$student['is_finalized'] && $student['calculated_status'] !== 'Pending' && $student['calculated_status'] !== 'Incomplete'): ?>
-                                        <form method="POST" class="finalize-form" onsubmit="return confirmFinalize(event, '<?php echo htmlspecialchars($fullName); ?>', '<?php echo $student['calculated_status']; ?>')">
-                                            <input type="hidden" name="student_id" value="<?php echo $student['student_id']; ?>">
-                                            <input type="hidden" name="new_status" value="<?php echo $student['calculated_status']; ?>">
-                                            <button type="submit" name="finalize_status" class="btn-finalize">
-                                                Finalize
-                                            </button>
-                                        </form>
-                                    <?php elseif ($student['is_finalized']): ?>
+                                    <?php if ($student['is_finalized']): ?>
                                         <span class="finalized-badge">Finalized</span>
                                     <?php else: ?>
-                                        <span class="pending-badge">Incomplete Grades</span>
+                                        <span class="ready-badge">Ready to Finalize</span>
                                     <?php endif; ?>
+                                </td>
+                                <td class="no-print">
+                                    <input type="checkbox" name="selected_students[]"
+                                           value="<?php echo $student['student_id']; ?>"
+                                           data-status="<?php echo $student['calculated_status']; ?>"
+                                           data-name="<?php echo htmlspecialchars($fullName); ?>"
+                                           class="student-checkbox">
                                 </td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
+                <input type="hidden" name="bulk_finalize" value="1">
+                
+                <!-- Finalize Button at Bottom -->
+                <div class="finalize-button-container no-print">
+                    <button type="button" id="finalizeSelectedBtn" class="btn-finalize-selected">
+                        ✓ Finalize Selected Students
+                    </button>
+                </div>
+                </form>
             </div>
         <?php endif; ?>
     </div>
@@ -263,22 +275,60 @@ include "../../Back_End_Files/PHP_Files/student_progress_backend.php";
             window.print();
         }
         
-        // Confirm finalize action
-        function confirmFinalize(event, studentName, status) {
-            let message = '';
+        // Select All checkbox functionality
+        document.getElementById('selectAll')?.addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('.student-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+        });
+        
+        // Add event listeners to all student checkboxes
+        document.querySelectorAll('.student-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                // Update select all checkbox state
+                const allCheckboxes = document.querySelectorAll('.student-checkbox');
+                const allChecked = document.querySelectorAll('.student-checkbox:checked').length === allCheckboxes.length;
+                document.getElementById('selectAll').checked = allChecked;
+            });
+        });
+        
+        // Finalize selected students
+        document.getElementById('finalizeSelectedBtn')?.addEventListener('click', function() {
+            const checkedBoxes = document.querySelectorAll('.student-checkbox:checked');
             
-            if (status === 'Promoted') {
-                message = `Are you sure you want to PROMOTE ${studentName}?\n\nThis will:\n- Archive their current grade level and section\n- Move them to the next grade level\n\nThis action cannot be undone.`;
-            } else if (status === 'Retained') {
-                message = `Are you sure you want to RETAIN ${studentName}?\n\nThis will keep them in the same grade level for the next school year.\n\nThis action cannot be undone.`;
-            } else if (status === 'Graduated') {
-                message = `Are you sure you want to mark ${studentName} as GRADUATED?\n\nThis will:\n- Archive their academic records\n- Mark them as a graduate of CDONHS-SHS\n\nThis action cannot be undone.`;
-            } else {
-                message = `Are you sure you want to finalize ${studentName}'s status as ${status}?`;
+            if (checkedBoxes.length === 0) {
+                alert('Please select at least one student to finalize.');
+                return;
             }
             
-            return confirm(message);
-        }
+            // Build confirmation message
+            let studentList = [];
+            let promotedCount = 0;
+            let retainedCount = 0;
+            let graduatedCount = 0;
+            
+            checkedBoxes.forEach(checkbox => {
+                const name = checkbox.getAttribute('data-name');
+                const status = checkbox.getAttribute('data-status');
+                studentList.push(`${name} (${status})`);
+                
+                if (status === 'Promoted') promotedCount++;
+                else if (status === 'Retained') retainedCount++;
+                else if (status === 'Graduated') graduatedCount++;
+            });
+            
+            let message = `Are you sure you want to finalize the following students?\n\n`;
+            message += `Promoted: ${promotedCount}\n`;
+            message += `Retained: ${retainedCount}\n`;
+            message += `Graduated: ${graduatedCount}\n\n`;
+            message += `Students:\n${studentList.join('\n')}\n\n`;
+            message += `This action cannot be undone.`;
+            
+            if (confirm(message)) {
+                document.getElementById('bulkFinalizeForm').submit();
+            }
+        });
     </script>
 </body>
 </html>

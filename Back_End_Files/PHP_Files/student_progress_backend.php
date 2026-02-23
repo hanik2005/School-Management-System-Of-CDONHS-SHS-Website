@@ -104,6 +104,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['finalize_status'])) {
                         $updateEnlistment->bind_param("si", $currentSchoolYear, $student_id);
                         $updateEnlistment->execute();
                         
+                        // Update student_subjects status to 'Completed' for promoted students
+                        $updateSubjects = $connection->prepare("
+                            UPDATE student_subjects 
+                            SET status = 'Completed'
+                            WHERE student_id = ? AND status = 'Enrolled'
+                        ");
+                        $updateSubjects->bind_param("i", $student_id);
+                        $updateSubjects->execute();
+                        
                         $successMessage = "Student has been successfully promoted to Grade $nextGrade!";
                     } else {
                         $errorMessage = "No corresponding section found for Grade $nextGrade. Please contact administrator.";
@@ -118,6 +127,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['finalize_status'])) {
                     ");
                     $updateGraduated->bind_param("i", $student_id);
                     $updateGraduated->execute();
+                    
+                    // Update student_subjects status to 'Completed' for graduated students
+                    $updateSubjects = $connection->prepare("
+                        UPDATE student_subjects 
+                        SET status = 'Completed'
+                        WHERE student_id = ? AND status = 'Enrolled'
+                    ");
+                    $updateSubjects->bind_param("i", $student_id);
+                    $updateSubjects->execute();
                     
                     $successMessage = "Student has been marked as Graduated!";
                     
@@ -139,6 +157,154 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['finalize_status'])) {
         } catch (Exception $e) {
             $connection->rollback();
             $errorMessage = "Error updating student status: " . $e->getMessage();
+        }
+    }
+}
+
+// Handle Bulk Finalize POST request
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bulk_finalize'])) {
+    $selectedStudents = $_POST['selected_students'] ?? [];
+    
+    if (!empty($selectedStudents)) {
+        $connection->begin_transaction();
+        
+        try {
+            $currentSchoolYear = getCurrentSchoolYear();
+            $promotedCount = 0;
+            $retainedCount = 0;
+            $graduatedCount = 0;
+            
+            foreach ($selectedStudents as $student_id) {
+                $student_id = intval($student_id);
+                
+                // Get student's calculated status
+                $getStatus = $connection->prepare("
+                    SELECT ss.grade_level, ss.strand_id, ss.section_id, s.enrollment_status,
+                           (SELECT AVG(grade) FROM grade_entry WHERE student_id = ? AND grade_status = 'Approved') as overall_avg
+                    FROM student_strand ss
+                    INNER JOIN students s ON ss.student_id = s.student_id
+                    WHERE ss.student_id = ?
+                ");
+                $getStatus->bind_param("ii", $student_id, $student_id);
+                $getStatus->execute();
+                $studentData = $getStatus->get_result()->fetch_assoc();
+                
+                if (!$studentData) continue;
+                
+                // Determine status
+                $new_status = '';
+                $grade_level = $studentData['grade_level'];
+                $overall_avg = $studentData['overall_avg'];
+                
+                if ($grade_level == 12 && $overall_avg >= 75) {
+                    $new_status = 'Graduated';
+                } elseif ($overall_avg >= 75) {
+                    $new_status = 'Promoted';
+                } else {
+                    $new_status = 'Retained';
+                }
+                
+                // Archive current strand info
+                $archiveStmt = $connection->prepare("
+                    INSERT INTO archived_student_strand (student_id, strand_id, grade_level, section_id, reason)
+                    VALUES (?, ?, ?, ?, ?)
+                ");
+                $reason = $new_status === 'Retained' ? 'MANUAL' : 'PROMOTION';
+                $archiveStmt->bind_param("iiiis", 
+                    $student_id, 
+                    $studentData['strand_id'], 
+                    $studentData['grade_level'], 
+                    $studentData['section_id'],
+                    $reason
+                );
+                $archiveStmt->execute();
+                
+                if ($new_status === 'Promoted') {
+                    $nextGrade = $grade_level + 1;
+                    
+                    // Get current section name
+                    $getSectionName = $connection->prepare("
+                        SELECT section_name FROM section WHERE section_id = ?
+                    ");
+                    $getSectionName->bind_param("i", $studentData['section_id']);
+                    $getSectionName->execute();
+                    $sectionResult = $getSectionName->get_result()->fetch_assoc();
+                    $currentSectionName = $sectionResult['section_name'] ?? 'A';
+                    
+                    // Find next grade level section
+                    $getNextSection = $connection->prepare("
+                        SELECT section_id FROM section 
+                        WHERE strand_id = ? AND grade_level = ? AND section_name = ?
+                        LIMIT 1
+                    ");
+                    $getNextSection->bind_param("iis", $studentData['strand_id'], $nextGrade, $currentSectionName);
+                    $getNextSection->execute();
+                    $nextSectionResult = $getNextSection->get_result()->fetch_assoc();
+                    
+                    if ($nextSectionResult) {
+                        $updateStrand = $connection->prepare("
+                            UPDATE student_strand 
+                            SET grade_level = ?, section_id = ?
+                            WHERE student_id = ?
+                        ");
+                        $updateStrand->bind_param("iii", $nextGrade, $nextSectionResult['section_id'], $student_id);
+                        $updateStrand->execute();
+                        
+                        $updateEnlistment = $connection->prepare("
+                            UPDATE students SET enlistment_status = 'Promoted', school_year = ?
+                            WHERE student_id = ?
+                        ");
+                        $updateEnlistment->bind_param("si", $currentSchoolYear, $student_id);
+                        $updateEnlistment->execute();
+                        
+                        // Update student_subjects status to 'Completed' for promoted students
+                        $updateSubjects = $connection->prepare("
+                            UPDATE student_subjects 
+                            SET status = 'Completed'
+                            WHERE student_id = ? AND status = 'Enrolled'
+                        ");
+                        $updateSubjects->bind_param("i", $student_id);
+                        $updateSubjects->execute();
+                        
+                        $promotedCount++;
+                    }
+                    
+                } elseif ($new_status === 'Graduated') {
+                    $updateGraduated = $connection->prepare("
+                        UPDATE students SET enrollment_status = 'Graduated', enlistment_status = 'Promoted'
+                        WHERE student_id = ?
+                    ");
+                    $updateGraduated->bind_param("i", $student_id);
+                    $updateGraduated->execute();
+                    
+                    // Update student_subjects status to 'Completed' for graduated students
+                    $updateSubjects = $connection->prepare("
+                        UPDATE student_subjects 
+                        SET status = 'Completed'
+                        WHERE student_id = ? AND status = 'Enrolled'
+                    ");
+                    $updateSubjects->bind_param("i", $student_id);
+                    $updateSubjects->execute();
+                    
+                    $graduatedCount++;
+                    
+                } elseif ($new_status === 'Retained') {
+                    $updateEnlistment = $connection->prepare("
+                        UPDATE students SET enlistment_status = 'Enlisted', school_year = ?
+                        WHERE student_id = ?
+                    ");
+                    $updateEnlistment->bind_param("si", $currentSchoolYear, $student_id);
+                    $updateEnlistment->execute();
+                    $retainedCount++;
+                }
+            }
+            
+            $connection->commit();
+            $successMessage = "Successfully finalized: $promotedCount promoted, $retainedCount retained, $graduatedCount graduated.";
+            
+        } catch (Exception $e) {
+            $connection->rollback();
+            $errorMessage = "Error updating student statuses: " . $e->getMessage();
         }
     }
 }

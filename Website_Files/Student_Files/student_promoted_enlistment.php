@@ -107,6 +107,7 @@ $errorMessage = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_enlistment'])) {
     $selectedSubjects = $_POST['subjects'] ?? [];
+    $allSubjectIds = $_POST['all_subjects'] ?? [];
     
     if (empty($selectedSubjects)) {
         $errorMessage = "Please select at least one subject.";
@@ -123,20 +124,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_enlistment']))
                 $school_year = ($currentYear - 1) . '-' . $currentYear;
             }
             
-            // Insert subjects into student_subjects
+            // Insert/Update ALL subjects - checked ones as 'Enrolled', unchecked as 'Dropped'
+            // No admin validation needed for promoted students
             $stmtSubj = $connection->prepare("
-                INSERT INTO student_subjects (student_id, subject_id, status, school_year)
-                VALUES (?, ?, 'Enrolled', ?)
-                ON DUPLICATE KEY UPDATE status = 'Enrolled', school_year = VALUES(school_year)
+                INSERT INTO student_subjects (student_id, subject_id, status, requested, school_year)
+                VALUES (?, ?, ?, 1, ?)
+                ON DUPLICATE KEY UPDATE 
+                    status = VALUES(status),
+                    requested = 1,
+                    school_year = VALUES(school_year)
             ");
             
-            foreach ($selectedSubjects as $subject_id) {
-                $stmtSubj->bind_param("iis", $student_id, $subject_id, $school_year);
+            foreach ($allSubjectIds as $subject_id) {
+                // If checked -> Enrolled, if unchecked -> Dropped
+                $status = in_array($subject_id, $selectedSubjects) ? 'Enrolled' : 'Dropped';
+                $stmtSubj->bind_param("iiss", $student_id, $subject_id, $status, $school_year);
                 $stmtSubj->execute();
             }
             $stmtSubj->close();
             
-            // Update enlistment status to Enlisted
+            // Update enlistment status to Enlisted (no admin validation needed for promoted students)
             $stmtStatus = $connection->prepare("
                 UPDATE students
                 SET enlistment_status = 'Enlisted'
@@ -157,7 +164,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_enlistment']))
             $stmtUpdateYear->close();
             
             $connection->commit();
-            $successMessage = "Enlistment submitted successfully! You are now enlisted.";
+            $successMessage = "Enlistment completed successfully!";
             
             // Refresh the page to show updated status
             header("Location: home.php");
@@ -332,6 +339,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_enlistment']))
                             <tr>
                                 <td><?php echo htmlspecialchars($subject['subject_name']); ?></td>
                                 <td>
+                                    <!-- Hidden input to always send the subject ID -->
+                                    <input type="hidden" 
+                                           name="all_subjects[]" 
+                                           value="<?php echo $subject['subject_id']; ?>">
                                     <input type="checkbox" 
                                            name="subjects[]" 
                                            value="<?php echo $subject['subject_id']; ?>" 
