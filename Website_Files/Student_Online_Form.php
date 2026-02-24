@@ -60,12 +60,11 @@
         </div>
 
         <div>
-            <label>Gender</label>
-            <select name="gender" required>
+            <label>Sex</label>
+            <select name="sex" required>
                 <option value="">Select</option>
                 <option>Male</option>
                 <option>Female</option>
-                <option>Other</option>
             </select>
         </div>
 

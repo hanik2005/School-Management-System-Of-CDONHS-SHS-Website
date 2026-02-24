@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $extensionName = $_POST['extensionName'] ?? null;
     $lrn = $_POST['lrn'];
     $dob = $_POST['dob'];
-    $gender = $_POST['gender'];
+    $sex = $_POST['sex'];
     $civilStatus = $_POST['civilStatus'];
 
     $houseNumberStreet = $_POST['houseNumberStreet'];
@@ -87,7 +87,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // ===============================
     $sql = "INSERT INTO student_applications (
                 first_name, last_name, middle_name, extension_name, lrn,
-                date_of_birth, gender, civil_status,
+                date_of_birth, sex, civil_status,
                 house_number_street, barangay, city_municipality, province,
                 contact_number, email, facebook_profile,
                 current_school, school_classification, enrollment_type, year_graduated,
@@ -102,7 +102,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $stmt->bind_param(
         "ssssisssssssssssssisssssss",
         $firstName, $lastName, $middleName, $extensionName, $lrn,
-        $dob, $gender, $civilStatus,
+        $dob, $sex, $civilStatus,
         $houseNumberStreet, $barangay, $cityMunicipality, $province,
         $contactNumber, $email, $facebookName,
         $currentSchool, $schoolClassification, $enrollmentType, $yearGraduated,

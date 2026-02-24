@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 24, 2026 at 04:24 AM
+-- Generation Time: Feb 24, 2026 at 04:06 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -67,56 +67,29 @@ CREATE TABLE `grade_entry` (
 --
 
 INSERT INTO `grade_entry` (`entry_id`, `student_id`, `subject_id`, `section_id`, `quarter`, `grade`, `grade_status`) VALUES
-(152, 3, 33, 33, 1, 100.00, 'Approved'),
-(153, 3, 34, 33, 1, 100.00, 'Approved'),
-(154, 3, 36, 33, 1, 100.00, 'Approved'),
-(155, 3, 37, 33, 1, 100.00, 'Approved'),
-(156, 3, 38, 33, 1, 100.00, 'Approved'),
-(157, 3, 39, 33, 1, 100.00, 'Approved'),
-(158, 3, 40, 33, 1, 100.00, 'Approved'),
-(159, 3, 40, 33, 2, 90.00, 'Approved'),
-(160, 3, 39, 33, 2, 98.00, 'Approved'),
-(161, 3, 38, 33, 2, 93.00, 'Approved'),
-(162, 3, 37, 33, 2, 94.00, 'Approved'),
-(163, 3, 36, 33, 2, 95.00, 'Approved'),
-(164, 3, 34, 33, 2, 91.00, 'Approved'),
-(165, 3, 33, 33, 2, 92.00, 'Approved'),
-(166, 3, 33, 33, 3, 94.00, 'Approved'),
-(167, 3, 34, 33, 3, 91.00, 'Approved'),
-(168, 3, 36, 33, 3, 89.00, 'Approved'),
-(169, 3, 38, 33, 3, 89.00, 'Approved'),
-(170, 3, 37, 33, 3, 89.00, 'Approved'),
-(171, 3, 39, 33, 3, 78.00, 'Approved'),
-(172, 3, 40, 33, 3, 100.00, 'Approved'),
-(173, 3, 40, 33, 4, 90.00, 'Approved'),
-(174, 3, 39, 33, 4, 79.00, 'Approved'),
-(175, 3, 38, 33, 4, 98.00, 'Approved'),
-(176, 3, 37, 33, 4, 97.00, 'Approved'),
-(177, 3, 36, 33, 4, 89.00, 'Approved'),
-(178, 3, 34, 33, 4, 98.00, 'Approved'),
-(179, 3, 33, 33, 4, 98.00, 'Approved'),
-(180, 3, 89, 37, 1, 90.00, 'Rejected'),
-(181, 3, 90, 37, 1, 100.00, 'Rejected'),
-(182, 3, 91, 37, 1, 79.00, 'Rejected'),
-(183, 3, 93, 37, 1, 90.00, 'Rejected'),
-(184, 3, 94, 37, 1, 90.00, 'Rejected'),
-(185, 3, 95, 37, 1, 100.00, 'Rejected'),
-(186, 3, 96, 37, 1, 98.00, 'Rejected'),
-(187, 4, 33, 33, 1, 90.00, 'Rejected'),
-(188, 7, 34, 33, 1, 60.00, 'Rejected'),
-(189, 4, 34, 33, 1, 100.00, 'Rejected'),
-(190, 7, 35, 33, 1, 60.00, 'Rejected'),
-(191, 4, 35, 33, 1, 100.00, 'Rejected'),
-(192, 7, 36, 33, 1, 60.00, 'Rejected'),
-(193, 4, 36, 33, 1, 90.00, 'Rejected'),
-(194, 7, 37, 33, 1, 60.00, 'Rejected'),
-(195, 4, 37, 33, 1, 90.00, 'Rejected'),
-(196, 7, 38, 33, 1, 60.00, 'Rejected'),
-(197, 4, 38, 33, 1, 100.00, 'Rejected'),
-(198, 7, 39, 33, 1, 60.00, 'Rejected'),
-(199, 4, 39, 33, 1, 89.00, 'Rejected'),
-(200, 7, 40, 33, 1, 60.00, 'Rejected'),
-(201, 4, 40, 33, 1, 90.00, 'Rejected');
+(210, 3, 89, 37, 1, 90.00, 'Approved'),
+(211, 3, 90, 37, 1, 90.00, 'Approved'),
+(212, 3, 91, 37, 1, 100.00, 'Approved'),
+(213, 3, 92, 37, 1, 90.00, 'Approved'),
+(214, 3, 93, 37, 1, 100.00, 'Approved'),
+(215, 3, 94, 37, 1, 100.00, 'Approved'),
+(216, 3, 95, 37, 1, 90.00, 'Approved'),
+(217, 3, 96, 37, 1, 90.00, 'Approved'),
+(218, 4, 33, 33, 1, 90.00, 'Approved'),
+(219, 7, 34, 33, 1, 60.00, 'Approved'),
+(220, 4, 34, 33, 1, 90.00, 'Approved'),
+(221, 7, 35, 33, 1, 60.00, 'Approved'),
+(222, 4, 35, 33, 1, 90.00, 'Approved'),
+(223, 7, 36, 33, 1, 60.00, 'Approved'),
+(224, 4, 36, 33, 1, 90.00, 'Approved'),
+(225, 7, 37, 33, 1, 60.00, 'Approved'),
+(226, 4, 37, 33, 1, 60.00, 'Approved'),
+(227, 7, 38, 33, 1, 60.00, 'Approved'),
+(228, 4, 38, 33, 1, 60.00, 'Approved'),
+(229, 7, 39, 33, 1, 60.00, 'Approved'),
+(230, 4, 39, 33, 1, 60.00, 'Approved'),
+(231, 7, 40, 33, 1, 60.00, 'Approved'),
+(232, 4, 40, 33, 1, 60.00, 'Approved');
 
 -- --------------------------------------------------------
 
@@ -816,7 +789,7 @@ ALTER TABLE `archived_student_strand`
 -- AUTO_INCREMENT for table `grade_entry`
 --
 ALTER TABLE `grade_entry`
-  MODIFY `entry_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=202;
+  MODIFY `entry_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=233;
 
 --
 -- AUTO_INCREMENT for table `password_resets`
