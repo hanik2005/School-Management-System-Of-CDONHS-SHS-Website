@@ -41,9 +41,10 @@ $strandName = null;
 $sectionId = null;
 $sectionName = null;
 $isPromoted = false;
+$student_school_year = null;
 
 $stmtStudent = $connection->prepare("
-    SELECT student_id, enlistment_status 
+    SELECT student_id, enlistment_status, school_year 
     FROM students 
     WHERE school_id = ?
 ");
@@ -56,6 +57,7 @@ $stmtStudent->close();
 if ($studentRow) {
     $student_id = $studentRow['student_id'];
     $isPromoted = ($studentRow['enlistment_status'] === 'Promoted');
+    $student_school_year = $studentRow['school_year'];
     
     // Get program info
     $stmtProgram = $connection->prepare("
@@ -115,14 +117,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_enlistment']))
         $connection->begin_transaction();
         
         try {
-            // Get current school year
-            $currentMonth = date('n');
-            $currentYear = date('Y');
-            if ($currentMonth >= 6) {
-                $school_year = $currentYear . '-' . ($currentYear + 1);
-            } else {
-                $school_year = ($currentYear - 1) . '-' . $currentYear;
-            }
+            // Use the student's existing school_year from the students table
+            $school_year = $student_school_year;
             
             // Insert/Update ALL subjects - checked ones as 'Enrolled', unchecked as 'Dropped'
             // No admin validation needed for promoted students

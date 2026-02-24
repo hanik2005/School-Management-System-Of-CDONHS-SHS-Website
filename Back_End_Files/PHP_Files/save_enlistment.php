@@ -31,16 +31,15 @@ try {
 
     $school_id = $_SESSION['school_id'];
 
-    // Enlistment status and school year
+    // Enlistment status
     $enlistment_status = 'Pending';
-    $school_year = date('Y') . '-' . (date('Y') + 1);
 
     // Start transaction
     $connection->begin_transaction();
 
-    // 1️⃣ Find or create student
+    // 1️⃣ Find or create student and get their school_year
     $stmtStudent = $connection->prepare("
-        SELECT student_id FROM students WHERE school_id = ?
+        SELECT student_id, school_year FROM students WHERE school_id = ?
     ");
     $stmtStudent->bind_param("i", $school_id);
     $stmtStudent->execute();
@@ -50,12 +49,23 @@ try {
 
     if ($studentRow) {
         $student_id = $studentRow['student_id'];
+        $school_year = $studentRow['school_year'];
     } else {
-        // Insert new student
+        // Insert new student - calculate school year for new students
+        // Philippine school year runs from August to May/June
+        $currentMonth = (int)date('n');
+        $currentYear = (int)date('Y');
+        
+        if ($currentMonth >= 8) {
+            $school_year = $currentYear . '-' . ($currentYear + 1);
+        } else {
+            $school_year = ($currentYear - 1) . '-' . $currentYear;
+        }
+        
         $stmtInsertStudent = $connection->prepare("
-            INSERT INTO students (school_id, enlistment_status) VALUES (?, ?)
+            INSERT INTO students (school_id, enlistment_status, school_year) VALUES (?, ?, ?)
         ");
-        $stmtInsertStudent->bind_param("is", $school_id, $enlistment_status);
+        $stmtInsertStudent->bind_param("iss", $school_id, $enlistment_status, $school_year);
         $stmtInsertStudent->execute();
         $student_id = $stmtInsertStudent->insert_id;
         $stmtInsertStudent->close();

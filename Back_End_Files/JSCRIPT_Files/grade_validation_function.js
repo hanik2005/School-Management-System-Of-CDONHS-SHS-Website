@@ -9,6 +9,40 @@ function clearDashboard() {
 }
 
 // ==============================
+// REMARKS COLUMN VISIBILITY
+// ==============================
+function updateRemarksVisibility() {
+    const selects = document.querySelectorAll(".status-select");
+    let hasRejected = false;
+    
+    selects.forEach(sel => {
+        const row = sel.closest("tr");
+        const remarksCell = row.querySelector(".remarks-cell");
+        
+        if (sel.value === "Rejected") {
+            hasRejected = true;
+            if (remarksCell) remarksCell.style.display = "";
+        } else {
+            if (remarksCell) remarksCell.style.display = "none";
+        }
+    });
+    
+    // Show/hide the remarks header
+    const remarksHeader = document.querySelector(".remarks-header");
+    if (remarksHeader) {
+        remarksHeader.style.display = hasRejected ? "" : "none";
+    }
+}
+
+// Attach change listeners to all status selects
+document.querySelectorAll(".status-select").forEach(sel => {
+    sel.addEventListener("change", updateRemarksVisibility);
+});
+
+// Initial check on page load
+updateRemarksVisibility();
+
+// ==============================
 // FILTER FORM - SEARCH & CLEAR
 // ==============================
 const filterForm = document.getElementById("filterForm");
@@ -113,21 +147,39 @@ document.querySelectorAll(".validation-row").forEach(row => {
 document.getElementById("confirmBtn").addEventListener("click", function() {
     const selects = document.querySelectorAll(".status-select");
     const updates = [];
+    let hasValidationError = false;
 
     selects.forEach(sel => {
         const row = sel.closest("tr");
+        const remarksInput = row.querySelector(".remarks-input");
+        const remarks = remarksInput ? remarksInput.value.trim() : "";
+        
+        // If status is Rejected, validate that remarks is provided
+        if (sel.value === "Rejected" && remarks === "") {
+            hasValidationError = true;
+            return; // Continue to next iteration
+        }
+        
         updates.push({
             grade: row.dataset.grade,
             section: row.dataset.section,
             quarter: row.dataset.quarter,
-            status: sel.value
+            status: sel.value,
+            remarks: sel.value === "Rejected" ? remarks : ""
         });
     });
+
+    if (hasValidationError) {
+        alert("Please enter remarks for all rejected grades.");
+        return;
+    }
 
     if (updates.length === 0) {
         alert("No grades to update.");
         return;
     }
+
+    console.log("Sending updates:", updates);
 
     fetch("../../Back_End_Files/PHP_Files/update_grade_status.php", {
         method: "POST",
@@ -136,9 +188,10 @@ document.getElementById("confirmBtn").addEventListener("click", function() {
     })
     .then(res => res.json())
     .then(resp => {
+        console.log("Response:", resp);
         if(resp.success){
             alert(resp.message || "Grades updated successfully!");
-            clearDashboard();
+            location.reload(); // Reload page to show updated statuses
         } else {
             alert(resp.message || "Failed to update grades.");
         }

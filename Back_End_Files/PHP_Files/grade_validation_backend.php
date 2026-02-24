@@ -83,10 +83,11 @@ SELECT
     ge.quarter,
     COUNT(DISTINCT ge.subject_id) AS subject_count,
     CASE
+        WHEN SUM(ge.grade_status = 'Rejected') > 0 THEN 'Rejected'
         WHEN SUM(ge.grade_status = 'Draft') > 0 THEN 'Draft'
-        WHEN SUM(ge.grade_status = 'Submitted') > 0 
+        WHEN SUM(ge.grade_status = 'Submitted') > 0
              AND SUM(ge.grade_status = 'Approved') = 0 THEN 'Submitted'
-        WHEN SUM(ge.grade_status = 'Approved') > 0 
+        WHEN SUM(ge.grade_status = 'Approved') > 0
              AND SUM(ge.grade_status != 'Approved') = 0 THEN 'Approved'
         ELSE 'Draft'
     END AS status

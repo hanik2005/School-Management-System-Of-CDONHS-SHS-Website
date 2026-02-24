@@ -83,9 +83,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             // ===============================
             
             // Get current school year
+            // Philippine school year runs from August to May/June
+            // If current month is January-July (1-7), we're in the school year that started last year
+            // If current month is August-December (8-12), we're in the school year that started this year
             $currentMonth = date('n');
             $currentYear = date('Y');
-            if ($currentMonth >= 6) {
+            if ($currentMonth >= 8) {
                 $school_year = $currentYear . '-' . ($currentYear + 1);
             } else {
                 $school_year = ($currentYear - 1) . '-' . $currentYear;

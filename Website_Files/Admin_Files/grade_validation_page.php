@@ -98,6 +98,7 @@ include "../../Back_End_Files/PHP_Files/grade_validation_backend.php";
         <option value="Draft" <?= (isset($_GET['status']) && $_GET['status']=='Draft') ? 'selected' : '' ?>>Draft</option>
         <option value="Submitted" <?= (isset($_GET['status']) && $_GET['status']=='Submitted') ? 'selected' : '' ?>>Submitted</option>
         <option value="Approved" <?= (isset($_GET['status']) && $_GET['status']=='Approved') ? 'selected' : '' ?>>Approved</option>
+        <option value="Rejected" <?= (isset($_GET['status']) && $_GET['status']=='Rejected') ? 'selected' : '' ?>>Rejected</option>
     </select>
 
     
@@ -117,6 +118,7 @@ include "../../Back_End_Files/PHP_Files/grade_validation_backend.php";
                 <th>Quarter</th>
                 <th>Subjects Sent</th>
                 <th>Status</th>
+                <th class="remarks-header" style="display:none;">Remarks</th>
             </tr>
         </thead>
         <tbody>
@@ -132,13 +134,17 @@ include "../../Back_End_Files/PHP_Files/grade_validation_backend.php";
                     <select class="status-select">
                         <option value="Draft" <?= $row['status']=='Draft'?'selected':'' ?>>Draft</option>
                         <option value="Submitted" <?= $row['status']=='Submitted'?'selected':'' ?>>Submitted</option>
+                        <option value="Rejected" <?= $row['status']=='Rejected'?'selected':'' ?>>Rejected</option>
                         <option value="Approved" <?= $row['status']=='Approved'?'selected':'' ?>>Approved</option>
                     </select>
+                </td>
+                <td class="remarks-cell" style="display:none;">
+                    <input type="text" class="remarks-input" placeholder="Enter reason for rejection...">
                 </td>
             </tr>
             <?php endforeach; ?>
         <?php else: ?>
-            <tr><td colspan="5" style="text-align:center;">No Data</td></tr>
+            <tr><td colspan="7" style="text-align:center;">No Data</td></tr>
         <?php endif; ?>
         </tbody>
     </table>

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 23, 2026 at 04:26 PM
+-- Generation Time: Feb 24, 2026 at 04:24 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -43,7 +43,8 @@ CREATE TABLE `archived_student_strand` (
 
 INSERT INTO `archived_student_strand` (`archive_id`, `student_id`, `strand_id`, `grade_level`, `section_id`, `date_archived`, `reason`) VALUES
 (16, 3, 6, 11, 41, '2026-02-23 13:12:06', 'MANUAL'),
-(17, 3, 5, 11, 33, '2026-02-23 14:54:40', 'PROMOTION');
+(17, 3, 5, 11, 33, '2026-02-23 14:54:40', 'PROMOTION'),
+(18, 4, 1, 12, 5, '2026-02-24 01:56:06', 'MANUAL');
 
 -- --------------------------------------------------------
 
@@ -58,7 +59,7 @@ CREATE TABLE `grade_entry` (
   `section_id` int(11) NOT NULL,
   `quarter` int(11) NOT NULL,
   `grade` decimal(5,2) NOT NULL,
-  `grade_status` enum('Draft','Submitted','Approved') NOT NULL DEFAULT 'Draft'
+  `grade_status` enum('Draft','Rejected','Approved') NOT NULL DEFAULT 'Draft'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -94,13 +95,28 @@ INSERT INTO `grade_entry` (`entry_id`, `student_id`, `subject_id`, `section_id`,
 (177, 3, 36, 33, 4, 89.00, 'Approved'),
 (178, 3, 34, 33, 4, 98.00, 'Approved'),
 (179, 3, 33, 33, 4, 98.00, 'Approved'),
-(180, 3, 89, 37, 1, 90.00, 'Approved'),
-(181, 3, 90, 37, 1, 100.00, 'Approved'),
-(182, 3, 91, 37, 1, 79.00, 'Approved'),
-(183, 3, 93, 37, 1, 90.00, 'Approved'),
-(184, 3, 94, 37, 1, 90.00, 'Approved'),
-(185, 3, 95, 37, 1, 100.00, 'Approved'),
-(186, 3, 96, 37, 1, 98.00, 'Approved');
+(180, 3, 89, 37, 1, 90.00, 'Rejected'),
+(181, 3, 90, 37, 1, 100.00, 'Rejected'),
+(182, 3, 91, 37, 1, 79.00, 'Rejected'),
+(183, 3, 93, 37, 1, 90.00, 'Rejected'),
+(184, 3, 94, 37, 1, 90.00, 'Rejected'),
+(185, 3, 95, 37, 1, 100.00, 'Rejected'),
+(186, 3, 96, 37, 1, 98.00, 'Rejected'),
+(187, 4, 33, 33, 1, 90.00, 'Rejected'),
+(188, 7, 34, 33, 1, 60.00, 'Rejected'),
+(189, 4, 34, 33, 1, 100.00, 'Rejected'),
+(190, 7, 35, 33, 1, 60.00, 'Rejected'),
+(191, 4, 35, 33, 1, 100.00, 'Rejected'),
+(192, 7, 36, 33, 1, 60.00, 'Rejected'),
+(193, 4, 36, 33, 1, 90.00, 'Rejected'),
+(194, 7, 37, 33, 1, 60.00, 'Rejected'),
+(195, 4, 37, 33, 1, 90.00, 'Rejected'),
+(196, 7, 38, 33, 1, 60.00, 'Rejected'),
+(197, 4, 38, 33, 1, 100.00, 'Rejected'),
+(198, 7, 39, 33, 1, 60.00, 'Rejected'),
+(199, 4, 39, 33, 1, 89.00, 'Rejected'),
+(200, 7, 40, 33, 1, 60.00, 'Rejected'),
+(201, 4, 40, 33, 1, 90.00, 'Rejected');
 
 -- --------------------------------------------------------
 
@@ -273,9 +289,9 @@ CREATE TABLE `students` (
 
 INSERT INTO `students` (`student_id`, `user_id`, `application_id`, `school_id`, `enrollment_status`, `date_enrolled`, `enlistment_status`, `school_year`) VALUES
 (3, 11, 20, 304112, 'Active', '2026-02-17', 'Enlisted', '2025-2026'),
-(4, 13, 21, 304113, 'Active', '2026-02-21', 'Not Enlisted', NULL),
+(4, 13, 21, 304113, 'Active', '2026-02-21', 'Enlisted', '2025-2026'),
 (5, 14, 22, 304114, 'Active', '2026-02-22', 'Not Enlisted', '2025-2026'),
-(7, 18, 23, 304115, 'Active', '2026-02-23', 'Not Enlisted', '2025-2026');
+(7, 18, 23, 304115, 'Active', '2026-02-23', 'Enlisted', '2025-2026');
 
 -- --------------------------------------------------------
 
@@ -346,7 +362,9 @@ CREATE TABLE `student_strand` (
 --
 
 INSERT INTO `student_strand` (`student_strand_id`, `student_id`, `strand_id`, `grade_level`, `section_id`) VALUES
-(23, 3, 5, 12, 37);
+(23, 3, 5, 12, 37),
+(24, 7, 5, 11, 33),
+(28, 4, 5, 11, 33);
 
 -- --------------------------------------------------------
 
@@ -387,11 +405,27 @@ INSERT INTO `student_subjects` (`enrollment_id`, `student_id`, `subject_id`, `st
 (163, 3, 89, 'Enrolled', 1, '2025-2026'),
 (164, 3, 90, 'Enrolled', 1, '2025-2026'),
 (165, 3, 91, 'Enrolled', 1, '2025-2026'),
-(166, 3, 92, 'Dropped', 1, '2025-2026'),
+(166, 3, 92, 'Enrolled', 1, '2025-2026'),
 (167, 3, 93, 'Enrolled', 1, '2025-2026'),
 (168, 3, 94, 'Enrolled', 1, '2025-2026'),
 (169, 3, 95, 'Enrolled', 1, '2025-2026'),
-(170, 3, 96, 'Enrolled', 1, '2025-2026');
+(170, 3, 96, 'Enrolled', 1, '2025-2026'),
+(179, 7, 38, 'Enrolled', 1, '2025-2026'),
+(180, 7, 39, 'Enrolled', 1, '2025-2026'),
+(181, 7, 40, 'Enrolled', 1, '2025-2026'),
+(182, 7, 35, 'Enrolled', 1, '2025-2026'),
+(183, 7, 34, 'Enrolled', 1, '2025-2026'),
+(184, 7, 33, 'Dropped', 0, '2025-2026'),
+(185, 7, 36, 'Enrolled', 1, '2025-2026'),
+(186, 7, 37, 'Enrolled', 1, '2025-2026'),
+(195, 4, 38, 'Enrolled', 1, '2025-2026'),
+(196, 4, 39, 'Enrolled', 1, '2025-2026'),
+(197, 4, 40, 'Enrolled', 1, '2025-2026'),
+(198, 4, 35, 'Enrolled', 1, '2025-2026'),
+(199, 4, 34, 'Enrolled', 1, '2025-2026'),
+(200, 4, 33, 'Enrolled', 1, '2025-2026'),
+(201, 4, 36, 'Enrolled', 1, '2025-2026'),
+(202, 4, 37, 'Enrolled', 1, '2025-2026');
 
 -- --------------------------------------------------------
 
@@ -776,13 +810,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `archived_student_strand`
 --
 ALTER TABLE `archived_student_strand`
-  MODIFY `archive_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `archive_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `grade_entry`
 --
 ALTER TABLE `grade_entry`
-  MODIFY `entry_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=187;
+  MODIFY `entry_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=202;
 
 --
 -- AUTO_INCREMENT for table `password_resets`
@@ -812,13 +846,13 @@ ALTER TABLE `student_applications`
 -- AUTO_INCREMENT for table `student_strand`
 --
 ALTER TABLE `student_strand`
-  MODIFY `student_strand_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `student_strand_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT for table `student_subjects`
 --
 ALTER TABLE `student_subjects`
-  MODIFY `enrollment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=171;
+  MODIFY `enrollment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=203;
 
 --
 -- AUTO_INCREMENT for table `subject`

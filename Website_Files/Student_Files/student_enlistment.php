@@ -88,7 +88,7 @@ if($isEnlisted){
     </button>
 
     <div class="profile-dropdown">
-        <a href="student_profile.php">View Profile</a>
+        <a href="profile_page.php">View Profile</a>
         <a href="../../Back_End_Files/PHP_Files/logout.php">Logout</a>
 
     </div>
