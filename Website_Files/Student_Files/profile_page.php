@@ -12,7 +12,7 @@ include "../../DB_Connection/Connection.php";
 $stmt = $connection->prepare("
     SELECT s.student_id, s.school_id, s.enrollment_status, s.date_enrolled, s.enlistment_status,
            sa.first_name, sa.last_name, sa.middle_name, sa.extension_name,
-           sa.lrn, sa.date_of_birth, sa.gender, sa.civil_status,
+           sa.lrn, sa.date_of_birth, sa.sex, sa.civil_status,
            sa.house_number_street, sa.barangay, sa.city_municipality, sa.province,
            sa.contact_number, sa.email, sa.facebook_profile,
            sa.current_school, sa.school_classification, sa.enrollment_type, sa.year_graduated,
@@ -216,8 +216,8 @@ $profileImagePath = !empty($profile['profile_image'])
                     </div>
                     
                     <div class="profile-field">
-                        <label>Gender</label>
-                        <input type="text" value="<?php echo ucfirst($profile['gender']); ?>" disabled>
+                        <label>Sex</label>
+                        <input type="text" value="<?php echo ucfirst($profile['sex']); ?>" disabled>
                     </div>
                     
                     <div class="profile-field">
