@@ -13,18 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $advisory_assignment = $_POST['advisory_assignment'] ?? null;
 
     // ===============================
-    // Update teacher application
-    // ===============================
-    $update = $connection->prepare(
-        "UPDATE teacher_applications
-         SET remarks = ?, application_status = ?
-         WHERE teacher_application_id = ?"
-    );
-    $update->bind_param("ssi", $remarks, $status, $application_id);
-    $update->execute();
-
-    // ===============================
-    // Get teacher info
+    // Get teacher info FIRST (before any update/delete)
     // ===============================
     $getTeacher = $connection->prepare(
         "SELECT first_name, last_name, email
@@ -34,6 +23,60 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $getTeacher->bind_param("i", $application_id);
     $getTeacher->execute();
     $teacher = $getTeacher->get_result()->fetch_assoc();
+
+    // ===============================
+    // IF REJECTED → Delete application and send email
+    // ===============================
+    if ($status === 'Rejected') {
+        // Send rejection email
+        try {
+            $mail->setFrom('cdonhsshsacc@gmail.com', 'CDONHS-SHS HR Office');
+            $mail->addAddress(
+                $teacher['email'],
+                $teacher['first_name'] . ' ' . $teacher['last_name']
+            );
+
+            $mail->isHTML(true);
+            $mail->Subject = 'CDONHS-SHS Teacher Application Status Update';
+
+            $mail->Body = "
+            <p>Good day <b>{$teacher['first_name']} {$teacher['last_name']}</b>,</p>
+            <p>We regret to inform you that your <b>teacher application</b> has been <b>rejected</b>.</p>
+            <p><b>Admin Remarks:</b></p>
+            <p>$remarks</p>
+            <br>
+            <p>Thank you for your interest in CDONHS-SHS.</p>
+            <p><br>
+            <b>CDONHS-SHS Human Resources Office</b></p>
+            ";
+
+            $mail->send();
+
+        } catch (Exception $e) {
+            error_log('Mail Error: ' . $mail->ErrorInfo);
+        }
+
+        // Delete the application
+        $delete = $connection->prepare(
+            "DELETE FROM teacher_applications WHERE teacher_application_id = ?"
+        );
+        $delete->bind_param("i", $application_id);
+        $delete->execute();
+
+        header("Location: ../../Website_Files/Admin_Files/admin_teacher_application_list.php");
+        exit;
+    }
+
+    // ===============================
+    // Update teacher application (for Pending or Approved)
+    // ===============================
+    $update = $connection->prepare(
+        "UPDATE teacher_applications
+         SET remarks = ?, application_status = ?
+         WHERE teacher_application_id = ?"
+    );
+    $update->bind_param("ssi", $remarks, $status, $application_id);
+    $update->execute();
 
     if ($status === 'Approved') {
 
@@ -45,7 +88,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             // Check if teacher already exists
             // ===============================
             $check = $connection->prepare(
-                "SELECT teacher_id, school_id, user_id
+                "SELECT teacher_id, teacher_number, user_id
                  FROM teachers
                  WHERE application_id = ?"
             );
@@ -58,20 +101,20 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 // Already created
                 $existingTeacher = $checkResult->fetch_assoc();
                 $teacher_id = $existingTeacher['teacher_id'];
-                $school_id  = $existingTeacher['school_id'];
-                $username   = (string)$school_id;
+                $teacher_number  = $existingTeacher['teacher_number'];
+                $username   = (string)$teacher_number;
                 $tempPassword = "Already Created";
 
             } else {
 
                 // ===============================
-                // Generate school_id
+                // Generate teacher_number
                 // ===============================
                 $result = $connection->query(
-                    "SELECT MAX(school_id) AS max_id FROM teachers"
+                    "SELECT MAX(teacher_number) AS max_id FROM teachers"
                 );
                 $row = $result->fetch_assoc();
-                $school_id = ($row['max_id'] ?? 502300) + 1;
+                $teacher_number = ($row['max_id'] ?? 502300) + 1;
 
                 // ===============================
                 // Get Teacher role_id
@@ -84,18 +127,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 // ===============================
                 // Create login account FIRST
                 // ===============================
-                $username = "T_" . $school_id;
-                $tempPassword = bin2hex(random_bytes(4));
+                $username = "T_" . $teacher_number;
+               // $tempPassword = bin2hex(random_bytes(4)); THIS IS THE TRUE DEFAULT
+                $stringNumber = (string) $teacher_number;
+                $tempPassword = substr($stringNumber, -6);
                 $passwordHash = password_hash($tempPassword, PASSWORD_DEFAULT);
 
                 $insertUser = $connection->prepare(
                     "INSERT INTO users
-                        (school_id, username, password, role_id, status)
-                     VALUES (?, ?, ?, ?, 'Active')"
+                        (username, password, role_id, status)
+                     VALUES (?, ?, ?, 'Active')"
                 );
                 $insertUser->bind_param(
-                    "issi",
-                    $school_id,
+                    "ssi",
                     $username,
                     $passwordHash,
                     $role_id
@@ -108,14 +152,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 // Insert teacher WITH user_id
                 // ===============================
                 $insertTeacher = $connection->prepare(
-                    "INSERT INTO teachers (user_id, application_id, school_id)
+                    "INSERT INTO teachers (user_id, application_id, teacher_number)
                      VALUES (?, ?, ?)"
                 );
                 $insertTeacher->bind_param(
                     "iii",
                     $user_id,
                     $application_id,
-                    $school_id
+                    $teacher_number
                 );
                 $insertTeacher->execute();
 

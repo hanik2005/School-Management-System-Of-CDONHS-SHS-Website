@@ -51,7 +51,7 @@
 
         <div>
             <label>Learner Reference Number (LRN)</label>
-            <input type="text" name="lrn" maxlength="12" pattern="\d{12}" required>
+            <input type="text" name="lrn" maxlength="12" pattern="[0-9]{12}" placeholder="Example: 123456789012" title="Enter 12-digit LRN (numbers only)" required>
         </div>
 
         <div>
@@ -80,7 +80,7 @@
 
         <div>
             <label>Contact Number</label>
-            <input type="tel" name="contactNumber" required>
+            <input type="tel" name="contactNumber" pattern="^09[0-9]{9}$" maxlength="11" minlength="11" placeholder="Example: 09123456789" title="Enter 11-digit mobile number starting with 09" required>
         </div>
 
         <div>
@@ -165,7 +165,7 @@
 
         <div>
             <label>Father/Guardian Contact</label>
-            <input type="tel" name="fatherGuardianContact" required>
+            <input type="tel" name="fatherGuardianContact" pattern="^09[0-9]{9}$" maxlength="11" minlength="11" placeholder="Example: 09123456789" title="Enter 11-digit mobile number starting with 09" required>
         </div>
 
         <div>
@@ -175,7 +175,7 @@
 
         <div>
             <label>Mother/Guardian Contact</label>
-            <input type="tel" name="motherGuardianContact" required>
+            <input type="tel" name="motherGuardianContact" pattern="^09[0-9]{9}$" maxlength="11" minlength="11" placeholder="Example: 09123456789" title="Enter 11-digit mobile number starting with 09" required>
         </div>
 
     </div>

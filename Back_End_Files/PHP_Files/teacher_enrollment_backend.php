@@ -27,6 +27,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $email          = $_POST['email'];
     $facebook       = $_POST['facebookProfile'] ?? null;
 
+    // Normalize contact number (remove any non-numeric characters)
+    $contactNumber = preg_replace('/[^0-9]/', '', $contactNumber);
+
     // ===============================
     // Address
     // ===============================
@@ -46,6 +49,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // VALIDATION
     // ===============================
     $data = [
+        'firstName' => $firstName,
+        'lastName' => $lastName,
+        'middleName' => $middleName,
+        'extensionName' => $extensionName,
         'email' => $email,
         'contactNumber' => $contactNumber
     ];

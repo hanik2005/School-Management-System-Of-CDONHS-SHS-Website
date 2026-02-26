@@ -103,3 +103,165 @@
         font-size: 20px;
     }
 }
+
+/* ===== PRINT STYLES ===== */
+@media print {
+    /* Hide non-print elements */
+    .header,
+    .profile-dropdown,
+    .profile-btn,
+    .print-container,
+    .footer,
+    .nav-links,
+    .page-title {
+        display: none !important;
+    }
+
+    /* Reset main container for print */
+    .main-container {
+        padding: 0;
+        background: white;
+        min-height: auto;
+    }
+
+    /* Show print header */
+    .print-header {
+        display: block !important;
+        margin-bottom: 20px;
+    }
+
+    .print-header .print-school-info {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        margin-bottom: 15px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #1e3a8a;
+    }
+
+    .print-header .print-logo {
+        width: 60px;
+        height: 60px;
+        margin-right: 15px;
+    }
+
+    .print-header .print-school-details h1 {
+        font-size: 18px;
+        color: #1e3a8a;
+        margin: 0;
+    }
+
+    .print-header .print-school-details p {
+        font-size: 14px;
+        color: #666;
+        margin: 5px 0 0 0;
+    }
+
+    .print-header .print-class-details {
+        margin-bottom: 15px;
+    }
+
+    .print-header .print-info-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 12px;
+    }
+
+    .print-header .print-info-table td {
+        padding: 5px 10px;
+        border: 1px solid #ddd;
+    }
+
+    /* Table print styles */
+    .table-container {
+        box-shadow: none;
+        border: 2px solid #1e3a8a;
+        padding: 0;
+    }
+
+    .class-table {
+        font-size: 12px;
+        border: 1px solid #000;
+    }
+
+    .class-table thead {
+        background: #ffffff !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .class-table th {
+        padding: 10px 8px;
+        border: 1px solid #000;
+        text-align: center;
+        color: #000 !important;
+    }
+
+    .class-table td {
+        padding: 8px;
+        border: 1px solid #000;
+    }
+
+    .class-table tbody tr:nth-child(even) {
+        background: #f9f9f9 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    /* Print footer */
+    .print-footer {
+        display: block !important;
+        margin-top: 20px;
+        text-align: center;
+        font-size: 11px;
+        color: #666;
+        border-top: 1px solid #ddd;
+        padding-top: 10px;
+    }
+
+    .print-footer .signature-line {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 30px;
+    }
+
+    .print-footer .sign-box {
+        text-align: center;
+        width: 200px;
+    }
+
+    .print-footer .sign-box .line {
+        border-top: 1px solid #000;
+        margin-bottom: 5px;
+    }
+
+    /* Page setup */
+    @page {
+        margin: 0.5in;
+        size: portrait;
+        @top-left { content: none; }
+        @top-right { content: none; }
+    }
+
+    @page :first {
+        margin-top: 0;
+    }
+
+    body {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    /* Hide browser print headers/footers */
+    html {
+        font-size: 12pt;
+    }
+
+    /* Remove URL and date from print */
+    @media print and (chrome) {
+        @page {
+            margin: 10mm;
+        }
+    }
+}

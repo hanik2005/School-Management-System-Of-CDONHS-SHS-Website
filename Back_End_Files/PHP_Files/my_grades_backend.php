@@ -4,7 +4,7 @@
 /* ========================= */
 session_start();
 
-if (!isset($_SESSION['user_id']) || !isset($_SESSION['school_id'])) {
+if (!isset($_SESSION['user_id'])) {
     header("Location: ../login.php");
     exit;
 }
@@ -12,20 +12,19 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['school_id'])) {
 include "../../DB_Connection/Connection.php";
 
 $user_id = $_SESSION['user_id'];
-$school_id = $_SESSION['school_id'];
 
 /* ========================= */
 /* GET STUDENT ACCOUNT       */
 /* ========================= */
 $sqlStudent = "
-    SELECT s.student_id, s.school_id, ss.strand_id, ss.grade_level, ss.section_id, sa.profile_image, s.school_year
+    SELECT s.student_id, ss.strand_id, ss.grade_level, ss.section_id, sa.profile_image, s.school_year
     FROM students s
     JOIN student_strand ss ON s.student_id = ss.student_id
     JOIN student_applications sa ON s.application_id = sa.application_id
-    WHERE s.user_id = ? AND s.school_id = ?
+    WHERE s.user_id = ?
 ";
 $stmtStudent = mysqli_prepare($connection, $sqlStudent);
-mysqli_stmt_bind_param($stmtStudent, "ii", $user_id, $school_id);
+mysqli_stmt_bind_param($stmtStudent, "i", $user_id);
 mysqli_stmt_execute($stmtStudent);
 $resultStudent = mysqli_stmt_get_result($stmtStudent);
 $student = mysqli_fetch_assoc($resultStudent);

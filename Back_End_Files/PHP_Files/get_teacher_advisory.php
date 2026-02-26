@@ -6,10 +6,10 @@ include "../../DB_Connection/Connection.php";
 $getTeacher = $connection->prepare("
     SELECT t.teacher_id
     FROM teachers t
-    WHERE t.school_id = ?
+    WHERE t.user_id = ?
 ");
 
-$getTeacher->bind_param("i", $_SESSION['school_id']);
+$getTeacher->bind_param("i", $_SESSION['user_id']);
 $getTeacher->execute();
 $teacherResult = $getTeacher->get_result()->fetch_assoc();
 

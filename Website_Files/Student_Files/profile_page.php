@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['user_id']) || !isset($_SESSION['school_id'])) {
+if (!isset($_SESSION['user_id'])) {
     header("Location: ../login.php");
     exit;
 }
@@ -10,7 +10,7 @@ include "../../DB_Connection/Connection.php";
 
 // Verify student session and get profile data
 $stmt = $connection->prepare("
-    SELECT s.student_id, s.school_id, s.enrollment_status, s.date_enrolled, s.enlistment_status,
+    SELECT s.student_id, s.student_number, s.enrollment_status, s.date_enrolled, s.enlistment_status,
            sa.first_name, sa.last_name, sa.middle_name, sa.extension_name,
            sa.lrn, sa.date_of_birth, sa.sex, sa.civil_status,
            sa.house_number_street, sa.barangay, sa.city_municipality, sa.province,
@@ -24,10 +24,10 @@ $stmt = $connection->prepare("
     FROM students s
     INNER JOIN users u ON s.user_id = u.user_id
     INNER JOIN student_applications sa ON s.application_id = sa.application_id
-    WHERE s.user_id = ? AND s.school_id = ?
+    WHERE s.user_id = ?
 ");
 
-$stmt->bind_param("ii", $_SESSION['user_id'], $_SESSION['school_id']);
+$stmt->bind_param("i", $_SESSION['user_id']);
 $stmt->execute();
 $result = $stmt->get_result();
 $profile = $result->fetch_assoc();
@@ -176,7 +176,7 @@ $profileImagePath = !empty($profile['profile_image'])
                 <div class="profile-header-info">
                     <h2><?php echo htmlspecialchars($fullName); ?></h2>
                     <p><strong>LRN:</strong> <?php echo htmlspecialchars($profile['lrn']); ?></p>
-                    <p><strong>School ID:</strong> <?php echo htmlspecialchars($profile['school_id']); ?></p>
+                    <p><strong>Student Number:</strong> <?php echo htmlspecialchars($profile['student_number']); ?></p>
                     <p><strong>Username:</strong> <?php echo htmlspecialchars($profile['username']); ?></p>
                     <span class="profile-status status-<?php echo strtolower($profile['enrollment_status']); ?>">
                         <?php echo htmlspecialchars($profile['enrollment_status']); ?>

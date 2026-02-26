@@ -75,7 +75,7 @@
 
         <div>
             <label>Contact Number</label>
-            <input type="tel" name="contactNumber" required>
+            <input type="tel" name="contactNumber" pattern="^09[0-9]{9}$" maxlength="11" minlength="11" placeholder="Example: 09123456789" title="Enter 11-digit mobile number starting with 09" required>
         </div>
 
         <div>

@@ -9,7 +9,7 @@ ini_set('error_log', __DIR__ . '/php_errors.log');
 
 header('Content-Type: application/json');
 
-if (!isset($_SESSION['school_id'])) {
+if (!isset($_SESSION['user_id'])) {
     echo json_encode(['success' => false, 'message' => 'User not logged in']);
     exit;
 }
@@ -29,7 +29,7 @@ try {
         exit;
     }
 
-    $school_id = $_SESSION['school_id'];
+    $userID = $_SESSION['user_id'];
 
     // Enlistment status
     $enlistment_status = 'Pending';
@@ -39,9 +39,9 @@ try {
 
     // 1️⃣ Find or create student and get their school_year
     $stmtStudent = $connection->prepare("
-        SELECT student_id, school_year FROM students WHERE school_id = ?
+        SELECT student_id, school_year FROM students WHERE user_id = ?
     ");
-    $stmtStudent->bind_param("i", $school_id);
+    $stmtStudent->bind_param("i", $userID);
     $stmtStudent->execute();
     $resStudent = $stmtStudent->get_result();
     $studentRow = $resStudent->fetch_assoc();
@@ -63,9 +63,9 @@ try {
         }
         
         $stmtInsertStudent = $connection->prepare("
-            INSERT INTO students (school_id, enlistment_status, school_year) VALUES (?, ?, ?)
+            INSERT INTO students (enlistment_status, school_year) VALUES (?, ?)
         ");
-        $stmtInsertStudent->bind_param("iss", $school_id, $enlistment_status, $school_year);
+        $stmtInsertStudent->bind_param("ss", $enlistment_status, $school_year);
         $stmtInsertStudent->execute();
         $student_id = $stmtInsertStudent->insert_id;
         $stmtInsertStudent->close();

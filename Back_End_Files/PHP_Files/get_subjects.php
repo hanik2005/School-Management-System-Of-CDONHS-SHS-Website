@@ -5,7 +5,6 @@ include "../../DB_Connection/Connection.php";
 
 // Get user_id from session
 $user_id = $_SESSION['user_id'] ?? null;
-$school_id = $_SESSION['school_id'] ?? null;
 
 $grade_level = $_GET['grade_level'] ?? '';
 $strand_id   = $_GET['strand_id'] ?? '';
@@ -29,10 +28,10 @@ try {
     $stmtStudent = $connection->prepare("
         SELECT student_id 
         FROM students 
-        WHERE user_id = ? AND school_id = ?
+        WHERE user_id = ?
         LIMIT 1
     ");
-    $stmtStudent->bind_param("ii", $user_id, $school_id);
+    $stmtStudent->bind_param("i", $user_id);
     $stmtStudent->execute();
     $resultStudent = $stmtStudent->get_result();
     $studentRow = $resultStudent->fetch_assoc();

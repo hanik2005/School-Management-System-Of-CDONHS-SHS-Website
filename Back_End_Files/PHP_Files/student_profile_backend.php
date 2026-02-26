@@ -4,7 +4,7 @@ session_start();
 include "../../DB_Connection/Connection.php";
 
 // Check if user is logged in
-if (!isset($_SESSION['user_id']) || !isset($_SESSION['school_id'])) {
+if (!isset($_SESSION['user_id'])) {
     header("Location: ../../Website_Files/login.php");
     exit();
 }

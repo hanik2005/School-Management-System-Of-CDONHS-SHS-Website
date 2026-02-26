@@ -1,14 +1,13 @@
-
 <?php
 /* GET TEACHER ADVISORY */
 $getAdvisory = $connection->prepare("
     SELECT ta.section_id, ta.strand_id, ta.grade_level
     FROM teacher_advisory ta
     JOIN teachers t ON ta.teacher_id = t.teacher_id
-    WHERE t.school_id = ?
+    WHERE t.user_id = ?
 ");
 
-$getAdvisory->bind_param("i", $_SESSION['school_id']);
+$getAdvisory->bind_param("i", $_SESSION['user_id']);
 $getAdvisory->execute();
 $result = $getAdvisory->get_result();
 $advisory = $result->fetch_assoc();

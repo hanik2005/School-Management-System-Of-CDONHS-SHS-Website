@@ -28,6 +28,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $email = $_POST['email'];
     $facebookName = $_POST['facebookName'] ?? null;
 
+    // Normalize contact numbers (remove any non-numeric characters)
+    $contactNumber = preg_replace('/[^0-9]/', '', $contactNumber);
+
     $currentSchool = $_POST['currentSchool'];
     $schoolClassification = $_POST['schoolClassification'];
     $enrollmentType = $_POST['enrollmentType'];
@@ -38,12 +41,25 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $motherGuardianName = $_POST['motherGuardianName'];
     $motherGuardianContact = $_POST['motherGuardianContact'];
 
+    // Normalize guardian contact numbers
+    $fatherGuardianContact = preg_replace('/[^0-9]/', '', $fatherGuardianContact);
+    $motherGuardianContact = preg_replace('/[^0-9]/', '', $motherGuardianContact);
+
      // ===============================
     // VALIDATION
     // ===============================
     $data = [
+        'firstName' => $firstName,
+        'lastName' => $lastName,
+        'middleName' => $middleName,
+        'extensionName' => $extensionName,
+        'fatherGuardianName' => $fatherGuardianName,
+        'motherGuardianName' => $motherGuardianName,
         'lrn' => $lrn,
-        'email' => $email
+        'email' => $email,
+        'contactNumber' => $contactNumber,
+        'fatherGuardianContact' => $fatherGuardianContact,
+        'motherGuardianContact' => $motherGuardianContact
     ];
 
     $errors = validateStudentEnrollment($connection, $data);

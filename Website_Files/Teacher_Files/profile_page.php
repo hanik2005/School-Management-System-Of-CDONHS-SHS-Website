@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['user_id']) || !isset($_SESSION['school_id'])) {
+if (!isset($_SESSION['user_id'])) {
     header("Location: ../login.php");
     exit;
 }
@@ -10,7 +10,7 @@ include "../../DB_Connection/Connection.php";
 
 // Verify teacher session and get profile data
 $stmt = $connection->prepare("
-    SELECT t.teacher_id, t.school_id, t.employment_status, t.date_hired,
+    SELECT t.teacher_id, t.teacher_number, t.employment_status, t.date_hired,
            ta.first_name, ta.last_name, ta.middle_name, ta.extension_name,
            ta.date_of_birth, ta.sex, ta.civil_status,
            ta.contact_number, ta.email, ta.facebook_profile,
@@ -22,10 +22,10 @@ $stmt = $connection->prepare("
     FROM teachers t
     INNER JOIN users u ON t.user_id = u.user_id
     INNER JOIN teacher_applications ta ON t.application_id = ta.teacher_application_id
-    WHERE t.user_id = ? AND t.school_id = ?
+    WHERE t.user_id = ?
 ");
 
-$stmt->bind_param("ii", $_SESSION['user_id'], $_SESSION['school_id']);
+$stmt->bind_param("i", $_SESSION['user_id']);
 $stmt->execute();
 $result = $stmt->get_result();
 $profile = $result->fetch_assoc();
@@ -162,7 +162,7 @@ $profileImagePath = !empty($profile['profile_image'])
                 </div>
                 <div class="profile-header-info">
                     <h2><?php echo htmlspecialchars($fullName); ?></h2>
-                    <p><strong>School ID:</strong> <?php echo htmlspecialchars($profile['school_id']); ?></p>
+                    <p><strong>School ID:</strong> <?php echo htmlspecialchars($profile['teacher_number']); ?></p>
                     <p><strong>Username:</strong> <?php echo htmlspecialchars($profile['username']); ?></p>
                     <p><strong>Specialization:</strong> <?php echo htmlspecialchars($profile['specialization']); ?></p>
                     <span class="profile-status status-<?php echo strtolower($profile['employment_status']); ?>">

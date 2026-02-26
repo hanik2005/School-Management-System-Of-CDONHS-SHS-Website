@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['user_id']) || !isset($_SESSION['school_id'])) {
+if (!isset($_SESSION['user_id'])) {
     header("Location: ../login.php");
     exit;
 }
@@ -12,16 +12,14 @@ include "../../DB_Connection/Connection.php";
 /* VERIFY ADMIN SESSION      */
 /* ========================= */
 $user_id = $_SESSION['user_id'];
-$school_id = $_SESSION['school_id'];
 
 // Prepare statement
 $stmt = mysqli_prepare($connection, "
     SELECT * FROM users 
     WHERE user_id = ? 
-    AND school_id = ? 
     AND role_id = 2
 ");
-mysqli_stmt_bind_param($stmt, "ii", $user_id, $school_id);
+mysqli_stmt_bind_param($stmt, "i", $user_id);
 mysqli_stmt_execute($stmt);
 $result = mysqli_stmt_get_result($stmt);
 $admin = mysqli_fetch_assoc($result);
@@ -36,17 +34,12 @@ if (!$admin) {
 /* FILTER PARAMETERS         */
 /* ========================= */
 $search_name = isset($_GET['search_name']) ? trim($_GET['search_name']) : '';
-$filter_status = isset($_GET['filter_status']) ? trim($_GET['filter_status']) : '';
 
 /* ✅ GET STUDENT APPLICATIONS WITH FILTERS */
-$sql = "SELECT * FROM student_applications WHERE 1=1";
+$sql = "SELECT * FROM student_applications WHERE application_status = 'Pending'";
 
 if (!empty($search_name)) {
     $sql .= " AND (first_name LIKE '%$search_name%' OR last_name LIKE '%$search_name%' OR CONCAT(first_name, ' ', last_name) LIKE '%$search_name%')";
-}
-
-if (!empty($filter_status)) {
-    $sql .= " AND application_status = '$filter_status'";
 }
 
 $sql .= " ORDER BY application_id DESC";
@@ -111,16 +104,6 @@ if (!$result) {
                     <input type="text" id="search_name" name="search_name" 
                            placeholder="Enter student name..." 
                            value="<?= htmlspecialchars($search_name); ?>">
-                </div>
-                
-                <div class="filter-group">
-                    <label for="filter_status">Filter by Status:</label>
-                    <select id="filter_status" name="filter_status">
-                        <option value="">All Status</option>
-                        <option value="Pending" <?= $filter_status == 'Pending' ? 'selected' : ''; ?>>Pending</option>
-                        <option value="Approved" <?= $filter_status == 'Approved' ? 'selected' : ''; ?>>Approved</option>
-                        <option value="Rejected" <?= $filter_status == 'Rejected' ? 'selected' : ''; ?>>Rejected</option>
-                    </select>
                 </div>
                 
                 <div class="filter-buttons">

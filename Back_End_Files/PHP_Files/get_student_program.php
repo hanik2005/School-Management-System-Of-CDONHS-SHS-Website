@@ -19,9 +19,9 @@ $sectionName = null;
 $stmtStudent = $connection->prepare("
     SELECT student_id, enlistment_status 
     FROM students 
-    WHERE school_id = ?
+    WHERE user_id = ?
 ");
-$stmtStudent->bind_param("i", $_SESSION['school_id']);
+$stmtStudent->bind_param("i", $_SESSION['user_id']);
 $stmtStudent->execute();
 $resStudent = $stmtStudent->get_result();
 $studentRow = $resStudent->fetch_assoc();

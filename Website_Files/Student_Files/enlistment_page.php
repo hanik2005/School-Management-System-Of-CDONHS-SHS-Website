@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-if (!isset($_SESSION['user_id']) || !isset($_SESSION['school_id'])) {
+if (!isset($_SESSION['user_id'])) {
     header("Location: ../login.php");
     exit;
 }
@@ -14,10 +14,10 @@ $stmt = $connection->prepare("
     FROM users u
     INNER JOIN students s ON s.user_id = u.user_id
     INNER JOIN student_applications sa ON s.application_id = sa.application_id
-    WHERE u.user_id = ? AND u.school_id = ? AND u.role_id = 1
+    WHERE u.user_id = ? AND u.role_id = 1
 ");
 
-$stmt->bind_param("ii", $_SESSION['user_id'], $_SESSION['school_id']);
+$stmt->bind_param("i", $_SESSION['user_id']);
 $stmt->execute();
 $result = $stmt->get_result();
 $user = $result->fetch_assoc();

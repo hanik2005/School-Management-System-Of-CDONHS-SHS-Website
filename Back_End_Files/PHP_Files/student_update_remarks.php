@@ -12,18 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $status = $_POST['application_status'];
 
     // ===============================
-    // Update enrollment application
-    // ===============================
-    $update = $connection->prepare(
-        "UPDATE student_applications 
-         SET remarks = ?, application_status = ?
-         WHERE application_id = ?"
-    );
-    $update->bind_param("ssi", $remarks, $status, $application_id);
-    $update->execute();
-
-    // ===============================
-    // Get applicant info
+    // Get applicant info FIRST (before any update/delete)
     // ===============================
     $getStudent = $connection->prepare(
         "SELECT first_name, last_name, email, lrn
@@ -35,6 +24,60 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $student = $getStudent->get_result()->fetch_assoc();
 
     // ===============================
+    // IF REJECTED → Delete application and send email
+    // ===============================
+    if ($status === 'Rejected') {
+        // Send rejection email
+        try {
+            $mail->setFrom('cdonhsshsacc@gmail.com', 'CDONHS-SHS Enrollment Office');
+            $mail->addAddress(
+                $student['email'],
+                $student['first_name'] . ' ' . $student['last_name']
+            );
+
+            $mail->isHTML(true);
+            $mail->Subject = 'CDONHS-SHS Enrollment Status Update';
+
+            $mail->Body = "
+            <p>Good day <b>{$student['first_name']} {$student['last_name']}</b>,</p>
+            <p>We regret to inform you that your enrollment application has been <b>rejected</b>.</p>
+            <p><b>Admin Remarks:</b></p>
+            <p>$remarks</p>
+            <br>
+            <p>Thank you for your interest in CDONHS-SHS.</p>
+            <p><br>
+            <b>CDONHS-SHS Enrollment Office</b></p>
+            ";
+
+            $mail->send();
+
+        } catch (Exception $e) {
+            error_log('Mail Error: ' . $mail->ErrorInfo);
+        }
+
+        // Delete the application
+        $delete = $connection->prepare(
+            "DELETE FROM student_applications WHERE application_id = ?"
+        );
+        $delete->bind_param("i", $application_id);
+        $delete->execute();
+
+        header("Location: ../../Website_Files/Admin_Files/admin_student_application_list.php");
+        exit;
+    }
+
+    // ===============================
+    // Update enrollment application (for Pending or Approved)
+    // ===============================
+    $update = $connection->prepare(
+        "UPDATE student_applications 
+         SET remarks = ?, application_status = ?
+         WHERE application_id = ?"
+    );
+    $update->bind_param("ssi", $remarks, $status, $application_id);
+    $update->execute();
+
+    // ===============================
     // IF APPROVED → CREATE USER + STUDENT
     // ===============================
     if ($status === 'Approved') {
@@ -43,10 +86,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         try {
 
-            // Generate school_id
-            $result = $connection->query("SELECT MAX(school_id) AS max_id FROM students");
+            // Generate student_number
+            $result = $connection->query("SELECT MAX(student_number) AS max_id FROM students");
             $row = $result->fetch_assoc();
-            $school_id = ($row['max_id'] ?? 304111) + 1;
+            $student_number = ($row['max_id'] ?? 304111) + 1;
 
             // Get Student role_id
             $roleResult = $connection->query(
@@ -63,12 +106,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             // 1️⃣ INSERT INTO USERS FIRST
             // ===============================
             $insertUser = $connection->prepare(
-                "INSERT INTO users (school_id, username, password, role_id)
-                 VALUES (?, ?, ?, ?)"
+                "INSERT INTO users (username, password, role_id)
+                 VALUES (?, ?, ?)"
             );
             $insertUser->bind_param(
-                "issi",
-                $school_id,
+                "ssi",
                 $username,
                 $hashedPassword,
                 $role_id
@@ -95,14 +137,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             }
             
             $insertStudent = $connection->prepare(
-                "INSERT INTO students (user_id, application_id, school_id, school_year)
+                "INSERT INTO students (user_id, application_id, student_number, school_year)
                  VALUES (?, ?, ?, ?)"
             );
             $insertStudent->bind_param(
                 "iiis",
                 $user_id,
                 $application_id,
-                $school_id,
+                $student_number,
                 $school_year
             );
             $insertStudent->execute();

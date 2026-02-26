@@ -14,10 +14,10 @@ $isEnlisted = false;
 $getStudent = $connection->prepare("
     SELECT student_id, enlistment_status 
     FROM students 
-    WHERE school_id = ?
+    WHERE user_id = ?
 ");
 
-$getStudent->bind_param("i", $_SESSION['school_id']);
+$getStudent->bind_param("i", $_SESSION['user_id']);
 $getStudent->execute();
 
 $result = $getStudent->get_result()->fetch_assoc();
