@@ -86,7 +86,7 @@ if (!$admin) {
     </div>
 
     <div class="dashboard-container">
-        <a href="#" class="dashboard-card">
+        <a href="activation_page.php" class="dashboard-card">
             <img src="../../Assets/activation_button.png">
             <h3>Activation Page</h3>
         </a>

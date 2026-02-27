@@ -76,24 +76,69 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['finalize_status'])) {
                     $sectionResult = $getSectionName->get_result()->fetch_assoc();
                     $currentSectionName = $sectionResult['section_name'] ?? 'A';
                     
-                    // Find next grade level section with same strand and section name
-                    $getNextSection = $connection->prepare("
-                        SELECT section_id FROM section 
-                        WHERE strand_id = ? AND grade_level = ? AND section_name = ?
-                        LIMIT 1
+                    // Check if current section in next grade is full (50 students)
+                    $checkCapacity = $connection->prepare("
+                        SELECT COUNT(*) as student_count 
+                        FROM student_strand 
+                        WHERE section_id = ? AND grade_level = ?
                     ");
-                    $getNextSection->bind_param("iis", $currentStrand['strand_id'], $nextGrade, $currentSectionName);
-                    $getNextSection->execute();
-                    $nextSectionResult = $getNextSection->get_result()->fetch_assoc();
+                    $checkCapacity->bind_param("ii", $currentStrand['section_id'], $nextGrade);
+                    $checkCapacity->execute();
+                    $capacityResult = $checkCapacity->get_result()->fetch_assoc();
+                    $currentSectionCount = $capacityResult['student_count'];
+                    $checkCapacity->close();
                     
-                    if ($nextSectionResult) {
+                    $nextSectionId = null;
+                    $sectionMessage = "";
+                    
+                    // If current section is full (50 students), find another available section
+                    if ($currentSectionCount >= 50) {
+                        // Find available section with same strand and next grade level
+                        $findSection = $connection->prepare("
+                            SELECT s.section_id, s.section_name, 
+                                   (50 - COUNT(ss.student_id)) as available_slots
+                            FROM section s
+                            LEFT JOIN student_strand ss ON s.section_id = ss.section_id 
+                                AND ss.grade_level = s.grade_level
+                            WHERE s.grade_level = ? AND s.strand_id = ?
+                            GROUP BY s.section_id, s.section_name
+                            HAVING available_slots > 0
+                            ORDER BY available_slots DESC
+                            LIMIT 1
+                        ");
+                        $findSection->bind_param("ii", $nextGrade, $currentStrand['strand_id']);
+                        $findSection->execute();
+                        $availableSection = $findSection->get_result()->fetch_assoc();
+                        $findSection->close();
+                        
+                        if ($availableSection) {
+                            $nextSectionId = $availableSection['section_id'];
+                            $sectionMessage = " (moved to Section " . $availableSection['section_name'] . " because original section is full)";
+                        }
+                    }
+                    
+                    // If no available section found through auto-assignment, use the same section name
+                    if ($nextSectionId === null) {
+                        // Find next grade level section with same strand and section name
+                        $getNextSection = $connection->prepare("
+                            SELECT section_id FROM section 
+                            WHERE strand_id = ? AND grade_level = ? AND section_name = ?
+                            LIMIT 1
+                        ");
+                        $getNextSection->bind_param("iis", $currentStrand['strand_id'], $nextGrade, $currentSectionName);
+                        $getNextSection->execute();
+                        $nextSectionResult = $getNextSection->get_result()->fetch_assoc();
+                        $nextSectionId = $nextSectionResult['section_id'] ?? null;
+                    }
+                    
+                    if ($nextSectionId) {
                         // Update student_strand to next grade level
                         $updateStrand = $connection->prepare("
                             UPDATE student_strand 
                             SET grade_level = ?, section_id = ?
                             WHERE student_id = ?
                         ");
-                        $updateStrand->bind_param("iii", $nextGrade, $nextSectionResult['section_id'], $student_id);
+                        $updateStrand->bind_param("iii", $nextGrade, $nextSectionId, $student_id);
                         $updateStrand->execute();
                         
                         // Update enlistment status and school_year in students table
@@ -113,7 +158,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['finalize_status'])) {
                         $updateSubjects->bind_param("i", $student_id);
                         $updateSubjects->execute();
                         
-                        $successMessage = "Student has been successfully promoted to Grade $nextGrade!";
+                        $successMessage = "Student has been successfully promoted to Grade $nextGrade!$sectionMessage";
                     } else {
                         $errorMessage = "No corresponding section found for Grade $nextGrade. Please contact administrator.";
                     }
@@ -231,23 +276,65 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['bulk_finalize'])) {
                     $sectionResult = $getSectionName->get_result()->fetch_assoc();
                     $currentSectionName = $sectionResult['section_name'] ?? 'A';
                     
-                    // Find next grade level section
-                    $getNextSection = $connection->prepare("
-                        SELECT section_id FROM section 
-                        WHERE strand_id = ? AND grade_level = ? AND section_name = ?
-                        LIMIT 1
+                    // Check if current section in next grade is full (50 students)
+                    $checkCapacity = $connection->prepare("
+                        SELECT COUNT(*) as student_count 
+                        FROM student_strand 
+                        WHERE section_id = ? AND grade_level = ?
                     ");
-                    $getNextSection->bind_param("iis", $studentData['strand_id'], $nextGrade, $currentSectionName);
-                    $getNextSection->execute();
-                    $nextSectionResult = $getNextSection->get_result()->fetch_assoc();
+                    $checkCapacity->bind_param("ii", $studentData['section_id'], $nextGrade);
+                    $checkCapacity->execute();
+                    $capacityResult = $checkCapacity->get_result()->fetch_assoc();
+                    $currentSectionCount = $capacityResult['student_count'];
+                    $checkCapacity->close();
                     
-                    if ($nextSectionResult) {
+                    $nextSectionId = null;
+                    
+                    // If current section is full (50 students), find another available section
+                    if ($currentSectionCount >= 50) {
+                        // Find available section with same strand and next grade level
+                        $findSection = $connection->prepare("
+                            SELECT s.section_id, s.section_name, 
+                                   (50 - COUNT(ss.student_id)) as available_slots
+                            FROM section s
+                            LEFT JOIN student_strand ss ON s.section_id = ss.section_id 
+                                AND ss.grade_level = s.grade_level
+                            WHERE s.grade_level = ? AND s.strand_id = ?
+                            GROUP BY s.section_id, s.section_name
+                            HAVING available_slots > 0
+                            ORDER BY available_slots DESC
+                            LIMIT 1
+                        ");
+                        $findSection->bind_param("ii", $nextGrade, $studentData['strand_id']);
+                        $findSection->execute();
+                        $availableSection = $findSection->get_result()->fetch_assoc();
+                        $findSection->close();
+                        
+                        if ($availableSection) {
+                            $nextSectionId = $availableSection['section_id'];
+                        }
+                    }
+                    
+                    // If no available section found through auto-assignment, use the same section name
+                    if ($nextSectionId === null) {
+                        $getNextSection = $connection->prepare("
+                            SELECT section_id FROM section 
+                            WHERE strand_id = ? AND grade_level = ? AND section_name = ?
+                            LIMIT 1
+                        ");
+                        $getNextSection->bind_param("iis", $studentData['strand_id'], $nextGrade, $currentSectionName);
+                        $getNextSection->execute();
+                        $nextSectionResult = $getNextSection->get_result()->fetch_assoc();
+                        $nextSectionId = $nextSectionResult['section_id'] ?? null;
+                    }
+                    
+                    if ($nextSectionId) {
                         $updateStrand = $connection->prepare("
                             UPDATE student_strand 
                             SET grade_level = ?, section_id = ?
                             WHERE student_id = ?
                         ");
-                        $updateStrand->bind_param("iii", $nextGrade, $nextSectionResult['section_id'], $student_id);
+                        $updateStrand->bind_param("iii", $nextGrade, $nextSectionId, $student_id);
                         $updateStrand->execute();
                         
                         $updateEnlistment = $connection->prepare("

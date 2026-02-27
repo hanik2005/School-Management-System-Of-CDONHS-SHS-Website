@@ -111,7 +111,7 @@ $profileImagePath = !empty($user['profile_image'])
 
       <div class="dashboard-container">
         <a href="form_137_138_page.php" class="dashboard-card">
-            <img src="../../Assets/progress_button.png">
+            <img src="../../Assets/form_137_138_image.png">
             <h3>Form 137 or 138</h3>
         </a>
     </div>

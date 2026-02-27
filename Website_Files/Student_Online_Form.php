@@ -1,4 +1,12 @@
 <!DOCTYPE html>
+<?php
+// Check if Student Enrollment is enabled
+include_once '../Back_End_Files/PHP_Files/check_activation.php';
+if (!isFeatureEnabled('Student Enrollment')) {
+    header("Location: access_denied.php?feature=Student Enrollment");
+    exit;
+}
+?>
 <html lang="en">
 <head>
     <meta charset="UTF-8">

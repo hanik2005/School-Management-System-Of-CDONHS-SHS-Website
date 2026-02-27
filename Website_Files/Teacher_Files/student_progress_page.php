@@ -8,6 +8,13 @@ if (!isset($_SESSION['user_id'])) {
 
 include "../../DB_Connection/Connection.php";
 
+/* Check if Student Progress Page is enabled */
+include_once "../../Back_End_Files/PHP_Files/check_activation.php";
+if (!isFeatureEnabled('Student Progress Page')) {
+    header("Location: ../access_denied.php?feature=Student Progress Page");
+    exit;
+}
+
 /* VERIFY TEACHER SESSION */
 $stmt = $connection->prepare("
     SELECT u.*, ta.profile_image 

@@ -8,6 +8,13 @@ if (!isset($_SESSION['user_id'])) {
 
 include "../../DB_Connection/Connection.php";
 
+/* Check if Form 137 and 138 Page is enabled */
+include_once "../../Back_End_Files/PHP_Files/check_activation.php";
+if (!isFeatureEnabled('Form 137 and 138 Page')) {
+    header("Location: ../access_denied.php?feature=Form 137 and 138 Page");
+    exit;
+}
+
 $stmt = $connection->prepare("
     SELECT u.*, ta.profile_image, ta.first_name as teacher_first_name, ta.last_name as teacher_last_name
     FROM users u

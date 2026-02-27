@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 26, 2026 at 08:18 PM
+-- Generation Time: Feb 27, 2026 at 08:39 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -24,6 +24,28 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `activation_settings`
+--
+
+CREATE TABLE `activation_settings` (
+  `id` int(11) NOT NULL,
+  `activation_name` varchar(100) NOT NULL,
+  `activation_status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '0=Disabled, 1=Enabled'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `activation_settings`
+--
+
+INSERT INTO `activation_settings` (`id`, `activation_name`, `activation_status`) VALUES
+(1, 'Student Enrollment', 1),
+(2, 'Form 137 and 138 Page', 0),
+(3, 'Student Progress Page', 1),
+(4, 'Teacher Registration', 0);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `archived_student_strand`
 --
 
@@ -36,6 +58,13 @@ CREATE TABLE `archived_student_strand` (
   `date_archived` timestamp NOT NULL DEFAULT current_timestamp(),
   `reason` enum('PROMOTION','TRANSFER','MANUAL') DEFAULT 'PROMOTION'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `archived_student_strand`
+--
+
+INSERT INTO `archived_student_strand` (`archive_id`, `student_id`, `strand_id`, `grade_level`, `section_id`, `date_archived`, `reason`) VALUES
+(19, 8, 5, 11, 33, '2026-02-27 05:42:48', 'PROMOTION');
 
 -- --------------------------------------------------------
 
@@ -248,7 +277,12 @@ CREATE TABLE `students` (
 --
 
 INSERT INTO `students` (`student_id`, `user_id`, `application_id`, `student_number`, `enrollment_status`, `date_enrolled`, `enlistment_status`, `school_year`) VALUES
-(8, 20, 27, 304112, 'Active', '2026-02-26', 'Enlisted', '2025-2026');
+(8, 20, 27, 304112, 'Active', '2026-02-26', 'Enlisted', '2025-2026'),
+(9, 22, 29, 304113, 'Active', '2026-02-27', 'Enlisted', '2025-2026'),
+(10, 23, 30, 304114, 'Active', '2026-02-27', 'Enlisted', '2025-2026'),
+(11, 24, 31, 304115, 'Active', '2026-02-27', 'Enlisted', '2025-2026'),
+(12, 25, 32, 304116, 'Active', '2026-02-27', 'Enlisted', '2025-2026'),
+(13, 26, 33, 304117, 'Active', '2026-02-27', 'Enlisted', '2025-2026');
 
 -- --------------------------------------------------------
 
@@ -295,7 +329,12 @@ CREATE TABLE `student_applications` (
 --
 
 INSERT INTO `student_applications` (`application_id`, `first_name`, `last_name`, `middle_name`, `extension_name`, `lrn`, `date_of_birth`, `sex`, `civil_status`, `house_number_street`, `barangay`, `city_municipality`, `province`, `contact_number`, `email`, `facebook_profile`, `current_school`, `school_classification`, `enrollment_type`, `year_graduated`, `father_guardian_name`, `father_guardian_contact`, `mother_guardian_name`, `mother_guardian_contact`, `psa_birth_certificate`, `form_138`, `student_id_copy`, `application_status`, `remarks`, `date_submitted`, `profile_image`) VALUES
-(27, 'Nick Charles', 'Clarito', 'Durangparang', '', '405220150089', '1995-06-15', 'male', 'single', 'Blk4 Lot 3', 'Macasandig', 'Cagayan De Oro City', 'Misamis Oriental', '09944719534', 'nickcharlesclarito@gmail.com', NULL, 'Cagayan De Oro National High School', 'public', 'New', '2020', 'papa', '09977436346', 'mama', '09843924244', NULL, NULL, NULL, 'Approved', '', '2026-02-26 11:44:13', NULL);
+(27, 'Nick Charles', 'Clarito', 'Durangparang', '', '405220150089', '1995-06-15', 'male', 'single', 'Blk4 Lot 3', 'Macasandig', 'Cagayan De Oro City', 'Misamis Oriental', '09944719534', 'nickcharlesclarito@gmail.com', NULL, 'Cagayan De Oro National High School', 'public', 'New', '2020', 'papa', '09977436346', 'mama', '09843924244', NULL, NULL, NULL, 'Approved', '', '2026-02-26 11:44:13', NULL),
+(29, 'Maria', 'Clarito', 'Durangparang', '', '105330140076', '1995-11-27', 'male', 'single', 'Blk4 Lot 3', 'Macasandig', 'Cagayan De Oro City', 'Misamis Oriental', '09312314523', 'nickcharlesclaritomicrosoft@gmail.com', NULL, 'Cagayan De Oro National High School', 'public', 'Balik-Eskwela', '2025', 'papa', '09284728472', 'mama', '09748324724', NULL, NULL, NULL, 'Approved', '', '2026-02-27 06:29:36', NULL),
+(30, 'Charlie Nathaniel', 'Viador', 'Barero', '', '123456789123', '1998-06-30', 'male', 'single', 'Blk7 Lot 3', 'Barangay 5', 'Cagayan De Oro City', 'Misamis Oriental', '09782739197', 'nickhoyo2005@gmail.com', NULL, 'Cagayan De Oro National High School', 'public', 'Transferee', '2021', 'papa', '09284728472', 'mama', '09748324724', NULL, NULL, NULL, 'Approved', '', '2026-02-27 06:34:31', NULL),
+(31, 'Catherine', 'Timbang', 'Lotots', '', '183581758295', '1986-03-27', 'male', 'single', 'Blk4 Lot 3', 'Macasandig', 'Cagayan De Oro City', 'Misamis Oriental', '09855615712', 'clarito.nickcharles@gmail.com', NULL, 'Cagayan De Oro National High School', 'public', 'New', '2021', 'papa', '09798373621', 'mama', '09748324724', NULL, NULL, NULL, 'Approved', '', '2026-02-27 07:19:14', NULL),
+(32, 'Alix', 'Garcia', 'Abecia', '', '132940224144', '1998-10-27', 'male', 'single', 'Blk 4 Lot 3 Buena Oro', 'Barangay 5', 'Cagayan De Oro City', 'Misamis Oriental', '09782581568', 'nick@gmail.com', NULL, 'Cagayan De Oro National High School', 'public', 'New', '2023', 'papa', '09284728472', 'mama', '09843924244', NULL, NULL, NULL, 'Approved', '', '2026-02-27 07:23:33', NULL),
+(33, 'Billy', 'Durangparang', 'Abecia', 'Jr', '187472842759', '1978-07-27', 'male', 'single', 'Blk7 Lot 3', 'Barangay 11', 'Cagayan De Oro City', 'Misamis Oriental', '09862413525', 'billy@gmail.com', NULL, 'Cagayan De Oro National High School', 'public', 'New', '2023', 'papa', '09977436346', 'mama', '09748324724', NULL, NULL, NULL, 'Approved', '', '2026-02-27 07:28:53', NULL);
 
 -- --------------------------------------------------------
 
@@ -316,7 +355,12 @@ CREATE TABLE `student_strand` (
 --
 
 INSERT INTO `student_strand` (`student_strand_id`, `student_id`, `strand_id`, `grade_level`, `section_id`) VALUES
-(29, 8, 5, 11, 33);
+(30, 8, 5, 12, 37),
+(31, 9, 5, 11, 33),
+(32, 10, 5, 11, 33),
+(33, 11, 5, 11, 33),
+(34, 12, 5, 11, 33),
+(35, 13, 5, 11, 33);
 
 -- --------------------------------------------------------
 
@@ -338,14 +382,62 @@ CREATE TABLE `student_subjects` (
 --
 
 INSERT INTO `student_subjects` (`enrollment_id`, `student_id`, `subject_id`, `status`, `requested`, `school_year`) VALUES
-(219, 8, 38, 'Enrolled', 1, '2025-2026'),
-(220, 8, 39, 'Enrolled', 1, '2025-2026'),
-(221, 8, 40, 'Enrolled', 1, '2025-2026'),
-(222, 8, 35, 'Enrolled', 1, '2025-2026'),
-(223, 8, 34, 'Enrolled', 1, '2025-2026'),
-(224, 8, 33, 'Enrolled', 1, '2025-2026'),
-(225, 8, 36, 'Enrolled', 1, '2025-2026'),
-(226, 8, 37, 'Enrolled', 1, '2025-2026');
+(219, 8, 38, 'Completed', 1, '2025-2026'),
+(220, 8, 39, 'Completed', 1, '2025-2026'),
+(221, 8, 40, 'Completed', 1, '2025-2026'),
+(222, 8, 35, 'Completed', 1, '2025-2026'),
+(223, 8, 34, 'Completed', 1, '2025-2026'),
+(224, 8, 33, 'Completed', 1, '2025-2026'),
+(225, 8, 36, 'Completed', 1, '2025-2026'),
+(226, 8, 37, 'Completed', 1, '2025-2026'),
+(251, 8, 89, 'Enrolled', 1, '2025-2026'),
+(252, 8, 90, 'Enrolled', 1, '2025-2026'),
+(253, 8, 91, 'Enrolled', 1, '2025-2026'),
+(254, 8, 92, 'Dropped', 1, '2025-2026'),
+(255, 8, 93, 'Dropped', 1, '2025-2026'),
+(256, 8, 94, 'Enrolled', 1, '2025-2026'),
+(257, 8, 95, 'Enrolled', 1, '2025-2026'),
+(258, 8, 96, 'Enrolled', 1, '2025-2026'),
+(259, 9, 38, 'Enrolled', 1, '2025-2026'),
+(260, 9, 39, 'Enrolled', 1, '2025-2026'),
+(261, 9, 40, 'Enrolled', 1, '2025-2026'),
+(262, 9, 35, 'Enrolled', 1, '2025-2026'),
+(263, 9, 34, 'Enrolled', 1, '2025-2026'),
+(264, 9, 33, 'Enrolled', 1, '2025-2026'),
+(265, 9, 36, 'Enrolled', 1, '2025-2026'),
+(266, 9, 37, 'Enrolled', 1, '2025-2026'),
+(267, 10, 38, 'Enrolled', 1, '2025-2026'),
+(268, 10, 39, 'Enrolled', 1, '2025-2026'),
+(269, 10, 40, 'Enrolled', 1, '2025-2026'),
+(270, 10, 35, 'Enrolled', 1, '2025-2026'),
+(271, 10, 34, 'Enrolled', 1, '2025-2026'),
+(272, 10, 33, 'Enrolled', 1, '2025-2026'),
+(273, 10, 36, 'Enrolled', 1, '2025-2026'),
+(274, 10, 37, 'Enrolled', 1, '2025-2026'),
+(275, 11, 38, 'Enrolled', 1, '2025-2026'),
+(276, 11, 39, 'Enrolled', 1, '2025-2026'),
+(277, 11, 40, 'Enrolled', 1, '2025-2026'),
+(278, 11, 35, 'Enrolled', 1, '2025-2026'),
+(279, 11, 34, 'Enrolled', 1, '2025-2026'),
+(280, 11, 33, 'Enrolled', 1, '2025-2026'),
+(281, 11, 36, 'Enrolled', 1, '2025-2026'),
+(282, 11, 37, 'Enrolled', 1, '2025-2026'),
+(283, 12, 38, 'Enrolled', 1, '2025-2026'),
+(284, 12, 39, 'Enrolled', 1, '2025-2026'),
+(285, 12, 40, 'Enrolled', 1, '2025-2026'),
+(286, 12, 35, 'Enrolled', 1, '2025-2026'),
+(287, 12, 34, 'Enrolled', 1, '2025-2026'),
+(288, 12, 33, 'Dropped', 0, '2025-2026'),
+(289, 12, 36, 'Enrolled', 1, '2025-2026'),
+(290, 12, 37, 'Enrolled', 1, '2025-2026'),
+(291, 13, 38, 'Enrolled', 1, '2025-2026'),
+(292, 13, 39, 'Enrolled', 1, '2025-2026'),
+(293, 13, 40, 'Enrolled', 1, '2025-2026'),
+(294, 13, 35, 'Enrolled', 1, '2025-2026'),
+(295, 13, 34, 'Enrolled', 1, '2025-2026'),
+(296, 13, 33, 'Enrolled', 1, '2025-2026'),
+(297, 13, 36, 'Enrolled', 1, '2025-2026'),
+(298, 13, 37, 'Enrolled', 1, '2025-2026');
 
 -- --------------------------------------------------------
 
@@ -586,11 +678,22 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`user_id`, `username`, `password`, `role_id`, `status`, `first_login`) VALUES
 (19, 'admin', '$2y$10$MdaNNF77fXzwj8JVpli8U.ime3KC7mrjRWYI7VGYXPi3/bZBwBd6u', 2, 'Active', 0),
 (20, '405220150089', '$2y$10$lqLMtmDg6ouv1LymcbGi6eV8L76wAaF61pg1v4w1fFu12zWhu4Wku', 1, 'Active', 0),
-(21, 'T_502301', '$2y$10$R7Y8Sg.RCIr7Ju/q7G7hfe1x8UIEo7EG715Ikqpv/K3N3tdDYiV66', 3, 'Active', 0);
+(21, 'T_502301', '$2y$10$R7Y8Sg.RCIr7Ju/q7G7hfe1x8UIEo7EG715Ikqpv/K3N3tdDYiV66', 3, 'Active', 0),
+(22, '105330140076', '$2y$10$ucuNM.OqHWLqGOhAXpTSx.YilERaM4FHvqULE.DOigssgE3yjIkku', 1, 'Active', 0),
+(23, '123456789123', '$2y$10$LKgZpJZSNS1CNunpIb4Wlu8m5ECS3O2o6GrGVGkrIPBS.UUVja4BW', 1, 'Active', 0),
+(24, '183581758295', '$2y$10$OXAK4OirdZHZaPLcqO6sJ.MFzNZ/hGaSg/ahPiA1fMJKbj05XWLoO', 1, 'Active', 0),
+(25, '132940224144', '$2y$10$qma9csYwj09jlsrTw9M1Buw9SzCYXPL8Zq4i9lY1xjbz6G21YFjDi', 1, 'Active', 0),
+(26, '187472842759', '$2y$10$xE0CJpNfvHcoOlGVOZVXc.4l2m.bnRyKLQIyQGRAWl7zmFCsY4OBG', 1, 'Active', 0);
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `activation_settings`
+--
+ALTER TABLE `activation_settings`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `archived_student_strand`
@@ -717,10 +820,16 @@ ALTER TABLE `users`
 --
 
 --
+-- AUTO_INCREMENT for table `activation_settings`
+--
+ALTER TABLE `activation_settings`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
 -- AUTO_INCREMENT for table `archived_student_strand`
 --
 ALTER TABLE `archived_student_strand`
-  MODIFY `archive_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `archive_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `grade_entry`
@@ -744,25 +853,25 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT for table `students`
 --
 ALTER TABLE `students`
-  MODIFY `student_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `student_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `student_applications`
 --
 ALTER TABLE `student_applications`
-  MODIFY `application_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `application_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT for table `student_strand`
 --
 ALTER TABLE `student_strand`
-  MODIFY `student_strand_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `student_strand_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT for table `student_subjects`
 --
 ALTER TABLE `student_subjects`
-  MODIFY `enrollment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=227;
+  MODIFY `enrollment_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=299;
 
 --
 -- AUTO_INCREMENT for table `subject`
@@ -792,7 +901,7 @@ ALTER TABLE `teacher_applications`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- Constraints for dumped tables
