@@ -30,7 +30,7 @@ if (!$user) {
 
 // Set profile image path
 $profileImagePath = !empty($user['profile_image']) 
-    ? "../../uploads/" . htmlspecialchars($user['profile_image']) 
+    ? "../../uploads/Profile/student/" . htmlspecialchars($user['profile_image']) 
     : "../../Assets/profile_button.png";
 
 include "../../Back_End_Files/PHP_Files/check_enrollment.php";

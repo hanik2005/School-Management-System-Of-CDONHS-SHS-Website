@@ -74,7 +74,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
 
-    $uploadDir = $_SERVER['DOCUMENT_ROOT'] . "/SMS_CDONHS-SHS_WEBSITE/uploads/";
+    $uploadDir = $_SERVER['DOCUMENT_ROOT'] . "/SMS_CDONHS-SHS_WEBSITE/uploads/Documents/student/";
 
     if (!is_dir($uploadDir)) {
         mkdir($uploadDir, 0777, true);
@@ -89,7 +89,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $targetPath = $uploadDir . $fileName;
 
         if (move_uploaded_file($_FILES[$inputName]['tmp_name'], $targetPath)) {
-            return "uploads/" . $fileName; // Save relative path
+            return $fileName; // Save relative path
         }
         return null;
     }

@@ -43,7 +43,7 @@ $student_school_year = $student['school_year'];
 
 // Set profile image path
 $profileImagePath = !empty($student['profile_image']) 
-    ? "../../uploads/" . htmlspecialchars($student['profile_image']) 
+    ? "../../uploads/Profile/student/" . htmlspecialchars($student['profile_image']) 
     : "../../Assets/profile_button.png";
 
 /* ========================= */

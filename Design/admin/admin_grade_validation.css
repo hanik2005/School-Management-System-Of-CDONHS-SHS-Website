@@ -25,13 +25,22 @@
     min-width: 120px;
 }
 
-.search-btn, .clear-btn {
+.search-btn, .clear-btn, .confirm-filter-btn {
     padding: 10px 25px;
     border-radius: 20px;
     border: none;
     cursor: pointer;
     font-weight: bold;
     transition: 0.3s ease;
+}
+
+.confirm-filter-btn {
+    background: #28a745;
+    color: white;
+}
+
+.confirm-filter-btn:hover {
+    background: #218838;
 }
 
 .search-btn {
@@ -258,6 +267,24 @@
     color: #fff;
 }
 
+.back-btn{
+    display: inline-block;
+    background: #fbbf24; /* golden color */
+    color: #111827;
+    text-decoration: none;
+    padding: 10px 15px;
+    border-radius: 25px;
+    font-weight: bold; /* match buttons */
+    font-family: Arial, sans-serif; /* same as body */
+    font-size: 0.9em; /* match button size */
+    text-align: center;
+    transition: 0.3s ease;
+}
+.back-btn:hover {
+    background: #f59e0b; /* darker gold on hover */
+    color: #fff;
+}
+
 #confirmBtn {
     background: #1e3a8a;
     color: #fbbf24;
@@ -302,5 +329,85 @@
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-bottom: 30px;
+}
+
+/* ==============================
+   LOADING MODAL
+   ============================== */
+.loading-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+}
+
+.loading-modal.active {
+    display: flex;
+}
+
+.loading-content {
+    background: white;
+    padding: 40px 50px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    max-width: 400px;
+}
+
+.loading-content .spinner {
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #1e3a8a;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-content p {
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #1e3a8a;
+    margin: 0 0 10px 0;
+}
+
+.loading-content .loading-subtext {
+    font-size: 0.9em;
+    color: #666;
+    display: block;
+}
+
+/* ==============================
+   CHECKBOX STYLES
+   ============================== */
+.validation-table th:first-child,
+.validation-table td:first-child {
+    width: 50px;
+    text-align: center;
+}
+
+.row-checkbox {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #1e3a8a;
+}
+
+#selectAllCheckbox {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #1e3a8a;
 }
 

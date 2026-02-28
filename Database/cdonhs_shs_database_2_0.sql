@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 27, 2026 at 08:39 AM
+-- Generation Time: Feb 28, 2026 at 04:05 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -39,9 +39,9 @@ CREATE TABLE `activation_settings` (
 
 INSERT INTO `activation_settings` (`id`, `activation_name`, `activation_status`) VALUES
 (1, 'Student Enrollment', 1),
-(2, 'Form 137 and 138 Page', 0),
+(2, 'Form 137 and 138 Page', 1),
 (3, 'Student Progress Page', 1),
-(4, 'Teacher Registration', 0);
+(4, 'Teacher Registration', 1);
 
 -- --------------------------------------------------------
 
@@ -64,7 +64,8 @@ CREATE TABLE `archived_student_strand` (
 --
 
 INSERT INTO `archived_student_strand` (`archive_id`, `student_id`, `strand_id`, `grade_level`, `section_id`, `date_archived`, `reason`) VALUES
-(19, 8, 5, 11, 33, '2026-02-27 05:42:48', 'PROMOTION');
+(19, 8, 5, 11, 33, '2026-02-27 05:42:48', 'PROMOTION'),
+(20, 10, 5, 11, 33, '2026-02-27 13:07:49', 'MANUAL');
 
 -- --------------------------------------------------------
 
@@ -118,7 +119,163 @@ INSERT INTO `grade_entry` (`entry_id`, `student_id`, `subject_id`, `section_id`,
 (261, 8, 36, 33, 4, 94.00, 'Approved'),
 (262, 8, 35, 33, 4, 95.00, 'Approved'),
 (263, 8, 34, 33, 4, 96.00, 'Approved'),
-(264, 8, 33, 33, 4, 91.00, 'Approved');
+(264, 8, 33, 33, 4, 91.00, 'Approved'),
+(265, 9, 33, 33, 1, 90.00, 'Rejected'),
+(266, 13, 33, 33, 1, 90.00, 'Rejected'),
+(267, 11, 33, 33, 1, 100.00, 'Rejected'),
+(268, 10, 33, 33, 1, 90.00, 'Approved'),
+(269, 9, 34, 33, 1, 90.00, 'Rejected'),
+(270, 13, 34, 33, 1, 100.00, 'Rejected'),
+(271, 12, 34, 33, 1, 90.00, 'Rejected'),
+(272, 11, 34, 33, 1, 90.00, 'Rejected'),
+(273, 10, 34, 33, 1, 100.00, 'Approved'),
+(274, 9, 35, 33, 1, 90.00, 'Rejected'),
+(275, 13, 35, 33, 1, 65.00, 'Rejected'),
+(276, 12, 35, 33, 1, 65.00, 'Rejected'),
+(277, 11, 35, 33, 1, 65.00, 'Rejected'),
+(278, 10, 35, 33, 1, 65.00, 'Approved'),
+(279, 9, 36, 33, 1, 60.00, 'Rejected'),
+(280, 13, 36, 33, 1, 60.00, 'Rejected'),
+(281, 12, 36, 33, 1, 60.00, 'Rejected'),
+(282, 11, 36, 33, 1, 60.00, 'Rejected'),
+(283, 10, 36, 33, 1, 60.00, 'Approved'),
+(284, 9, 37, 33, 1, 90.00, 'Rejected'),
+(285, 13, 37, 33, 1, 60.00, 'Rejected'),
+(286, 12, 37, 33, 1, 60.00, 'Rejected'),
+(287, 11, 37, 33, 1, 60.00, 'Rejected'),
+(288, 10, 37, 33, 1, 60.00, 'Approved'),
+(289, 9, 38, 33, 1, 95.00, 'Rejected'),
+(290, 13, 38, 33, 1, 60.00, 'Rejected'),
+(291, 12, 38, 33, 1, 60.00, 'Rejected'),
+(292, 11, 38, 33, 1, 60.00, 'Rejected'),
+(293, 10, 38, 33, 1, 60.00, 'Approved'),
+(294, 9, 39, 33, 1, 100.00, 'Rejected'),
+(295, 13, 39, 33, 1, 60.00, 'Rejected'),
+(296, 12, 39, 33, 1, 60.00, 'Rejected'),
+(297, 11, 39, 33, 1, 60.00, 'Rejected'),
+(298, 10, 39, 33, 1, 60.00, 'Approved'),
+(299, 9, 40, 33, 1, 90.00, 'Rejected'),
+(300, 13, 40, 33, 1, 60.00, 'Rejected'),
+(301, 12, 40, 33, 1, 60.00, 'Rejected'),
+(302, 11, 40, 33, 1, 60.00, 'Rejected'),
+(303, 10, 40, 33, 1, 60.00, 'Approved'),
+(304, 9, 40, 33, 2, 90.00, 'Approved'),
+(305, 13, 40, 33, 2, 60.00, 'Approved'),
+(306, 12, 40, 33, 2, 60.00, 'Approved'),
+(307, 11, 40, 33, 2, 60.00, 'Approved'),
+(308, 10, 40, 33, 2, 60.00, 'Approved'),
+(309, 9, 39, 33, 2, 90.00, 'Approved'),
+(310, 13, 39, 33, 2, 60.00, 'Approved'),
+(311, 12, 39, 33, 2, 60.00, 'Approved'),
+(312, 11, 39, 33, 2, 60.00, 'Approved'),
+(313, 10, 39, 33, 2, 60.00, 'Approved'),
+(314, 9, 38, 33, 2, 90.00, 'Approved'),
+(315, 13, 38, 33, 2, 60.00, 'Approved'),
+(316, 12, 38, 33, 2, 60.00, 'Approved'),
+(317, 11, 38, 33, 2, 60.00, 'Approved'),
+(318, 10, 38, 33, 2, 60.00, 'Approved'),
+(319, 9, 37, 33, 2, 90.00, 'Approved'),
+(320, 13, 37, 33, 2, 60.00, 'Approved'),
+(321, 12, 37, 33, 2, 60.00, 'Approved'),
+(322, 11, 37, 33, 2, 60.00, 'Approved'),
+(323, 10, 37, 33, 2, 60.00, 'Approved'),
+(324, 9, 36, 33, 2, 90.00, 'Approved'),
+(325, 13, 36, 33, 2, 60.00, 'Approved'),
+(326, 12, 36, 33, 2, 60.00, 'Approved'),
+(327, 11, 36, 33, 2, 60.00, 'Approved'),
+(328, 10, 36, 33, 2, 60.00, 'Approved'),
+(329, 9, 35, 33, 2, 90.00, 'Approved'),
+(330, 13, 35, 33, 2, 60.00, 'Approved'),
+(331, 12, 35, 33, 2, 60.00, 'Approved'),
+(332, 11, 35, 33, 2, 60.00, 'Approved'),
+(333, 10, 35, 33, 2, 60.00, 'Approved'),
+(334, 9, 34, 33, 2, 100.00, 'Approved'),
+(335, 13, 34, 33, 2, 60.00, 'Approved'),
+(336, 12, 34, 33, 2, 60.00, 'Approved'),
+(337, 11, 34, 33, 2, 60.00, 'Approved'),
+(338, 10, 34, 33, 2, 60.00, 'Approved'),
+(339, 9, 33, 33, 2, 90.00, 'Approved'),
+(340, 13, 33, 33, 2, 60.00, 'Approved'),
+(341, 11, 33, 33, 2, 60.00, 'Approved'),
+(342, 10, 33, 33, 2, 60.00, 'Approved'),
+(343, 9, 33, 33, 3, 100.00, 'Approved'),
+(344, 13, 33, 33, 3, 60.00, 'Approved'),
+(345, 11, 33, 33, 3, 60.00, 'Approved'),
+(346, 10, 33, 33, 3, 60.00, 'Approved'),
+(347, 9, 34, 33, 3, 100.00, 'Approved'),
+(348, 13, 34, 33, 3, 60.00, 'Approved'),
+(349, 12, 34, 33, 3, 60.00, 'Approved'),
+(350, 11, 34, 33, 3, 60.00, 'Approved'),
+(351, 10, 34, 33, 3, 60.00, 'Approved'),
+(352, 9, 35, 33, 3, 100.00, 'Approved'),
+(353, 13, 35, 33, 3, 60.00, 'Approved'),
+(354, 12, 35, 33, 3, 60.00, 'Approved'),
+(355, 11, 35, 33, 3, 60.00, 'Approved'),
+(356, 10, 35, 33, 3, 60.00, 'Approved'),
+(357, 9, 36, 33, 3, 100.00, 'Approved'),
+(358, 13, 36, 33, 3, 60.00, 'Approved'),
+(359, 12, 36, 33, 3, 60.00, 'Approved'),
+(360, 11, 36, 33, 3, 60.00, 'Approved'),
+(361, 10, 36, 33, 3, 60.00, 'Approved'),
+(362, 9, 37, 33, 3, 100.00, 'Approved'),
+(363, 13, 37, 33, 3, 60.00, 'Approved'),
+(364, 12, 37, 33, 3, 60.00, 'Approved'),
+(365, 11, 37, 33, 3, 60.00, 'Approved'),
+(366, 10, 37, 33, 3, 60.00, 'Approved'),
+(367, 9, 38, 33, 3, 90.00, 'Approved'),
+(368, 13, 38, 33, 3, 60.00, 'Approved'),
+(369, 12, 38, 33, 3, 60.00, 'Approved'),
+(370, 11, 38, 33, 3, 60.00, 'Approved'),
+(371, 10, 38, 33, 3, 60.00, 'Approved'),
+(372, 9, 39, 33, 3, 100.00, 'Approved'),
+(373, 13, 39, 33, 3, 60.00, 'Approved'),
+(374, 12, 39, 33, 3, 60.00, 'Approved'),
+(375, 11, 39, 33, 3, 60.00, 'Approved'),
+(376, 10, 39, 33, 3, 60.00, 'Approved'),
+(377, 9, 40, 33, 3, 100.00, 'Approved'),
+(378, 13, 40, 33, 3, 60.00, 'Approved'),
+(379, 12, 40, 33, 3, 60.00, 'Approved'),
+(380, 11, 40, 33, 3, 60.00, 'Approved'),
+(381, 10, 40, 33, 3, 60.00, 'Approved'),
+(382, 9, 40, 33, 4, 100.00, 'Approved'),
+(383, 13, 40, 33, 4, 60.00, 'Approved'),
+(384, 12, 40, 33, 4, 60.00, 'Approved'),
+(385, 11, 40, 33, 4, 60.00, 'Approved'),
+(386, 10, 40, 33, 4, 60.00, 'Approved'),
+(387, 9, 39, 33, 4, 100.00, 'Approved'),
+(388, 13, 39, 33, 4, 60.00, 'Approved'),
+(389, 12, 39, 33, 4, 60.00, 'Approved'),
+(390, 11, 39, 33, 4, 60.00, 'Approved'),
+(391, 10, 39, 33, 4, 60.00, 'Approved'),
+(392, 9, 38, 33, 4, 90.00, 'Approved'),
+(393, 13, 38, 33, 4, 60.00, 'Approved'),
+(394, 12, 38, 33, 4, 60.00, 'Approved'),
+(395, 11, 38, 33, 4, 60.00, 'Approved'),
+(396, 10, 38, 33, 4, 60.00, 'Approved'),
+(397, 9, 37, 33, 4, 90.00, 'Approved'),
+(398, 13, 37, 33, 4, 60.00, 'Approved'),
+(399, 12, 37, 33, 4, 60.00, 'Approved'),
+(400, 11, 37, 33, 4, 60.00, 'Approved'),
+(401, 10, 37, 33, 4, 60.00, 'Approved'),
+(402, 9, 36, 33, 4, 90.00, 'Approved'),
+(403, 13, 36, 33, 4, 60.00, 'Approved'),
+(404, 12, 36, 33, 4, 60.00, 'Approved'),
+(405, 11, 36, 33, 4, 60.00, 'Approved'),
+(406, 10, 36, 33, 4, 60.00, 'Approved'),
+(407, 9, 35, 33, 4, 90.00, 'Approved'),
+(408, 13, 35, 33, 4, 60.00, 'Approved'),
+(409, 12, 35, 33, 4, 60.00, 'Approved'),
+(410, 11, 35, 33, 4, 60.00, 'Approved'),
+(411, 10, 35, 33, 4, 60.00, 'Approved'),
+(412, 9, 34, 33, 4, 90.00, 'Approved'),
+(413, 13, 34, 33, 4, 60.00, 'Approved'),
+(414, 12, 34, 33, 4, 60.00, 'Approved'),
+(415, 11, 34, 33, 4, 60.00, 'Approved'),
+(416, 10, 34, 33, 4, 60.00, 'Approved'),
+(417, 9, 33, 33, 4, 90.00, 'Approved'),
+(418, 13, 33, 33, 4, 60.00, 'Approved'),
+(419, 11, 33, 33, 4, 60.00, 'Approved'),
+(420, 10, 33, 33, 4, 60.00, 'Approved');
 
 -- --------------------------------------------------------
 
@@ -282,7 +439,9 @@ INSERT INTO `students` (`student_id`, `user_id`, `application_id`, `student_numb
 (10, 23, 30, 304114, 'Active', '2026-02-27', 'Enlisted', '2025-2026'),
 (11, 24, 31, 304115, 'Active', '2026-02-27', 'Enlisted', '2025-2026'),
 (12, 25, 32, 304116, 'Active', '2026-02-27', 'Enlisted', '2025-2026'),
-(13, 26, 33, 304117, 'Active', '2026-02-27', 'Enlisted', '2025-2026');
+(13, 26, 33, 304117, 'Active', '2026-02-27', 'Enlisted', '2025-2026'),
+(14, 34, 34, 304118, 'Active', '2026-02-28', 'Not Enlisted', '2025-2026'),
+(15, 35, 35, 304119, 'Active', '2026-02-28', 'Not Enlisted', '2025-2026');
 
 -- --------------------------------------------------------
 
@@ -334,7 +493,9 @@ INSERT INTO `student_applications` (`application_id`, `first_name`, `last_name`,
 (30, 'Charlie Nathaniel', 'Viador', 'Barero', '', '123456789123', '1998-06-30', 'male', 'single', 'Blk7 Lot 3', 'Barangay 5', 'Cagayan De Oro City', 'Misamis Oriental', '09782739197', 'nickhoyo2005@gmail.com', NULL, 'Cagayan De Oro National High School', 'public', 'Transferee', '2021', 'papa', '09284728472', 'mama', '09748324724', NULL, NULL, NULL, 'Approved', '', '2026-02-27 06:34:31', NULL),
 (31, 'Catherine', 'Timbang', 'Lotots', '', '183581758295', '1986-03-27', 'male', 'single', 'Blk4 Lot 3', 'Macasandig', 'Cagayan De Oro City', 'Misamis Oriental', '09855615712', 'clarito.nickcharles@gmail.com', NULL, 'Cagayan De Oro National High School', 'public', 'New', '2021', 'papa', '09798373621', 'mama', '09748324724', NULL, NULL, NULL, 'Approved', '', '2026-02-27 07:19:14', NULL),
 (32, 'Alix', 'Garcia', 'Abecia', '', '132940224144', '1998-10-27', 'male', 'single', 'Blk 4 Lot 3 Buena Oro', 'Barangay 5', 'Cagayan De Oro City', 'Misamis Oriental', '09782581568', 'nick@gmail.com', NULL, 'Cagayan De Oro National High School', 'public', 'New', '2023', 'papa', '09284728472', 'mama', '09843924244', NULL, NULL, NULL, 'Approved', '', '2026-02-27 07:23:33', NULL),
-(33, 'Billy', 'Durangparang', 'Abecia', 'Jr', '187472842759', '1978-07-27', 'male', 'single', 'Blk7 Lot 3', 'Barangay 11', 'Cagayan De Oro City', 'Misamis Oriental', '09862413525', 'billy@gmail.com', NULL, 'Cagayan De Oro National High School', 'public', 'New', '2023', 'papa', '09977436346', 'mama', '09748324724', NULL, NULL, NULL, 'Approved', '', '2026-02-27 07:28:53', NULL);
+(33, 'Billy', 'Durangparang', 'Abecia', 'Jr', '187472842759', '1978-07-27', 'male', 'single', 'Blk7 Lot 3', 'Barangay 11', 'Cagayan De Oro City', 'Misamis Oriental', '09862413525', 'billy@gmail.com', NULL, 'Cagayan De Oro National High School', 'public', 'New', '2023', 'papa', '09977436346', 'mama', '09748324724', NULL, NULL, NULL, 'Approved', '', '2026-02-27 07:28:53', NULL),
+(34, 'Domino', 'Bagtong', 'Dumang', '', '108942385023', '1996-07-18', 'male', 'single', '11th Street', 'Bulua', 'Cagayan De Oro City', 'Misamis Oriental', '09785237656', 'Domino@gmail.com', NULL, 'Cagayan De Oro National High School', 'public', 'New', '2020', 'papa', '09284728472', 'mama', '09748324724', NULL, NULL, NULL, 'Approved', '', '2026-02-28 08:33:37', NULL),
+(35, 'Jacob', 'Serquina', 'busta', '', '109482982957', '2001-11-28', 'male', 'single', 'Blk9', 'Macasandig', 'Cagayan De Oro City', 'Misamis Oriental', '09732658256', 'Jacob@gmail.com', '', 'Cagayan De Oro National High School', 'public', 'Transferee', '2020', 'papa', '09735681276', 'mama', '09141634637', '1772281145_PSA_Group 1 - Client Interview Submission (1).pdf', '1772281145_FORM138_student.pdf', '1772281145_STUDENTID_Registration_Slip (1).pdf', 'Approved', 'goods', '2026-02-28 12:19:05', '1772290398_PROFILE_35.jpg');
 
 -- --------------------------------------------------------
 
@@ -591,7 +752,8 @@ CREATE TABLE `teachers` (
 --
 
 INSERT INTO `teachers` (`teacher_id`, `user_id`, `application_id`, `teacher_number`, `employment_status`, `date_hired`) VALUES
-(14, 21, 7, 502301, 'Active', '2026-02-26');
+(14, 21, 7, 502301, 'Active', '2026-02-26'),
+(22, 36, 12, 585004, 'Active', '2026-02-28');
 
 -- --------------------------------------------------------
 
@@ -612,7 +774,8 @@ CREATE TABLE `teacher_advisory` (
 --
 
 INSERT INTO `teacher_advisory` (`teacher_advisory_id`, `teacher_id`, `strand_id`, `grade_level`, `section_id`) VALUES
-(4, 14, 5, 11, 33);
+(4, 14, 5, 11, 33),
+(10, 22, 5, 12, 37);
 
 -- --------------------------------------------------------
 
@@ -654,7 +817,8 @@ CREATE TABLE `teacher_applications` (
 --
 
 INSERT INTO `teacher_applications` (`teacher_application_id`, `first_name`, `last_name`, `middle_name`, `extension_name`, `date_of_birth`, `sex`, `civil_status`, `contact_number`, `email`, `facebook_profile`, `house_number_street`, `barangay`, `city_municipality`, `province`, `current_school`, `highest_education`, `specialization`, `application_status`, `remarks`, `date_submitted`, `resume_cv`, `prc_id_copy`, `certificates`, `other_documents`, `profile_image`) VALUES
-(7, 'Jason Jay', 'Japlag', 'Dumang', 'Jr', '1991-07-25', 'male', 'single', '09643632141', 'nidu.clarito.coc@phinmaed.com', 'https://www.hostitsmart.com/manage/knowledgebase/388/How-to-Change-Table-Name-in-phpMyAdmin.html', 'Blk4 Lot 3', 'Barangay 11', 'Cagayan De Oro City', 'Misamis Oriental', 'Cagayan De Oro National High School', '', 'ESP', 'Approved', '', '2026-02-26 12:45:57', NULL, NULL, NULL, NULL, NULL);
+(7, 'Jason Jay', 'Japlag', 'Dumang', 'Jr', '1991-07-25', 'male', 'single', '09643632141', 'nidu.clarito.coc@phinmaed.com', 'https://www.hostitsmart.com/manage/knowledgebase/388/How-to-Change-Table-Name-in-phpMyAdmin.html', 'Blk4 Lot 3', 'Barangay 11', 'Cagayan De Oro City', 'Misamis Oriental', 'Cagayan De Oro National High School', '', 'ESP', 'Approved', '', '2026-02-26 12:45:57', NULL, NULL, NULL, NULL, NULL),
+(12, 'Justin', 'Bagiuo', 'Bolol', '', '2009-07-23', 'male', 'single', '09674236582', 'Justin@gmail.com', 'https://www.hostitsmart.com/manage/knowledgebase/388/How-to-Change-Table-Name-in-phpMyAdmin.html', 'Blk7 Lot 3', 'Macasandig', 'Cagayan De Oro City', 'Misamis Oriental', 'Cagayan De Oro National High School', 'Bachelors', 'CSS', 'Approved', 'ffasfafsafaf', '2026-02-28 12:29:23', '1772281763_RESUME_GradeSectioning.pdf', '1772281763_PRC_student.pdf', '1772281763_CERT_Registration_Slip (1).pdf', '1772281763_OTHER_Form_Clarito.pdf', '1772290746_PROFILE_TEACHER_12.jpg');
 
 -- --------------------------------------------------------
 
@@ -683,7 +847,10 @@ INSERT INTO `users` (`user_id`, `username`, `password`, `role_id`, `status`, `fi
 (23, '123456789123', '$2y$10$LKgZpJZSNS1CNunpIb4Wlu8m5ECS3O2o6GrGVGkrIPBS.UUVja4BW', 1, 'Active', 0),
 (24, '183581758295', '$2y$10$OXAK4OirdZHZaPLcqO6sJ.MFzNZ/hGaSg/ahPiA1fMJKbj05XWLoO', 1, 'Active', 0),
 (25, '132940224144', '$2y$10$qma9csYwj09jlsrTw9M1Buw9SzCYXPL8Zq4i9lY1xjbz6G21YFjDi', 1, 'Active', 0),
-(26, '187472842759', '$2y$10$xE0CJpNfvHcoOlGVOZVXc.4l2m.bnRyKLQIyQGRAWl7zmFCsY4OBG', 1, 'Active', 0);
+(26, '187472842759', '$2y$10$xE0CJpNfvHcoOlGVOZVXc.4l2m.bnRyKLQIyQGRAWl7zmFCsY4OBG', 1, 'Active', 0),
+(34, '108942385023', '$2y$10$VzBXrjSNa6i8zc0pviBLuuZOPFqd..98CusqgI9uCmqajRGCEN5ZC', 1, 'Active', 1),
+(35, '109482982957', '$2y$10$kfRPiZEkqKDOiQiBKys1Be0jR5IaR6D8kSsWLQaqgFRRTEPPrmBrC', 1, 'Active', 0),
+(36, 'T_585004', '$2y$10$eU3iB8UNmyDBpLgjPdba3OoouYU5HqpeQ15HGzNYCzwu9/NabtQeS', 3, 'Active', 0);
 
 --
 -- Indexes for dumped tables
@@ -829,13 +996,13 @@ ALTER TABLE `activation_settings`
 -- AUTO_INCREMENT for table `archived_student_strand`
 --
 ALTER TABLE `archived_student_strand`
-  MODIFY `archive_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `archive_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT for table `grade_entry`
 --
 ALTER TABLE `grade_entry`
-  MODIFY `entry_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=265;
+  MODIFY `entry_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=421;
 
 --
 -- AUTO_INCREMENT for table `password_resets`
@@ -853,13 +1020,13 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT for table `students`
 --
 ALTER TABLE `students`
-  MODIFY `student_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `student_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `student_applications`
 --
 ALTER TABLE `student_applications`
-  MODIFY `application_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `application_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT for table `student_strand`
@@ -883,25 +1050,25 @@ ALTER TABLE `subject`
 -- AUTO_INCREMENT for table `teachers`
 --
 ALTER TABLE `teachers`
-  MODIFY `teacher_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `teacher_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `teacher_advisory`
 --
 ALTER TABLE `teacher_advisory`
-  MODIFY `teacher_advisory_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `teacher_advisory_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `teacher_applications`
 --
 ALTER TABLE `teacher_applications`
-  MODIFY `teacher_application_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `teacher_application_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- Constraints for dumped tables

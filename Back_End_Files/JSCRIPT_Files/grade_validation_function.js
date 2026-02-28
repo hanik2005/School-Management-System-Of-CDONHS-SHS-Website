@@ -2,11 +2,49 @@
 // Grade Validation Functionality
 // ==============================
 console.log("Hello from grade_validation_function.js");
+
 // Clear dashboard helper
 function clearDashboard() {
     document.getElementById("dashboardContent").innerHTML =
         "<p style='text-align:center;'>Click a row to display grades</p>";
 }
+
+// ==============================
+// SELECT ALL CHECKBOX FUNCTIONALITY
+// ==============================
+const selectAllCheckbox = document.getElementById("selectAllCheckbox");
+const rowCheckboxes = document.querySelectorAll(".row-checkbox");
+
+if (selectAllCheckbox) {
+    selectAllCheckbox.addEventListener("change", function() {
+        const isChecked = this.checked;
+        rowCheckboxes.forEach(checkbox => {
+            checkbox.checked = isChecked;
+        });
+    });
+}
+
+// Update "select all" checkbox when individual checkboxes change
+rowCheckboxes.forEach(checkbox => {
+    checkbox.addEventListener("change", function() {
+        const allChecked = Array.from(rowCheckboxes).every(cb => cb.checked);
+        const someChecked = Array.from(rowCheckboxes).some(cb => cb.checked);
+        
+        if (selectAllCheckbox) {
+            selectAllCheckbox.checked = allChecked;
+            selectAllCheckbox.indeterminate = someChecked && !allChecked;
+        }
+    });
+});
+
+// ==============================
+// PREVENT ROW CLICK WHEN CLICKING CHECKBOX
+// ==============================
+document.querySelectorAll(".row-checkbox").forEach(checkbox => {
+    checkbox.addEventListener("click", function(e) {
+        e.stopPropagation(); // Prevent row click when clicking checkbox
+    });
+});
 
 // ==============================
 // REMARKS COLUMN VISIBILITY
@@ -62,7 +100,12 @@ document.getElementById("clearFilters").addEventListener("click", function() {
 // ==============================
 // Validation Row Click
 document.querySelectorAll(".validation-row").forEach(row => {
-    row.addEventListener("click", function(){
+    row.addEventListener("click", function(e) {
+        // Skip if clicking on checkbox
+        if (e.target.classList.contains("row-checkbox")) return;
+        // Skip if clicking on select or input
+        if (e.target.tagName === "SELECT" || e.target.tagName === "INPUT") return;
+        
         let grade   = this.dataset.grade;
         let section = this.dataset.section;
         let quarter = this.dataset.quarter; 
@@ -142,20 +185,29 @@ document.querySelectorAll(".validation-row").forEach(row => {
 
 
 // ==============================
-// CONFIRM BUTTON - UPDATE STATUS
+// CONFIRM BUTTON - UPDATE STATUS (ONLY CHECKED ROWS)
 // ==============================
 document.getElementById("confirmBtn").addEventListener("click", function() {
-    const selects = document.querySelectorAll(".status-select");
+    // Get all checked checkboxes
+    const checkedCheckboxes = document.querySelectorAll(".row-checkbox:checked");
+    
+    if (checkedCheckboxes.length === 0) {
+        alert("Please select at least one row to confirm.");
+        return;
+    }
+    
     const updates = [];
     let hasValidationError = false;
 
-    selects.forEach(sel => {
-        const row = sel.closest("tr");
+    // Process only checked rows
+    checkedCheckboxes.forEach(checkbox => {
+        const row = checkbox.closest(".validation-row");
+        const statusSelect = row.querySelector(".status-select");
         const remarksInput = row.querySelector(".remarks-input");
         const remarks = remarksInput ? remarksInput.value.trim() : "";
         
         // If status is Rejected, validate that remarks is provided
-        if (sel.value === "Rejected" && remarks === "") {
+        if (statusSelect.value === "Rejected" && remarks === "") {
             hasValidationError = true;
             return; // Continue to next iteration
         }
@@ -164,8 +216,8 @@ document.getElementById("confirmBtn").addEventListener("click", function() {
             grade: row.dataset.grade,
             section: row.dataset.section,
             quarter: row.dataset.quarter,
-            status: sel.value,
-            remarks: sel.value === "Rejected" ? remarks : ""
+            status: statusSelect.value,
+            remarks: statusSelect.value === "Rejected" ? remarks : ""
         });
     });
 
@@ -181,6 +233,12 @@ document.getElementById("confirmBtn").addEventListener("click", function() {
 
     console.log("Sending updates:", updates);
 
+    // Show loading modal
+    const loadingModal = document.getElementById("loadingModal");
+    if (loadingModal) {
+        loadingModal.classList.add("active");
+    }
+
     fetch("../../Back_End_Files/PHP_Files/update_grade_status.php", {
         method: "POST",
         headers: {"Content-Type": "application/json"},
@@ -189,6 +247,12 @@ document.getElementById("confirmBtn").addEventListener("click", function() {
     .then(res => res.json())
     .then(resp => {
         console.log("Response:", resp);
+        
+        // Hide loading modal
+        if (loadingModal) {
+            loadingModal.classList.remove("active");
+        }
+        
         if(resp.success){
             alert(resp.message || "Grades updated successfully!");
             location.reload(); // Reload page to show updated statuses
@@ -198,11 +262,38 @@ document.getElementById("confirmBtn").addEventListener("click", function() {
     })
     .catch(err => {
         console.error("Failed to update grades:", err);
+        
+        // Hide loading modal on error
+        if (loadingModal) {
+            loadingModal.classList.remove("active");
+        }
+        
         alert("Error updating grades. Check console.");
     });
 });
 
 // ==============================
-// CLEAR BUTTON - CLEAR DASHBOARD
+// CLEAR BUTTON - CLEAR DASHBOARD AND UNCHECK
 // ==============================
-document.getElementById("clearBtn").addEventListener("click", clearDashboard);
+document.getElementById("clearBtn").addEventListener("click", function() {
+    clearDashboard();
+    
+    // Uncheck all checkboxes
+    rowCheckboxes.forEach(checkbox => {
+        checkbox.checked = false;
+    });
+    
+    // Reset select all checkbox
+    if (selectAllCheckbox) {
+        selectAllCheckbox.checked = false;
+        selectAllCheckbox.indeterminate = false;
+    }
+});
+
+// ==============================
+// CONFIRM FILTER BUTTON (beside search)
+// ==============================
+document.getElementById("confirmFilterBtn").addEventListener("click", function() {
+    // Trigger the same function as the main Confirm button
+    document.getElementById("confirmBtn").click();
+});

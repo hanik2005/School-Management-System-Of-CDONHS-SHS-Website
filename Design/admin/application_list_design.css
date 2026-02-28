@@ -506,3 +506,171 @@ option:disabled {
         justify-content: center;
     }
 }
+
+/* ==============================
+   CHECKBOX STYLES
+   ============================== */
+.table-container th:first-child,
+.table-container td:first-child {
+    width: 50px;
+    text-align: center;
+}
+
+.row-checkbox {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #1e3a8a;
+}
+
+#selectAllCheckbox {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    accent-color: #1e3a8a;
+}
+
+/* ==============================
+   CONFIRM BATCH BUTTON
+   ============================== */
+.btn-confirm-batch {
+    background: linear-gradient(135deg, #28a745 0%, #218838 100%);
+    color: white;
+    padding: 10px 20px;
+}
+
+.btn-confirm-batch:hover {
+    background: linear-gradient(135deg, #218838 0%, #1e7e34 100%);
+    transform: translateY(-2px);
+}
+
+/* ==============================
+   LOADING MODAL
+   ============================== */
+.loading-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+}
+
+.loading-modal.active {
+    display: flex;
+}
+
+.loading-content {
+    background: white;
+    padding: 40px 50px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    max-width: 400px;
+}
+
+.loading-content .spinner {
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #1e3a8a;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto 20px auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-content p {
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #1e3a8a;
+    margin: 0 0 10px 0;
+}
+
+.loading-content .loading-subtext {
+    font-size: 0.9em;
+    color: #666;
+    display: block;
+}
+
+/* ==============================
+   SUCCESS MODAL
+   ============================== */
+.success-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 10001;
+    justify-content: center;
+    align-items: center;
+}
+
+.success-modal.active {
+    display: flex;
+}
+
+.success-content {
+    background: white;
+    padding: 40px 50px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    max-width: 400px;
+}
+
+.success-icon {
+    width: 60px;
+    height: 60px;
+    background: #28a745;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    margin: 0 auto 20px auto;
+}
+
+.success-content p {
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #1e3a8a;
+    margin: 0 0 20px 0;
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #28a745 0%, #218838 100%);
+    color: white;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-success:hover {
+    background: linear-gradient(135deg, #218838 0%, #1e7e34 100%);
+}
+
+/* ==============================
+   ORIGINAL FORM FIELDS HIDDEN
+   ============================== */
+.original-form-fields {
+    display: block;
+}
+
+.application-row .form-inline {
+    display: none;
+}

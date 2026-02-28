@@ -35,7 +35,7 @@ if (!$user) {
 }
 
 $profileImagePath = !empty($user['profile_image']) 
-    ? "../../uploads/" . htmlspecialchars($user['profile_image']) 
+    ? "../../uploads/Profile/teacher/" . htmlspecialchars($user['profile_image']) 
     : "../../Assets/profile_button.png";
 
 $teacher_name = $user['teacher_first_name'] . ' ' . $user['teacher_last_name'];

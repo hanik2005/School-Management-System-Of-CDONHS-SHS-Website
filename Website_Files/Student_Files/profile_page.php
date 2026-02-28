@@ -91,7 +91,7 @@ $address = $profile['house_number_street'] . ", " . $profile['barangay'] . ", " 
 
 // Set profile image path for header
 $profileImagePath = !empty($profile['profile_image']) 
-    ? "../../uploads/" . htmlspecialchars($profile['profile_image']) 
+    ? "../../uploads/Profile/student/" . htmlspecialchars($profile['profile_image']) 
     : "../../Assets/profile_button.png";
 ?>
 
@@ -164,14 +164,14 @@ $profileImagePath = !empty($profile['profile_image'])
                 <div class="profile-image-container">
                     <?php 
                     $profileImagePath = !empty($profile['profile_image']) 
-                        ? "../../uploads/" . htmlspecialchars($profile['profile_image']) 
+                        ? "../../uploads/Profile/student/" . htmlspecialchars($profile['profile_image']) 
                         : "../../Assets/default.png"; 
                     ?>
                     <img src="<?php echo $profileImagePath; ?>" alt="Profile Image" class="profile-image" id="profileImagePreview">
                     <label for="profile_image" class="profile-image-upload" title="Click to change profile image">
                         <span>📷</span>
                     </label>
-                    <input type="file" id="profile_image" name="profile_image" accept="image/*" style="position: absolute; opacity: 0; width: 0; height: 0;" onchange="previewImage(this)">
+                    <input type="file" id="profile_image" name="profile_image" accept="image/*" class="profile-image-input" onchange="previewImage(this)">
                 </div>
                 <div class="profile-header-info">
                     <h2><?php echo htmlspecialchars($fullName); ?></h2>
@@ -356,7 +356,7 @@ $profileImagePath = !empty($profile['profile_image'])
                                 <strong>PSA Birth Certificate</strong>
                                 <?php if (!empty($profile['psa_birth_certificate'])): ?>
                                     <span class="document-status uploaded">✓ Uploaded</span>
-                                    <a href="../../uploads/<?php echo htmlspecialchars($profile['psa_birth_certificate']); ?>" target="_blank" class="btn-view">View</a>
+                                    <a href="../../uploads/Documents/student/<?php echo htmlspecialchars($profile['psa_birth_certificate']); ?>" target="_blank" class="btn-view">View</a>
                                 <?php else: ?>
                                     <span class="document-status not-uploaded">✗ Not Uploaded</span>
                                     <input type="file" name="psa_birth_certificate" accept=".pdf,.jpg,.jpeg,.png" class="document-upload">
@@ -373,7 +373,7 @@ $profileImagePath = !empty($profile['profile_image'])
                                 <strong>Form 138 (Report Card)</strong>
                                 <?php if (!empty($profile['form_138'])): ?>
                                     <span class="document-status uploaded">✓ Uploaded</span>
-                                    <a href="../../uploads/<?php echo htmlspecialchars($profile['form_138']); ?>" target="_blank" class="btn-view">View</a>
+                                    <a href="../../uploads/Documents/student/<?php echo htmlspecialchars($profile['form_138']); ?>" target="_blank" class="btn-view">View</a>
                                 <?php else: ?>
                                     <span class="document-status not-uploaded">✗ Not Uploaded</span>
                                     <input type="file" name="form_138" accept=".pdf,.jpg,.jpeg,.png" class="document-upload">
@@ -390,7 +390,7 @@ $profileImagePath = !empty($profile['profile_image'])
                                 <strong>Student ID Copy</strong>
                                 <?php if (!empty($profile['student_id_copy'])): ?>
                                     <span class="document-status uploaded">✓ Uploaded</span>
-                                    <a href="../../uploads/<?php echo htmlspecialchars($profile['student_id_copy']); ?>" target="_blank" class="btn-view">View</a>
+                                    <a href="../../uploads/Documents/student/<?php echo htmlspecialchars($profile['student_id_copy']); ?>" target="_blank" class="btn-view">View</a>
                                 <?php else: ?>
                                     <span class="document-status not-uploaded">✗ Not Uploaded</span>
                                     <input type="file" name="student_id_copy" accept=".pdf,.jpg,.jpeg,.png" class="document-upload">

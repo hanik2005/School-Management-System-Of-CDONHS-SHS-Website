@@ -34,14 +34,19 @@ if (!$admin) {
 /* FILTER PARAMETERS         */
 /* ========================= */
 $search_name = isset($_GET['search_name']) ? trim($_GET['search_name']) : '';
+$status_filter = isset($_GET['status']) ? $_GET['status'] : '';
 
 /* ===============================
    GET TEACHER APPLICATIONS WITH FILTERS
 ================================ */
-$sql = "SELECT * FROM teacher_applications WHERE application_status = 'Pending'";
+$sql = "SELECT * FROM teacher_applications WHERE 1=1";
 
 if (!empty($search_name)) {
     $sql .= " AND (first_name LIKE '%$search_name%' OR last_name LIKE '%$search_name%' OR CONCAT(first_name, ' ', last_name) LIKE '%$search_name%')";
+}
+
+if (!empty($status_filter)) {
+    $sql .= " AND application_status = '" . $connection->real_escape_string($status_filter) . "'";
 }
 
 $sql .= " ORDER BY teacher_application_id DESC";
@@ -150,8 +155,18 @@ $currentAdvisoryStmt = $connection->prepare("
                            value="<?= htmlspecialchars($search_name); ?>">
                 </div>
                 
+                <div class="filter-group">
+                    <label for="status">Status:</label>
+                    <select id="status" name="status">
+                        <option value="" <?= empty($status_filter) ? 'selected' : '' ?>>All</option>
+                        <option value="Pending" <?= ($status_filter == 'Pending') ? 'selected' : '' ?>>Pending</option>
+                        <option value="Approved" <?= ($status_filter == 'Approved') ? 'selected' : '' ?>>Approved</option>
+                    </select>
+                </div>
+                
                 <div class="filter-buttons">
                     <button type="submit" class="btn btn-filter">🔍 Search</button>
+                    <button type="button" class="btn btn-confirm-batch" id="confirmBatchBtn">✓ Confirm Selected</button>
                     <a href="admin_teacher_application_list.php" class="btn btn-reset">↻ Reset</a>
                 </div>
             </div>
@@ -163,6 +178,7 @@ $currentAdvisoryStmt = $connection->prepare("
         <table>
             <thead>
                 <tr>
+                    <th><input type="checkbox" id="selectAllCheckbox"></th>
                     <th>#</th>
                     <th>Full Name</th>
                     <th>Email</th>
@@ -180,7 +196,8 @@ $currentAdvisoryStmt = $connection->prepare("
                     <?php $count = 1; ?>
 
                     <?php while ($row = $result->fetch_assoc()): ?>
-                        <tr>
+                        <tr class="application-row" data-application-id="<?= $row['teacher_application_id']; ?>">
+                            <td><input type="checkbox" class="row-checkbox"></td>
                             <td><?= $count++; ?></td>
                             <td><?= htmlspecialchars($row['first_name'] . ' ' . $row['last_name']); ?></td>
                             <td><?= htmlspecialchars($row['email']); ?></td>
@@ -188,7 +205,7 @@ $currentAdvisoryStmt = $connection->prepare("
                             <!-- Resume -->
                             <td>
                                 <?php if (!empty($row['resume_cv'])): ?>
-                                    <a href="../../uploads/<?= htmlspecialchars($row['resume_cv']); ?>" target="_blank" class="doc-submitted">✓ View</a>
+                                    <a href="../../uploads/Documents/teacher/<?= htmlspecialchars($row['resume_cv']); ?>" target="_blank" class="doc-submitted">✓ View</a>
                                 <?php else: ?>
                                     <span class="doc-missing">✗ Missing</span>
                                 <?php endif; ?>
@@ -197,7 +214,7 @@ $currentAdvisoryStmt = $connection->prepare("
                             <!-- PRC -->
                             <td>
                                 <?php if (!empty($row['prc_id_copy'])): ?>
-                                    <a href="../../uploads/<?= htmlspecialchars($row['prc_id_copy']); ?>" target="_blank" class="doc-submitted">✓ View</a>
+                                    <a href="../../uploads/Documents/teacher/<?= htmlspecialchars($row['prc_id_copy']); ?>" target="_blank" class="doc-submitted">✓ View</a>
                                 <?php else: ?>
                                     <span class="doc-missing">✗ Missing</span>
                                 <?php endif; ?>
@@ -206,7 +223,7 @@ $currentAdvisoryStmt = $connection->prepare("
                             <!-- Certificates -->
                             <td>
                                 <?php if (!empty($row['certificates'])): ?>
-                                    <a href="../../uploads/<?= htmlspecialchars($row['certificates']); ?>" target="_blank" class="doc-submitted">✓ View</a>
+                                    <a href="../../uploads/Documents/teacher/<?= htmlspecialchars($row['certificates']); ?>" target="_blank" class="doc-submitted">✓ View</a>
                                 <?php else: ?>
                                     <span class="doc-missing">✗ Missing</span>
                                 <?php endif; ?>
@@ -215,7 +232,7 @@ $currentAdvisoryStmt = $connection->prepare("
                             <!-- Other Docs -->
                             <td>
                                 <?php if (!empty($row['other_documents'])): ?>
-                                    <a href="../../uploads/<?= htmlspecialchars($row['other_documents']); ?>" target="_blank" class="doc-submitted">✓ View</a>
+                                    <a href="../../uploads/Documents/teacher/<?= htmlspecialchars($row['other_documents']); ?>" target="_blank" class="doc-submitted">✓ View</a>
                                 <?php else: ?>
                                     <span class="doc-missing">✗ Missing</span>
                                 <?php endif; ?>
@@ -233,25 +250,21 @@ $currentAdvisoryStmt = $connection->prepare("
                                 </span>
                             </td>
 
-                            <!-- FORM -->
+                            <!-- Batch Update Fields (hidden by default) -->
                             <td colspan="2">
-                                <form action="../../Back_End_Files/PHP_Files/teacher_update_remarks.php" method="POST" class="form-inline">
-
-                                    <input type="hidden" name="teacher_application_id" value="<?= $row['teacher_application_id']; ?>">
-
-                                    <!-- Advisory Dropdown -->
-                                    <select name="advisory_assignment">
+                                <div class="batch-update-fields" style="display: none;">
+                                    <input type="hidden" class="application-id" value="<?= $row['teacher_application_id']; ?>">
+                                    <select name="advisory_assignment" class="batch-advisory">
                                         <option value="">-- Select Advisory --</option>
-
                                         <?php
                                         if ($advisoryResult->num_rows > 0):
                                             $advisoryResult->data_seek(0);
-
+                                            
                                             // Get current advisory for this teacher
                                             $currentAdvisoryStmt->bind_param("i", $row['teacher_application_id']);
                                             $currentAdvisoryStmt->execute();
                                             $current = $currentAdvisoryStmt->get_result()->fetch_assoc();
-
+                                            
                                             while ($adv = $advisoryResult->fetch_assoc()):
                                                 $value = $adv['strand_id'] . "|" . $adv['grade_level'] . "|" . $adv['section_id'];
                                                 $selected = '';
@@ -276,25 +289,21 @@ $currentAdvisoryStmt = $connection->prepare("
                                                     $label = ' (Taken)';
                                                 }
                                         ?>
-                                                <option value="<?= $value ?>" <?= $selected ?> <?= $disabled ?>> 
-                                                    Grade <?= $adv['grade_level']; ?> - 
-                                                    <?= htmlspecialchars($adv['strand_name']); ?> - 
-                                                    <?= htmlspecialchars($adv['section_name']); ?>
-                                                    <?= $label ?>
-                                                </option>
+                                            <option value="<?= $value ?>" <?= $selected ?> <?= $disabled ?>>
+                                                Grade <?= $adv['grade_level']; ?> - <?= htmlspecialchars($adv['strand_name']); ?> - <?= htmlspecialchars($adv['section_name']); ?><?= $label ?>
+                                            </option>
                                         <?php endwhile; endif; ?>
                                     </select>
-
-                                    <textarea name="remarks" rows="2" class="remarks-small" placeholder="Enter remarks..."><?= htmlspecialchars($row['remarks'] ?? ''); ?></textarea>
-
-                                    <select name="application_status" required>
-                                        <option value="Pending" <?= $row['application_status'] == 'Pending' ? 'selected' : ''; ?>>Pending</option>
-                                        <option value="Approved" <?= $row['application_status'] == 'Approved' ? 'selected' : ''; ?>>Approved</option>
-                                        <option value="Rejected" <?= $row['application_status'] == 'Rejected' ? 'selected' : ''; ?>>Rejected</option>
+                                    <textarea name="remarks" rows="2" class="remarks-small batch-remarks" placeholder="Enter remarks..."></textarea>
+                                    <select name="application_status" class="batch-status">
+                                        <option value="Pending">Pending</option>
+                                        <option value="Approved">Approved</option>
+                                        <option value="Rejected">Rejected</option>
                                     </select>
-
-                                    <button type="submit" class="btn btn-save">Save</button>
-                                </form>
+                                </div>
+                                <div class="original-form-fields">
+                                    <span style="color: #666; font-size: 0.85em;">Use checkbox + Confirm to batch update</span>
+                                </div>
                             </td>
 
                         </tr>
@@ -302,7 +311,7 @@ $currentAdvisoryStmt = $connection->prepare("
 
                 <?php else: ?>
                     <tr>
-                        <td colspan="10" style="text-align: center; padding: 30px;">
+                        <td colspan="11" style="text-align: center; padding: 30px;">
                             No teacher applications found.
                         </td>
                     </tr>
@@ -319,6 +328,25 @@ $currentAdvisoryStmt = $connection->prepare("
         School Management System
     </div>
 
+    <!-- Loading Modal -->
+    <div id="loadingModal" class="loading-modal">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p>Processing... Please wait.</p>
+            <span class="loading-subtext">Sending notifications and updating records.</span>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="success-modal">
+        <div class="success-content">
+            <div class="success-icon">✓</div>
+            <p id="successMessage">Operation completed successfully!</p>
+            <button type="button" class="btn btn-success" onclick="closeSuccessModal()">OK</button>
+        </div>
+    </div>
+
     <script src="../../Back_End_Files/JSCRIPT_Files/profile_dropdown_function.js"></script>
+    <script src="../../Back_End_Files/JSCRIPT_Files/application_list_function.js"></script>
 </body>
 </html>

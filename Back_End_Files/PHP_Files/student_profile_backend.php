@@ -71,7 +71,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     
     // Handle file uploads
-    $uploadDir = "../../uploads/";
+    $uploadDir = "../../uploads/Profile/student/";
+    
+    // Create directory if it doesn't exist
+    if (!file_exists($uploadDir)) {
+        mkdir($uploadDir, 0777, true);
+    }
+    
+    // Debug: Check what's in FILES array
+    error_log("FILES array: " . print_r($_FILES, true));
+    
     $allowedTypes = ['pdf', 'jpg', 'jpeg', 'png'];
     $imageTypes = ['jpg', 'jpeg', 'png', 'gif'];
     $documentFields = ['psa_birth_certificate', 'form_138', 'student_id_copy'];
@@ -96,12 +105,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (move_uploaded_file($file['tmp_name'], $destination)) {
                 $profileImageUpdate = "profile_image = ?";
                 $profileImageValue = $newFileName;
+                error_log("Profile image uploaded successfully: " . $newFileName);
+            } else {
+                error_log("Failed to move profile image. Temp: " . $file['tmp_name'] . ", Dest: " . $destination);
             }
+        } else {
+            error_log("Invalid image type: " . $fileExt);
         }
     } else {
         // Debug: Log why profile image wasn't processed
         if (isset($_FILES['profile_image'])) {
-            error_log("Profile image upload error: " . $_FILES['profile_image']['error']);
+            error_log("Profile image upload error code: " . $_FILES['profile_image']['error']);
         } else {
             error_log("No profile image in FILES array");
         }
@@ -199,6 +213,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $types .= "s";
     }
     $types .= $documentTypes . "i";
+    
+    // Debug: Log the query and parameters
+    error_log("Update Query: " . $updateQuery);
+    error_log("Types: " . $types);
+    error_log("Profile Image Value: " . ($profileImageValue ?? "NULL"));
+    error_log("Application ID: " . $application_id);
     
     // Bind parameters dynamically
     $updateStmt->bind_param($types, ...$params);

@@ -1,133 +1,127 @@
 <?php
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
+// Disable all error display - only log errors
+ini_set('display_errors', 0);
+ini_set('display_startup_errors', 0);
+error_reporting(0);
 
-include $_SERVER['DOCUMENT_ROOT'] . '/SMS_CDONHS-SHS_WEBSITE/Back_End_Files/PHP_Files/mailer_details.php';
-include $_SERVER['DOCUMENT_ROOT'] . '/SMS_CDONHS-SHS_WEBSITE/DB_Connection/Connection.php';
+ob_start(); // start output buffering
+header('Content-Type: application/json');
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
+include "../../DB_Connection/Connection.php";
+include "mailer_details.php";
 
-    $application_id = $_POST['student_application_id'];
-    $remarks = $_POST['remarks'];
-    $status = $_POST['application_status'];
+// read JSON from frontend
+$data = json_decode(file_get_contents("php://input"), true);
 
-    // ===============================
-    // Get applicant info FIRST (before any update/delete)
-    // ===============================
-    $getStudent = $connection->prepare(
-        "SELECT first_name, last_name, email, lrn
-         FROM student_applications
-         WHERE application_id = ?"
-    );
-    $getStudent->bind_param("i", $application_id);
-    $getStudent->execute();
-    $student = $getStudent->get_result()->fetch_assoc();
+if (!$data || !isset($data['updates'])) {
+    ob_end_clean();
+    echo json_encode(['success' => false, 'message' => 'No data received']);
+    exit;
+}
 
-    // ===============================
-    // IF REJECTED → Delete application and send email
-    // ===============================
+$updates = $data['updates'];
+
+$updatedCount = 0;
+$errorCount = 0;
+
+foreach ($updates as $item) {
+    if (!isset($item['application_id'], $item['status'])) {
+        $errorCount++;
+        continue;
+    }
+    
+    $applicationId = (int)$item['application_id'];
+    $status = $item['status'];
+    $remarks = isset($item['remarks']) ? $item['remarks'] : "";
+    
+    // Get student info first (before any update)
+    $stmtGetStudent = $connection->prepare("SELECT first_name, last_name, email, lrn FROM student_applications WHERE application_id = ?");
+    $stmtGetStudent->bind_param("i", $applicationId);
+    $stmtGetStudent->execute();
+    $resultStudent = $stmtGetStudent->get_result();
+    $studentInfo = $resultStudent->fetch_assoc();
+    $stmtGetStudent->close();
+    
+    if (!$studentInfo) {
+        $errorCount++;
+        continue;
+    }
+    
+    // Handle Rejected status
     if ($status === 'Rejected') {
         // Send rejection email
         try {
-            $mail->setFrom('cdonhsshsacc@gmail.com', 'CDONHS-SHS Enrollment Office');
-            $mail->addAddress(
-                $student['email'],
-                $student['first_name'] . ' ' . $student['last_name']
-            );
-
+            $mail->setFrom('cdonhsshsacc@gmail.com', 'CDONHS-SHS Admin');
+            $mail->addAddress($studentInfo['email']);
             $mail->isHTML(true);
-            $mail->Subject = 'CDONHS-SHS Enrollment Status Update';
-
+            
+            $mail->Subject = "Application Rejected - CDONHS-SHS";
+            $remarksHtml = !empty($remarks) ? "<p><strong>Reason:</strong> {$remarks}</p>" : "";
             $mail->Body = "
-            <p>Good day <b>{$student['first_name']} {$student['last_name']}</b>,</p>
-            <p>We regret to inform you that your enrollment application has been <b>rejected</b>.</p>
-            <p><b>Admin Remarks:</b></p>
-            <p>$remarks</p>
-            <br>
-            <p>Thank you for your interest in CDONHS-SHS.</p>
-            <p><br>
-            <b>CDONHS-SHS Enrollment Office</b></p>
+                <html>
+                <head>
+                    <style>
+                        body { font-family: Arial, sans-serif; color: #333; line-height: 1.5; }
+                        .container { max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9; }
+                        .header { font-size: 18px; font-weight: bold; color: #dc3545; margin-bottom: 15px; }
+                    </style>
+                </head>
+                <body>
+                    <div class='container'>
+                        <div class='header'>Good day {$studentInfo['first_name']} {$studentInfo['last_name']},</div>
+                        <p>We regret to inform you that your application to CDONHS-SHS has been <strong>REJECTED</strong>.</p>
+                        {$remarksHtml}
+                        <p>Thank you for your interest in CDONHS-SHS.</p>
+                        <p><br><b>CDONHS-SHS Admin</b></p>
+                    </div>
+                </body>
+                </html>
             ";
-
+            
             $mail->send();
-
         } catch (Exception $e) {
-            error_log('Mail Error: ' . $mail->ErrorInfo);
+            error_log("Mailer Error: " . $mail->ErrorInfo);
         }
-
+        
+        $mail->clearAddresses();
+        
         // Delete the application
-        $delete = $connection->prepare(
-            "DELETE FROM student_applications WHERE application_id = ?"
-        );
-        $delete->bind_param("i", $application_id);
-        $delete->execute();
-
-        header("Location: ../../Website_Files/Admin_Files/admin_student_application_list.php");
-        exit;
+        $stmtDelete = $connection->prepare("DELETE FROM student_applications WHERE application_id = ?");
+        $stmtDelete->bind_param("i", $applicationId);
+        $stmtDelete->execute();
+        $stmtDelete->close();
+        
+        $updatedCount++;
+        continue;
     }
-
-    // ===============================
-    // Update enrollment application (for Pending or Approved)
-    // ===============================
-    $update = $connection->prepare(
-        "UPDATE student_applications 
-         SET remarks = ?, application_status = ?
-         WHERE application_id = ?"
-    );
-    $update->bind_param("ssi", $remarks, $status, $application_id);
-    $update->execute();
-
-    // ===============================
-    // IF APPROVED → CREATE USER + STUDENT
-    // ===============================
+    
+    // Handle Approved status - Create user and student records
     if ($status === 'Approved') {
-
         $connection->begin_transaction();
-
+        
         try {
-
             // Generate student_number
             $result = $connection->query("SELECT MAX(student_number) AS max_id FROM students");
             $row = $result->fetch_assoc();
             $student_number = ($row['max_id'] ?? 304111) + 1;
-
+            
             // Get Student role_id
-            $roleResult = $connection->query(
-                "SELECT role_id FROM roles WHERE role_name = 'Student'"
-            );
-            $role_id = $roleResult->fetch_assoc()['role_id'];
-
-            // Create login credentials
-            $username = $student['lrn'];
-            $defaultPassword = substr($student['lrn'], -6);
+            $roleResult = $connection->query("SELECT role_id FROM roles WHERE role_name = 'Student'");
+            $role_id = $roleResult ? $roleResult->fetch_assoc()['role_id'] : 1;
+            
+            // Create login credentials - username is LRN
+            $username = $studentInfo['lrn'];
+            $defaultPassword = substr($studentInfo['lrn'], -6);
             $hashedPassword = password_hash($defaultPassword, PASSWORD_DEFAULT);
-
-            // ===============================
-            // 1️⃣ INSERT INTO USERS FIRST
-            // ===============================
-            $insertUser = $connection->prepare(
-                "INSERT INTO users (username, password, role_id)
-                 VALUES (?, ?, ?)"
-            );
-            $insertUser->bind_param(
-                "ssi",
-                $username,
-                $hashedPassword,
-                $role_id
-            );
-            $insertUser->execute();
-
-            // Get generated user_id
-            $user_id = $connection->insert_id;
-
-            // ===============================
-            // 2️⃣ INSERT INTO STUDENTS WITH user_id
-            // ===============================
+            
+            // 1. INSERT INTO USERS FIRST
+            $stmtUser = $connection->prepare("INSERT INTO users (username, password, role_id) VALUES (?, ?, ?)");
+            $stmtUser->bind_param("ssi", $username, $hashedPassword, $role_id);
+            $stmtUser->execute();
+            $userId = $connection->insert_id;
+            $stmtUser->close();
             
             // Get current school year
-            // Philippine school year runs from August to May/June
-            // If current month is January-July (1-7), we're in the school year that started last year
-            // If current month is August-December (8-12), we're in the school year that started this year
             $currentMonth = date('n');
             $currentYear = date('Y');
             if ($currentMonth >= 8) {
@@ -136,67 +130,119 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
                 $school_year = ($currentYear - 1) . '-' . $currentYear;
             }
             
-            $insertStudent = $connection->prepare(
-                "INSERT INTO students (user_id, application_id, student_number, school_year)
-                 VALUES (?, ?, ?, ?)"
-            );
-            $insertStudent->bind_param(
-                "iiis",
-                $user_id,
-                $application_id,
-                $student_number,
-                $school_year
-            );
-            $insertStudent->execute();
-
+            // 2. INSERT INTO STUDENTS (enlistment_status = Not Enlisted)
+            $enrollmentStatus = "Active";
+            $enlistmentStatus = "Not Enlisted";
+            $dateEnrolled = date("Y-m-d");
+            $stmtStudent = $connection->prepare("INSERT INTO students (user_id, application_id, student_number, enrollment_status, date_enrolled, enlistment_status, school_year) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            $stmtStudent->bind_param("iiissss", $userId, $applicationId, $student_number, $enrollmentStatus, $dateEnrolled, $enlistmentStatus, $school_year);
+            $stmtStudent->execute();
+            $stmtStudent->close();
+            
+            // 3. UPDATE student_applications status
+            $stmtUpdate = $connection->prepare("UPDATE student_applications SET application_status = ?, remarks = ? WHERE application_id = ?");
+            $stmtUpdate->bind_param("ssi", $status, $remarks, $applicationId);
+            $stmtUpdate->execute();
+            $stmtUpdate->close();
+            
             $connection->commit();
-
+            
+            // Send approval email with credentials
+            try {
+                $mail->setFrom('cdonhsshsacc@gmail.com', 'CDONHS-SHS Admin');
+                $mail->addAddress($studentInfo['email']);
+                $mail->isHTML(true);
+                
+                $mail->Subject = "Application Approved - CDONHS-SHS";
+                $mail->Body = "
+                    <html>
+                    <head>
+                        <style>
+                            body { font-family: Arial, sans-serif; color: #333; line-height: 1.5; }
+                            .container { max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9; }
+                            .header { font-size: 18px; font-weight: bold; color: #28a745; margin-bottom: 15px; }
+                            .credentials { background: #f0f0f0; padding: 15px; border-radius: 5px; margin: 15px 0; }
+                        </style>
+                    </head>
+                    <body>
+                        <div class='container'>
+                            <div class='header'>Good day {$studentInfo['first_name']} {$studentInfo['last_name']},</div>
+                            <p>Congratulations! Your application to CDONHS-SHS has been <strong>APPROVED</strong>.</p>
+                            <p>You may now proceed with the enrollment process.</p>
+                            <div class='credentials'>
+                                <p><strong>Username:</strong> {$username}</p>
+                                <p><strong>Temporary Password:</strong> {$defaultPassword}</p>
+                            </div>
+                            <p>Please change your password after logging in.</p>
+                            <p>Thank you,<br><b>CDONHS-SHS Admin</b></p>
+                        </div>
+                    </body>
+                    </html>
+                ";
+                
+                $mail->send();
+            } catch (Exception $e) {
+                error_log("Mailer Error: " . $mail->ErrorInfo);
+            }
+            
+            $mail->clearAddresses();
+            
         } catch (Exception $e) {
             $connection->rollback();
-            die("Transaction failed: " . $e->getMessage());
+            error_log("Transaction Error: " . $e->getMessage());
+            $errorCount++;
+            continue;
         }
+        
+        $updatedCount++;
+        continue;
     }
-
-    // ===============================
-    // SEND EMAIL NOTIFICATION
-    // ===============================
+    
+    // Handle other statuses (Pending, etc.) - just update status
+    $stmt = $connection->prepare("UPDATE student_applications SET application_status = ?, remarks = ? WHERE application_id = ?");
+    $stmt->bind_param("ssi", $status, $remarks, $applicationId);
+    $stmt->execute();
+    $stmt->close();
+    
+    // Send email notification for Pending status
     try {
-
-        $mail->setFrom('cdonhsshsacc@gmail.com', 'CDONHS-SHS Enrollment Office');
-        $mail->addAddress(
-            $student['email'],
-            $student['first_name'] . ' ' . $student['last_name']
-        );
-
+        $mail->setFrom('cdonhsshsacc@gmail.com', 'CDONHS-SHS Admin');
+        $mail->addAddress($studentInfo['email']);
         $mail->isHTML(true);
-        $mail->Subject = 'CDONHS-SHS Enrollment Status Update';
-
-        $loginInfo = ($status === 'Approved') ? "
-        <p><b>Login Credentials:</b></p>
-        <ul>
-            <li><b>Username:</b> {$username}</li>
-            <li><b>Temporary Password:</b> {$defaultPassword}</li>
-        </ul>
-        <p>Please change your password after first login.</p>
-        " : "";
-
+        
+        $mail->Subject = "Application Status Update - CDONHS-SHS";
         $mail->Body = "
-        <p>Good day <b>{$student['first_name']} {$student['last_name']}</b>,</p>
-        <p>Your enrollment application has been <b>$status</b>.</p>
-        <p><b>Admin Remarks:</b></p>
-        <p>$remarks</p>
-        $loginInfo
-        <br>
-        <p>Thank you,<br><b>CDONHS-SHS Enrollment Office</b></p>
+            <html>
+            <head>
+                <style>
+                    body { font-family: Arial, sans-serif; color: #333; line-height: 1.5; }
+                    .container { max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9; }
+                    .header { font-size: 18px; font-weight: bold; color: #ffc107; margin-bottom: 15px; }
+                </style>
+            </head>
+            <body>
+                <div class='container'>
+                    <div class='header'>Good day {$studentInfo['first_name']} {$studentInfo['last_name']},</div>
+                    <p>Your application status has been updated to <strong>{$status}</strong>.</p>
+                    <p>Thank you,<br><b>CDONHS-SHS Admin</b></p>
+                </div>
+            </body>
+            </html>
         ";
-
+        
         $mail->send();
-
     } catch (Exception $e) {
-        error_log("Mail Error: " . $mail->ErrorInfo);
+        error_log("Mailer Error: " . $mail->ErrorInfo);
     }
-
-    header("Location: ../../Website_Files/Admin_Files/admin_student_application_list.php");
-    exit;
+    
+    $mail->clearAddresses();
+    $updatedCount++;
 }
-?>
+
+ob_end_clean();
+
+echo json_encode([
+    'success' => true,
+    'message' => "Applications updated successfully. Total: {$updatedCount}"
+]);
+exit;

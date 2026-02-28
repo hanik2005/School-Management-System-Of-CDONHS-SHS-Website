@@ -108,6 +108,7 @@ if (!$result) {
                 
                 <div class="filter-buttons">
                     <button type="submit" class="btn btn-filter">🔍 Search</button>
+                    <button type="button" class="btn btn-confirm-batch" id="confirmBatchBtn">✓ Confirm Selected</button>
                     <a href="admin_student_application_list.php" class="btn btn-reset">↻ Reset</a>
                 </div>
             </div>
@@ -119,6 +120,7 @@ if (!$result) {
         <table>
             <thead>
                 <tr>
+                    <th><input type="checkbox" id="selectAllCheckbox"></th>
                     <th>#</th>
                     <th>Full Name</th>
                     <th>LRN</th>
@@ -135,7 +137,8 @@ if (!$result) {
                 <?php if ($result->num_rows > 0): ?>
                     <?php $count = 1; ?>
                     <?php while ($row = $result->fetch_assoc()): ?>
-                        <tr>
+                        <tr class="application-row" data-application-id="<?= $row['application_id']; ?>">
+                            <td><input type="checkbox" class="row-checkbox"></td>
                             <td><?= $count++; ?></td>
                             <td><?= htmlspecialchars($row['first_name'] . ' ' . $row['last_name']); ?></td>
                             <td><?= htmlspecialchars($row['lrn']); ?></td>
@@ -144,7 +147,7 @@ if (!$result) {
                             <!-- PSA -->
                             <td>
                                 <?php if (!empty($row['psa_birth_certificate'])): ?>
-                                    <a href="../../uploads/<?= htmlspecialchars($row['psa_birth_certificate']); ?>"
+                                    <a href="../../uploads/Documents/student/<?= htmlspecialchars($row['psa_birth_certificate']); ?>"
                                        target="_blank" class="doc-submitted">✓ View</a>
                                 <?php else: ?>
                                     <span class="doc-missing">✗ Missing</span>
@@ -154,7 +157,7 @@ if (!$result) {
                             <!-- Form 138 -->
                             <td>
                                 <?php if (!empty($row['form_138'])): ?>
-                                    <a href="../../uploads/<?= htmlspecialchars($row['form_138']); ?>"
+                                    <a href="../../uploads/Documents/student/<?= htmlspecialchars($row['form_138']); ?>"
                                        target="_blank" class="doc-submitted">✓ View</a>
                                 <?php else: ?>
                                     <span class="doc-missing">✗ Missing</span>
@@ -164,7 +167,7 @@ if (!$result) {
                             <!-- Student ID -->
                             <td>
                                 <?php if (!empty($row['student_id_copy'])): ?>
-                                    <a href="../../uploads/<?= htmlspecialchars($row['student_id_copy']); ?>"
+                                    <a href="../../uploads/Documents/student/<?= htmlspecialchars($row['student_id_copy']); ?>"
                                        target="_blank" class="doc-submitted">✓ View</a>
                                 <?php else: ?>
                                     <span class="doc-missing">✗ Missing</span>
@@ -185,25 +188,24 @@ if (!$result) {
 
                             <!-- FORM: REMARKS + STATUS -->
                             <td colspan="2">
-                                <form action="../../Back_End_Files/PHP_Files/student_update_remarks.php" method="POST" class="form-inline">
-                                    <input type="hidden" name="student_application_id" value="<?= $row['application_id']; ?>">
-
-                                    <textarea name="remarks" rows="2" class="remarks-small" placeholder="Enter remarks..."><?= htmlspecialchars($row['remarks'] ?? ''); ?></textarea>
-
-                                    <select name="application_status" required>
-                                        <option value="Pending" <?= $row['application_status']=='Pending'?'selected':''; ?>>Pending</option>
-                                        <option value="Approved" <?= $row['application_status']=='Approved'?'selected':''; ?>>Approved</option>
-                                        <option value="Rejected" <?= $row['application_status']=='Rejected'?'selected':''; ?>>Rejected</option>
+                                <div class="batch-update-fields" style="display: none;">
+                                    <input type="hidden" class="application-id" value="<?= $row['application_id']; ?>">
+                                    <textarea name="remarks" rows="2" class="remarks-small batch-remarks" placeholder="Enter remarks..."></textarea>
+                                    <select name="application_status" class="batch-status">
+                                        <option value="Pending">Pending</option>
+                                        <option value="Approved">Approved</option>
+                                        <option value="Rejected">Rejected</option>
                                     </select>
-
-                                    <button type="submit" class="btn btn-save">Save</button>
-                                </form>
+                                </div>
+                                <div class="original-form-fields">
+                                    <span style="color: #666; font-size: 0.85em;">Use checkbox + Confirm to batch update</span>
+                                </div>
                             </td>
                         </tr>
                     <?php endwhile; ?>
                 <?php else: ?>
                     <tr>
-                        <td colspan="10" style="text-align: center; padding: 30px;">
+                        <td colspan="11" style="text-align: center; padding: 30px;">
                             No student applications found.
                         </td>
                     </tr>
@@ -219,6 +221,25 @@ if (!$result) {
         School Management System
     </div>
 
+    <!-- Loading Modal -->
+    <div id="loadingModal" class="loading-modal">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p>Processing... Please wait.</p>
+            <span class="loading-subtext">Sending notifications and updating records.</span>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="success-modal">
+        <div class="success-content">
+            <div class="success-icon">✓</div>
+            <p id="successMessage">Operation completed successfully!</p>
+            <button type="button" class="btn btn-success" onclick="closeSuccessModal()">OK</button>
+        </div>
+    </div>
+
     <script src="../../Back_End_Files/JSCRIPT_Files/profile_dropdown_function.js"></script>
+    <script src="../../Back_End_Files/JSCRIPT_Files/application_list_function.js"></script>
 </body>
 </html>

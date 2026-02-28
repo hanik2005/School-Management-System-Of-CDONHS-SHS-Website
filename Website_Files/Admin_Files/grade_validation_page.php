@@ -102,7 +102,9 @@ include "../../Back_End_Files/PHP_Files/grade_validation_backend.php";
     
 
     <button type="submit" class="search-btn">Search</button>
+    <button type="button" class="confirm-filter-btn" id="confirmFilterBtn">Confirm</button>
     <button type="button" class="clear-btn" id="clearFilters">Clear</button>
+    <a href="home.php" class="back-btn">Back to Home</a>
 </form>
 
 <!-- VALIDATION TABLE -->
@@ -110,6 +112,7 @@ include "../../Back_End_Files/PHP_Files/grade_validation_backend.php";
     <table class="validation-table">
         <thead>
             <tr>
+                <th><input type="checkbox" id="selectAllCheckbox"></th>
                 <th>Grade Level</th>
                 <th>Strand</th>
                 <th>Section</th>
@@ -123,6 +126,7 @@ include "../../Back_End_Files/PHP_Files/grade_validation_backend.php";
         <?php if($validationData): ?>
             <?php foreach($validationData as $row): ?>
             <tr class="validation-row" data-grade="<?= $row['grade_level'] ?>" data-section="<?= $row['section_id'] ?>" data-quarter="<?= $row['quarter'] ?>">
+                <td><input type="checkbox" class="row-checkbox"></td>
                 <td><?= $row['grade_level'] ?></td>
                 <td><?= $row['strand_name'] ?></td>
                 <td><?= $row['section_name'] ?></td>
@@ -142,7 +146,7 @@ include "../../Back_End_Files/PHP_Files/grade_validation_backend.php";
             </tr>
             <?php endforeach; ?>
         <?php else: ?>
-            <tr><td colspan="7" style="text-align:center;">No Data</td></tr>
+            <tr><td colspan="8" style="text-align:center;">No Data</td></tr>
         <?php endif; ?>
         </tbody>
     </table>
@@ -167,6 +171,15 @@ include "../../Back_End_Files/PHP_Files/grade_validation_backend.php";
 © 2026 Cagayan De Oro National High School - Senior High School
 <br>
     School Management System
+</div>
+
+<!-- LOADING MODAL -->
+<div id="loadingModal" class="loading-modal">
+    <div class="loading-content">
+        <div class="spinner"></div>
+        <p>Sending emails... Please wait.</p>
+        <span class="loading-subtext">This may take a while as emails are being sent to all recipients.</span>
+    </div>
 </div>
 
 <script src="../../Back_End_Files/JSCRIPT_Files/profile_dropdown_function.js"></script>

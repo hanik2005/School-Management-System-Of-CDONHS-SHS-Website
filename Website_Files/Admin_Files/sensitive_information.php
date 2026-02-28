@@ -249,14 +249,13 @@ include "../../Back_End_Files/PHP_Files/sensitive_information_backend.php";
                                         <span class="detail-label">PSA Birth Certificate</span>
                                         <?php if (!empty($record['psa_birth_certificate'])): ?>
                                             <a href="../../uploads/<?= htmlspecialchars($record['psa_birth_certificate']); ?>" target="_blank" class="doc-link">✓ View Document</a>
-                                        <?php else: ?>
                                             <span class="doc-missing">Not Submitted</span>
                                         <?php endif; ?>
                                     </div>
                                     <div class="detail-item">
                                         <span class="detail-label">Form 138</span>
                                         <?php if (!empty($record['form_138'])): ?>
-                                            <a href="../../uploads/<?= htmlspecialchars($record['form_138']); ?>" target="_blank" class="doc-link">✓ View Document</a>
+                                            <a href="../../uploads/Documents/student/<?= htmlspecialchars($record['form_138']); ?>" target="_blank" class="doc-link">✓ View Document</a>
                                         <?php else: ?>
                                             <span class="doc-missing">Not Submitted</span>
                                         <?php endif; ?>
@@ -264,7 +263,7 @@ include "../../Back_End_Files/PHP_Files/sensitive_information_backend.php";
                                     <div class="detail-item">
                                         <span class="detail-label">Student ID Copy</span>
                                         <?php if (!empty($record['student_id_copy'])): ?>
-                                            <a href="../../uploads/<?= htmlspecialchars($record['student_id_copy']); ?>" target="_blank" class="doc-link">✓ View Document</a>
+                                            <a href="../../uploads/Documents/student/<?= htmlspecialchars($record['student_id_copy']); ?>" target="_blank" class="doc-link">✓ View Document</a>
                                         <?php else: ?>
                                             <span class="doc-missing">Not Submitted</span>
                                         <?php endif; ?>
@@ -272,7 +271,7 @@ include "../../Back_End_Files/PHP_Files/sensitive_information_backend.php";
                                     <div class="detail-item">
                                         <span class="detail-label">Profile Image</span>
                                         <?php if (!empty($record['profile_image'])): ?>
-                                            <a href="../../uploads/<?= htmlspecialchars($record['profile_image']); ?>" target="_blank" class="doc-link">✓ View Image</a>
+                                            <a href="../../uploads/Documents/student/<?= htmlspecialchars($record['profile_image']); ?>" target="_blank" class="doc-link">✓ View Image</a>
                                         <?php else: ?>
                                             <span class="doc-missing">Not Submitted</span>
                                         <?php endif; ?>
@@ -283,7 +282,7 @@ include "../../Back_End_Files/PHP_Files/sensitive_information_backend.php";
                                     <div class="detail-item">
                                         <span class="detail-label">Resume/CV</span>
                                         <?php if (!empty($record['resume_cv'])): ?>
-                                            <a href="../../uploads/<?= htmlspecialchars($record['resume_cv']); ?>" target="_blank" class="doc-link">✓ View Document</a>
+                                            <a href="../../uploads/Documents/teacher/<?= htmlspecialchars($record['resume_cv']); ?>" target="_blank" class="doc-link">✓ View Document</a>
                                         <?php else: ?>
                                             <span class="doc-missing">Not Submitted</span>
                                         <?php endif; ?>
@@ -291,7 +290,7 @@ include "../../Back_End_Files/PHP_Files/sensitive_information_backend.php";
                                     <div class="detail-item">
                                         <span class="detail-label">PRC ID Copy</span>
                                         <?php if (!empty($record['prc_id_copy'])): ?>
-                                            <a href="../../uploads/<?= htmlspecialchars($record['prc_id_copy']); ?>" target="_blank" class="doc-link">✓ View Document</a>
+                                            <a href="../../uploads/Documents/teacher/<?= htmlspecialchars($record['prc_id_copy']); ?>" target="_blank" class="doc-link">✓ View Document</a>
                                         <?php else: ?>
                                             <span class="doc-missing">Not Submitted</span>
                                         <?php endif; ?>
@@ -299,7 +298,7 @@ include "../../Back_End_Files/PHP_Files/sensitive_information_backend.php";
                                     <div class="detail-item">
                                         <span class="detail-label">Certificates</span>
                                         <?php if (!empty($record['certificates'])): ?>
-                                            <a href="../../uploads/<?= htmlspecialchars($record['certificates']); ?>" target="_blank" class="doc-link">✓ View Document</a>
+                                            <a href="../../uploads/Documents/teacher/<?= htmlspecialchars($record['certificates']); ?>" target="_blank" class="doc-link">✓ View Document</a>
                                         <?php else: ?>
                                             <span class="doc-missing">Not Submitted</span>
                                         <?php endif; ?>
@@ -307,7 +306,7 @@ include "../../Back_End_Files/PHP_Files/sensitive_information_backend.php";
                                     <div class="detail-item">
                                         <span class="detail-label">Other Documents</span>
                                         <?php if (!empty($record['other_documents'])): ?>
-                                            <a href="../../uploads/<?= htmlspecialchars($record['other_documents']); ?>" target="_blank" class="doc-link">✓ View Document</a>
+                                            <a href="../../uploads/Documents/teacher/<?= htmlspecialchars($record['other_documents']); ?>" target="_blank" class="doc-link">✓ View Document</a>
                                         <?php else: ?>
                                             <span class="doc-missing">Not Submitted</span>
                                         <?php endif; ?>
@@ -315,7 +314,7 @@ include "../../Back_End_Files/PHP_Files/sensitive_information_backend.php";
                                     <div class="detail-item">
                                         <span class="detail-label">Profile Image</span>
                                         <?php if (!empty($record['profile_image'])): ?>
-                                            <a href="../../uploads/<?= htmlspecialchars($record['profile_image']); ?>" target="_blank" class="doc-link">✓ View Image</a>
+                                            <a href="../../uploads/Documents/teacher/<?= htmlspecialchars($record['profile_image']); ?>" target="_blank" class="doc-link">✓ View Image</a>
                                         <?php else: ?>
                                             <span class="doc-missing">Not Submitted</span>
                                         <?php endif; ?>

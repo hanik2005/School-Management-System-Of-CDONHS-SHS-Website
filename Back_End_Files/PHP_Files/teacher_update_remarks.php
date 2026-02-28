@@ -1,299 +1,361 @@
 <?php
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
+// Disable all error display - only log errors
+ini_set('display_errors', 0);
+ini_set('display_startup_errors', 0);
+error_reporting(0);
 
-include $_SERVER['DOCUMENT_ROOT'] . '/SMS_CDONHS-SHS_WEBSITE/Back_End_Files/PHP_Files/mailer_details.php';
-include $_SERVER['DOCUMENT_ROOT'] . '/SMS_CDONHS-SHS_WEBSITE/DB_Connection/Connection.php';
+ob_start(); // start output buffering
+header('Content-Type: application/json');
 
-if ($_SERVER["REQUEST_METHOD"] === "POST") {
+include "../../DB_Connection/Connection.php";
+include "mailer_details.php";
 
-    $application_id      = $_POST['teacher_application_id'];
-    $remarks             = $_POST['remarks'];
-    $status              = $_POST['application_status'];
-    $advisory_assignment = $_POST['advisory_assignment'] ?? null;
+// read JSON from frontend
+$data = json_decode(file_get_contents("php://input"), true);
 
-    // ===============================
-    // Get teacher info FIRST (before any update/delete)
-    // ===============================
-    $getTeacher = $connection->prepare(
-        "SELECT first_name, last_name, email
-         FROM teacher_applications
-         WHERE teacher_application_id = ?"
-    );
-    $getTeacher->bind_param("i", $application_id);
-    $getTeacher->execute();
-    $teacher = $getTeacher->get_result()->fetch_assoc();
-
-    // ===============================
-    // IF REJECTED → Delete application and send email
-    // ===============================
-    if ($status === 'Rejected') {
-        // Send rejection email
-        try {
-            $mail->setFrom('cdonhsshsacc@gmail.com', 'CDONHS-SHS HR Office');
-            $mail->addAddress(
-                $teacher['email'],
-                $teacher['first_name'] . ' ' . $teacher['last_name']
-            );
-
-            $mail->isHTML(true);
-            $mail->Subject = 'CDONHS-SHS Teacher Application Status Update';
-
-            $mail->Body = "
-            <p>Good day <b>{$teacher['first_name']} {$teacher['last_name']}</b>,</p>
-            <p>We regret to inform you that your <b>teacher application</b> has been <b>rejected</b>.</p>
-            <p><b>Admin Remarks:</b></p>
-            <p>$remarks</p>
-            <br>
-            <p>Thank you for your interest in CDONHS-SHS.</p>
-            <p><br>
-            <b>CDONHS-SHS Human Resources Office</b></p>
-            ";
-
-            $mail->send();
-
-        } catch (Exception $e) {
-            error_log('Mail Error: ' . $mail->ErrorInfo);
-        }
-
-        // Delete the application
-        $delete = $connection->prepare(
-            "DELETE FROM teacher_applications WHERE teacher_application_id = ?"
-        );
-        $delete->bind_param("i", $application_id);
-        $delete->execute();
-
-        header("Location: ../../Website_Files/Admin_Files/admin_teacher_application_list.php");
-        exit;
-    }
-
-    // ===============================
-    // Update teacher application (for Pending or Approved)
-    // ===============================
-    $update = $connection->prepare(
-        "UPDATE teacher_applications
-         SET remarks = ?, application_status = ?
-         WHERE teacher_application_id = ?"
-    );
-    $update->bind_param("ssi", $remarks, $status, $application_id);
-    $update->execute();
-
-    if ($status === 'Approved') {
-
-        $connection->begin_transaction();
-
-        try {
-
-            // ===============================
-            // Check if teacher already exists
-            // ===============================
-            $check = $connection->prepare(
-                "SELECT teacher_id, teacher_number, user_id
-                 FROM teachers
-                 WHERE application_id = ?"
-            );
-            $check->bind_param("i", $application_id);
-            $check->execute();
-            $checkResult = $check->get_result();
-
-            if ($checkResult->num_rows > 0) {
-
-                // Already created
-                $existingTeacher = $checkResult->fetch_assoc();
-                $teacher_id = $existingTeacher['teacher_id'];
-                $teacher_number  = $existingTeacher['teacher_number'];
-                $username   = (string)$teacher_number;
-                $tempPassword = "Already Created";
-
-            } else {
-
-                // ===============================
-                // Generate teacher_number
-                // ===============================
-                $result = $connection->query(
-                    "SELECT MAX(teacher_number) AS max_id FROM teachers"
-                );
-                $row = $result->fetch_assoc();
-                $teacher_number = ($row['max_id'] ?? 502300) + 1;
-
-                // ===============================
-                // Get Teacher role_id
-                // ===============================
-                $roleResult = $connection->query(
-                    "SELECT role_id FROM roles WHERE role_name = 'Teacher'"
-                );
-                $role_id = $roleResult->fetch_assoc()['role_id'];
-
-                // ===============================
-                // Create login account FIRST
-                // ===============================
-                $username = "T_" . $teacher_number;
-               // $tempPassword = bin2hex(random_bytes(4)); THIS IS THE TRUE DEFAULT
-                $stringNumber = (string) $teacher_number;
-                $tempPassword = substr($stringNumber, -6);
-                $passwordHash = password_hash($tempPassword, PASSWORD_DEFAULT);
-
-                $insertUser = $connection->prepare(
-                    "INSERT INTO users
-                        (username, password, role_id, status)
-                     VALUES (?, ?, ?, 'Active')"
-                );
-                $insertUser->bind_param(
-                    "ssi",
-                    $username,
-                    $passwordHash,
-                    $role_id
-                );
-                $insertUser->execute();
-
-                $user_id = $connection->insert_id;
-
-                // ===============================
-                // Insert teacher WITH user_id
-                // ===============================
-                $insertTeacher = $connection->prepare(
-                    "INSERT INTO teachers (user_id, application_id, teacher_number)
-                     VALUES (?, ?, ?)"
-                );
-                $insertTeacher->bind_param(
-                    "iii",
-                    $user_id,
-                    $application_id,
-                    $teacher_number
-                );
-                $insertTeacher->execute();
-
-                $teacher_id = $connection->insert_id;
-            }
-
-            // ===============================
-            // HANDLE ADVISORY
-            // ===============================
-            if (!empty($advisory_assignment)) {
-
-                list($strand_id, $grade_level, $section_id) =
-                    explode("|", $advisory_assignment);
-
-                // Check if section already assigned
-                $checkSection = $connection->prepare(
-                    "SELECT teacher_advisory_id
-                     FROM teacher_advisory
-                     WHERE strand_id = ?
-                     AND grade_level = ?
-                     AND section_id = ?
-                     AND teacher_id != ?"
-                );
-
-                $checkSection->bind_param(
-                    "iiii",
-                    $strand_id,
-                    $grade_level,
-                    $section_id,
-                    $teacher_id
-                );
-
-                $checkSection->execute();
-                if ($checkSection->get_result()->num_rows > 0) {
-                    throw new Exception("This section already has an adviser.");
-                }
-
-                // Insert or update advisory
-                $checkTeacherAdv = $connection->prepare(
-                    "SELECT teacher_advisory_id
-                     FROM teacher_advisory
-                     WHERE teacher_id = ?"
-                );
-                $checkTeacherAdv->bind_param("i", $teacher_id);
-                $checkTeacherAdv->execute();
-
-                if ($checkTeacherAdv->get_result()->num_rows > 0) {
-
-                    $updateAdvisory = $connection->prepare(
-                        "UPDATE teacher_advisory
-                         SET strand_id = ?, grade_level = ?, section_id = ?
-                         WHERE teacher_id = ?"
-                    );
-                    $updateAdvisory->bind_param(
-                        "iiii",
-                        $strand_id,
-                        $grade_level,
-                        $section_id,
-                        $teacher_id
-                    );
-                    $updateAdvisory->execute();
-
-                } else {
-
-                    $insertAdvisory = $connection->prepare(
-                        "INSERT INTO teacher_advisory
-                         (teacher_id, strand_id, grade_level, section_id)
-                         VALUES (?, ?, ?, ?)"
-                    );
-                    $insertAdvisory->bind_param(
-                        "iiii",
-                        $teacher_id,
-                        $strand_id,
-                        $grade_level,
-                        $section_id
-                    );
-                    $insertAdvisory->execute();
-                }
-            }
-
-            $connection->commit();
-
-        } catch (Exception $e) {
-            $connection->rollback();
-            die("Transaction failed: " . $e->getMessage());
-        }
-    }
-
-    // ===============================
-    // SEND EMAIL
-    // ===============================
-    try {
-
-        $mail->setFrom('cdonhsshsacc@gmail.com', 'CDONHS-SHS HR Office');
-        $mail->addAddress(
-            $teacher['email'],
-            $teacher['first_name'] . ' ' . $teacher['last_name']
-        );
-
-        $mail->isHTML(true);
-        $mail->Subject = 'CDONHS-SHS Teacher Application Status Update';
-
-        $mail->Body = "
-        <p>Good day <b>{$teacher['first_name']} {$teacher['last_name']}</b>,</p>
-        <p>Your <b>teacher application</b> has been <b>$status</b>.</p>
-        <p><b>Admin Remarks:</b></p>
-        <p>$remarks</p>
-        ";
-
-        if ($status === 'Approved') {
-            $mail->Body .= "
-            <hr>
-            <p><b>Your Login Credentials:</b></p>
-            <p>
-                Username: <b>$username</b><br>
-                Temporary Password: <b>$tempPassword</b>
-            </p>
-            <p style='color:red;'>Please change your password after first login.</p>
-            ";
-        }
-
-        $mail->Body .= "
-        <br>
-        <p>Thank you,<br>
-        <b>CDONHS-SHS Human Resources Office</b></p>
-        ";
-
-        $mail->send();
-
-    } catch (Exception $e) {
-        error_log('Mail Error: ' . $mail->ErrorInfo);
-    }
-
-    header("Location: ../../Website_Files/Admin_Files/admin_teacher_application_list.php");
+if (!$data || !isset($data['updates'])) {
+    ob_end_clean();
+    echo json_encode(['success' => false, 'message' => 'No data received']);
     exit;
 }
-?>
+
+$updates = $data['updates'];
+
+$updatedCount = 0;
+$errorCount = 0;
+
+foreach ($updates as $item) {
+    if (!isset($item['application_id'], $item['status'])) {
+        $errorCount++;
+        continue;
+    }
+    
+    $applicationId = (int)$item['application_id'];
+    $status = $item['status'];
+    $remarks = isset($item['remarks']) ? $item['remarks'] : "";
+    
+    // Get teacher application info first
+    $stmtApp = $connection->prepare("SELECT * FROM teacher_applications WHERE teacher_application_id = ?");
+    $stmtApp->bind_param("i", $applicationId);
+    $stmtApp->execute();
+    $resultApp = $stmtApp->get_result();
+    $teacherApp = $resultApp->fetch_assoc();
+    $stmtApp->close();
+    
+    if (!$teacherApp) {
+        $errorCount++;
+        continue;
+    }
+    
+    $advisory = isset($item['advisory']) ? $item['advisory'] : null;
+    
+    // Handle Approved status
+    if ($status === 'Approved') {
+        // Update application status
+        $stmt = $connection->prepare("
+            UPDATE teacher_applications 
+            SET application_status = ?, remarks = ?
+            WHERE teacher_application_id = ?
+        ");
+        $stmt->bind_param("ssi", $status, $remarks, $applicationId);
+        $stmt->execute();
+        $stmt->close();
+        
+        // Check if teacher already exists
+        $stmtCheck = $connection->prepare("SELECT teacher_id FROM teachers WHERE application_id = ?");
+        $stmtCheck->bind_param("i", $applicationId);
+        $stmtCheck->execute();
+        $resultCheck = $stmtCheck->get_result();
+        $existingTeacher = $resultCheck->fetch_assoc();
+        $stmtCheck->close();
+        
+        if ($existingTeacher) {
+            // Teacher already exists - just update advisory if provided
+            $teacherId = $existingTeacher['teacher_id'];
+            
+            if ($advisory) {
+                $advisoryParts = explode('|', $advisory);
+                if (count($advisoryParts) === 3) {
+                    $strandId = (int)$advisoryParts[0];
+                    $gradeLevel = (int)$advisoryParts[1];
+                    $sectionId = (int)$advisoryParts[2];
+                    
+                    // Check if advisory already exists
+                    $stmtAdvCheck = $connection->prepare("
+                        SELECT advisory_id FROM teacher_advisory 
+                        WHERE teacher_id = ? AND strand_id = ? AND grade_level = ? AND section_id = ?
+                    ");
+                    $stmtAdvCheck->bind_param("iiii", $teacherId, $strandId, $gradeLevel, $sectionId);
+                    $stmtAdvCheck->execute();
+                    $resultAdvCheck = $stmtAdvCheck->get_result();
+                    
+                    if ($resultAdvCheck->num_rows === 0) {
+                        // Insert new advisory
+                        $stmtAdvisory = $connection->prepare("
+                            INSERT INTO teacher_advisory (teacher_id, strand_id, grade_level, section_id) 
+                            VALUES (?, ?, ?, ?)
+                        ");
+                        $stmtAdvisory->bind_param("iiii", $teacherId, $strandId, $gradeLevel, $sectionId);
+                        $stmtAdvisory->execute();
+                        $stmtAdvisory->close();
+                    }
+                    $stmtAdvCheck->close();
+                }
+            }
+            
+            // Email about approval (teacher already has account)
+            try {
+                $mail->setFrom('cdonhsshsacc@gmail.com', 'CDONHS-SHS Admin');
+                $mail->addAddress($teacherApp['email']);
+                $mail->isHTML(true);
+                
+                if ($advisory) {
+                    $mail->Subject = "Advisory Assignment Updated - CDONHS-SHS";
+                    $mail->Body = "
+                        <html>
+                        <head>
+                            <style>
+                                body { font-family: Arial, sans-serif; color: #333; line-height: 1.5; }
+                                .container { max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9; }
+                                .header { font-size: 18px; font-weight: bold; color: #28a745; margin-bottom: 15px; }
+                            </style>
+                        </head>
+                        <body>
+                            <div class='container'>
+                                <div class='header'>Good day {$teacherApp['first_name']} {$teacherApp['last_name']},</div>
+                                <p>Your advisory assignment has been updated.</p>
+                                <p>You may now log in to your account to view your advisory class.</p>
+                                <p>Thank you,<br><b>CDONHS-SHS Admin</b></p>
+                            </div>
+                        </body>
+                        </html>
+                    ";
+                } else {
+                    $mail->Subject = "Application Approved - CDONHS-SHS";
+                    $mail->Body = "
+                        <html>
+                        <head>
+                            <style>
+                                body { font-family: Arial, sans-serif; color: #333; line-height: 1.5; }
+                                .container { max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9; }
+                                .header { font-size: 18px; font-weight: bold; color: #28a745; margin-bottom: 15px; }
+                            </style>
+                        </head>
+                        <body>
+                            <div class='container'>
+                                <div class='header'>Good day {$teacherApp['first_name']} {$teacherApp['last_name']},</div>
+                                <p>Congratulations! Your application to CDONHS-SHS has been <strong>APPROVED</strong>.</p>
+                                <p>However, your advisory assignment has not been decided yet. We will inform you once it has been assigned.</p>
+                                <p>Thank you,<br><b>CDONHS-SHS Admin</b></p>
+                            </div>
+                        </body>
+                        </html>
+                    ";
+                }
+                
+                $mail->send();
+            } catch (Exception $e) {
+                error_log("Mailer Error: " . $mail->ErrorInfo);
+            }
+            
+            $mail->clearAddresses();
+            
+        } else {
+            // Generate teacher number
+            $teacherNumber = rand(500000, 599999);
+            
+            // Check if teacher number exists
+            $stmtNumCheck = $connection->prepare("SELECT teacher_id FROM teachers WHERE teacher_number = ?");
+            $stmtNumCheck->bind_param("i", $teacherNumber);
+            $stmtNumCheck->execute();
+            $resultNumCheck = $stmtNumCheck->get_result();
+            
+            if ($resultNumCheck->num_rows > 0) {
+                // Generate new teacher number
+                $teacherNumber = rand(500000, 599999);
+            }
+            $stmtNumCheck->close();
+
+
+            $username = "T_" . $teacherNumber;
+            // $tempPassword = bin2hex(random_bytes(4)); THIS IS THE TRUE DEFAULT
+            $stringNumber = (string) $teacherNumber;
+            $tempPassword = substr($stringNumber, -6);
+            $passwordHash = password_hash($tempPassword, PASSWORD_DEFAULT);
+
+             // Insert into users table (role_id = 3 for teacher)
+            $roleId = 3;
+            $stmtUser = $connection->prepare("INSERT INTO users (username, password, role_id) VALUES (?, ?, ?)");
+            $stmtUser->bind_param("ssi", $username, $passwordHash, $roleId);
+            $stmtUser->execute();
+            $userId = $stmtUser->insert_id;
+            $stmtUser->close();
+            
+            // Create new teacher record with user_id and teacher_number
+            $stmtTeacher = $connection->prepare("INSERT INTO teachers (application_id, user_id, teacher_number) VALUES (?, ?, ?)");
+            $stmtTeacher->bind_param("iii", $applicationId, $userId, $teacherNumber);
+            $stmtTeacher->execute();
+            $teacherId = $stmtTeacher->insert_id;
+            $stmtTeacher->close();
+            
+            // Assign advisory if provided
+            if ($advisory) {
+                $advisoryParts = explode('|', $advisory);
+                if (count($advisoryParts) === 3) {
+                    $strandId = (int)$advisoryParts[0];
+                    $gradeLevel = (int)$advisoryParts[1];
+                    $sectionId = (int)$advisoryParts[2];
+                    
+                    $stmtAdvisory = $connection->prepare("
+                        INSERT INTO teacher_advisory (teacher_id, strand_id, grade_level, section_id) 
+                        VALUES (?, ?, ?, ?)
+                    ");
+                    $stmtAdvisory->bind_param("iiii", $teacherId, $strandId, $gradeLevel, $sectionId);
+                    $stmtAdvisory->execute();
+                    $stmtAdvisory->close();
+                }
+            }
+            
+            // Send email with username and password
+            try {
+                $mail->setFrom('cdonhsshsacc@gmail.com', 'CDONHS-SHS Admin');
+                $mail->addAddress($teacherApp['email']);
+                $mail->isHTML(true);
+                
+                if ($advisory) {
+                    $mail->Subject = "Application Approved - CDONHS-SHS";
+                    $mail->Body = "
+                        <html>
+                        <head>
+                            <style>
+                                body { font-family: Arial, sans-serif; color: #333; line-height: 1.5; }
+                                .container { max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9; }
+                                .header { font-size: 18px; font-weight: bold; color: #28a745; margin-bottom: 15px; }
+                                .credentials { background: #f0f0f0; padding: 15px; border-radius: 5px; margin: 15px 0; }
+                            </style>
+                        </head>
+                        <body>
+                            <div class='container'>
+                                <div class='header'>Good day {$teacherApp['first_name']} {$teacherApp['last_name']},</div>
+                                <p>Congratulations! Your application to CDONHS-SHS has been <strong>APPROVED</strong>.</p>
+                                <p>You may now log in to your account using the credentials below:</p>
+                                <div class='credentials'>
+                                    <p><strong>Username:</strong> {$username}</p>
+                                    <p><strong>Temporary Password:</strong> {$tempPassword}</p>
+                                </div>
+                                <p>Please change your password after logging in.</p>
+                                <p>Thank you,<br><b>CDONHS-SHS Admin</b></p>
+                            </div>
+                        </body>
+                        </html>
+                    ";
+                } else {
+                    $mail->Subject = "Application Approved - CDONHS-SHS";
+                    $mail->Body = "
+                        <html>
+                        <head>
+                            <style>
+                                body { font-family: Arial, sans-serif; color: #333; line-height: 1.5; }
+                                .container { max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9; }
+                                .header { font-size: 18px; font-weight: bold; color: #28a745; margin-bottom: 15px; }
+                                .credentials { background: #f0f0f0; padding: 15px; border-radius: 5px; margin: 15px 0; }
+                            </style>
+                        </head>
+                        <body>
+                            <div class='container'>
+                                <div class='header'>Good day {$teacherApp['first_name']} {$teacherApp['last_name']},</div>
+                                <p>Congratulations! Your application to CDONHS-SHS has been <strong>APPROVED</strong>.</p>
+                                <p>However, your advisory assignment has not been decided yet. We will inform you once it has been assigned.</p>
+                                <div class='credentials'>
+                                    <p><strong>Username:</strong> {$username}</p>
+                                    <p><strong>Temporary Password:</strong> {$tempPassword}</p>
+                                </div>
+                                <p>Please change your password after logging in.</p>
+                                <p>Thank you,<br><b>CDONHS-SHS Admin</b></p>
+                            </div>
+                        </body>
+                        </html>
+                    ";
+                }
+                
+                $mail->send();
+            } catch (Exception $e) {
+                error_log("Mailer Error: " . $mail->ErrorInfo);
+            }
+            
+            $mail->clearAddresses();
+        }
+        
+    } elseif ($status === 'Rejected') {
+        // Update application status
+        $stmt = $connection->prepare("
+            UPDATE teacher_applications 
+            SET application_status = ?, remarks = ?
+            WHERE teacher_application_id = ?
+        ");
+        $stmt->bind_param("ssi", $status, $remarks, $applicationId);
+        $stmt->execute();
+        $stmt->close();
+        
+        // Send rejection email
+        try {
+            $mail->setFrom('cdonhsshsacc@gmail.com', 'CDONHS-SHS Admin');
+            $mail->addAddress($teacherApp['email']);
+            $mail->isHTML(true);
+            
+            $mail->Subject = "Application Rejected - CDONHS-SHS";
+            $remarksHtml = !empty($remarks) ? "<p><strong>Reason:</strong> {$remarks}</p>" : "";
+            $mail->Body = "
+                <html>
+                <head>
+                    <style>
+                        body { font-family: Arial, sans-serif; color: #333; line-height: 1.5; }
+                        .container { max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9; }
+                        .header { font-size: 18px; font-weight: bold; color: #dc3545; margin-bottom: 15px; }
+                    </style>
+                </head>
+                <body>
+                    <div class='container'>
+                        <div class='header'>Good day {$teacherApp['first_name']} {$teacherApp['last_name']},</div>
+                        <p>We regret to inform you that your application to CDONHS-SHS has been <strong>REJECTED</strong>.</p>
+                        {$remarksHtml}
+                        <p>Thank you,<br><b>CDONHS-SHS Admin</b></p>
+                    </div>
+                </body>
+                </html>
+            ";
+            
+            $mail->send();
+        } catch (Exception $e) {
+            error_log("Mailer Error: " . $mail->ErrorInfo);
+        }
+        
+        $mail->clearAddresses();
+        
+        // Delete the teacher application record after sending rejection email
+        $stmtDelete = $connection->prepare("DELETE FROM teacher_applications WHERE teacher_application_id = ?");
+        $stmtDelete->bind_param("i", $applicationId);
+        $stmtDelete->execute();
+        $stmtDelete->close();
+    } else {
+        // Just update status for other cases (Pending, etc.)
+        $stmt = $connection->prepare("
+            UPDATE teacher_applications 
+            SET application_status = ?, remarks = ?
+            WHERE teacher_application_id = ?
+        ");
+        $stmt->bind_param("ssi", $status, $remarks, $applicationId);
+        $stmt->execute();
+        $stmt->close();
+    }
+    
+    $updatedCount++;
+}
+
+ob_end_clean();
+
+echo json_encode([
+    'success' => true,
+    'message' => "Applications updated successfully. Total: {$updatedCount}"
+]);
+exit;

@@ -1,7 +1,7 @@
 <?php
 // Set profile image path
 $profileImagePath = !empty($user['profile_image']) 
-    ? "../../uploads/" . htmlspecialchars($user['profile_image']) 
+    ? "../../uploads/Profile/teacher/" . htmlspecialchars($user['profile_image']) 
     : "../../Assets/profile_button.png";
 
 // Get teacher's advisory
