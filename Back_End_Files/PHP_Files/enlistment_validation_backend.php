@@ -35,6 +35,7 @@ if (!$admin) {
 $grade = $_GET['grade_level'] ?? '';
 $strand = $_GET['strand_id'] ?? '';
 $section = $_GET['section_id'] ?? '';
+$search_name = isset($_GET['search_name']) ? trim($_GET['search_name']) : '';
 
 /* ----------------- GET FILTER OPTIONS ----------------- */
 
@@ -80,6 +81,16 @@ WHERE s.enlistment_status = 'Pending'
 
 $params = [];
 $types = "";
+
+// Search by name filter
+if (!empty($search_name)) {
+    $sql .= " AND (sa.first_name LIKE ? OR sa.last_name LIKE ? OR CONCAT(sa.first_name, ' ', sa.last_name) LIKE ?)";
+    $searchParam = "%" . $search_name . "%";
+    $params[] = $searchParam;
+    $params[] = $searchParam;
+    $params[] = $searchParam;
+    $types .= "sss";
+}
 
 // Grade filter
 if (!empty($grade)) {

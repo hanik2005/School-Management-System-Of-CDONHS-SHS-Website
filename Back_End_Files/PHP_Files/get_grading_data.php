@@ -43,6 +43,9 @@ $subject_id = isset($_GET['subject'])
 
 
 /* GET STUDENTS */
+$search = isset($_GET['search']) ? trim($_GET['search']) : '';
+$searchParam = $search ? "%" . $search . "%" : '';
+
 $getStudents = $connection->prepare("
 SELECT s.student_id,
        CONCAT(sa.last_name, ', ', sa.first_name) AS student_name,
@@ -67,19 +70,29 @@ LEFT JOIN grade_entry ge
 WHERE ss.section_id = ?
 AND subj.status = 'Enrolled'
 AND s.enlistment_status = 'Enlisted'
+" . ($search ? "AND CONCAT(sa.last_name, ', ', sa.first_name) LIKE ?" : "") . "
 
 ORDER BY sa.last_name ASC
 ");
 
-
-$getStudents->bind_param(
-    "iiiii",
-    $subject_id,
-    $subject_id,
-    $section_id,
-    $quarter,
-    $section_id
-);
+if ($search) {
+    $getStudents->bind_param("iiiiis",
+        $subject_id,
+        $subject_id,
+        $section_id,
+        $quarter,
+        $section_id,
+        $searchParam
+    );
+} else {
+    $getStudents->bind_param("iiiii",
+        $subject_id,
+        $subject_id,
+        $section_id,
+        $quarter,
+        $section_id
+    );
+}
 
 $getStudents->execute();
 $result = $getStudents->get_result();

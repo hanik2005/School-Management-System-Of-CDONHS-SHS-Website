@@ -113,6 +113,20 @@ include "../../Back_End_Files/PHP_Files/save_grades.php";
 
     </form>
 
+    <!-- SEARCH BOX -->
+    <div class="search-container">
+        <form method="GET" style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <input type="hidden" name="subject" value="<?= $subject_id ?>">
+            <input type="hidden" name="quarter" value="<?= $quarter ?>">
+            
+            <label>Search Student:</label>
+            <input type="text" name="search" placeholder="Search by name..." value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
+
+            <button type="submit" class="search-btn">Search</button>
+            <a href="grading_page.php?subject=<?= $subject_id ?>&quarter=<?= $quarter ?>" class="clear-btn">Clear</a>
+        </form>
+    </div>
+
     <br>
 
     <form method="POST">

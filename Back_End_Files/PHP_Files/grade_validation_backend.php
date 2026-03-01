@@ -120,8 +120,13 @@ $validationData = $result->fetch_all(MYSQLI_ASSOC);
 
 $stmt->close();
 
-/* STATUS FILTER */
-if ($status !== '') {
+/* STATUS FILTER - Default to Draft and Rejected only */
+if ($status === 'Draft_Rejected' || $status === '') {
+    // Default: show only Draft and Rejected
+    $validationData = array_filter($validationData, function($row) {
+        return $row['status'] === 'Draft' || $row['status'] === 'Rejected';
+    });
+} else {
     $validationData = array_filter($validationData, function($row) use ($status) {
         return $row['status'] === $status;
     });

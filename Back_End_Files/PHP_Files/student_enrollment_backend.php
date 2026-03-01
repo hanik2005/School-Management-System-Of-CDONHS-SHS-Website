@@ -26,7 +26,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     $contactNumber = $_POST['contactNumber'];
     $email = $_POST['email'];
-    $facebookName = $_POST['facebookName'] ?? null;
+    $facebookName = $_POST['facebookProfile'] ?? null;
 
     // Normalize contact numbers (remove any non-numeric characters)
     $contactNumber = preg_replace('/[^0-9]/', '', $contactNumber);

@@ -160,116 +160,10 @@ $selected_student_id = isset($_GET['student_id']) ? $_GET['student_id'] : '';
     <link rel="stylesheet" href="../../Design/main_design.css">
     <link rel="stylesheet" href="../../Design/profile_dropdown.css">
     <link rel="stylesheet" href="../../Design/dashboard_design.css">
+    <link rel="stylesheet" href="../../Design/teacher/form_137_138_design.css">
     <title>Form 137/138 - Student Records</title>
     <link rel="icon" href="../../Assets/LOGO.png" type="image/jpg">
-    <style>
-        .selection-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        .option-card {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        
-        .option-card h3 {
-            margin-top: 0;
-            color: #1e3a8a;
-            border-bottom: 2px solid #fbbf24;
-            padding-bottom: 10px;
-        }
-        
-        .form-type-buttons {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        
-        .form-type-btn {
-            flex: 1;
-            padding: 20px;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            background: white;
-            cursor: pointer;
-            text-align: center;
-            transition: all 0.3s;
-        }
-        
-        .form-type-btn:hover, .form-type-btn.active {
-            border-color: #1e3a8a;
-            background: #e0e7ff;
-        }
-        
-        .form-type-btn h4 {
-            margin: 0 0 5px;
-            font-size: 18px;
-        }
-        
-        .form-type-btn p {
-            margin: 0;
-            font-size: 12px;
-            color: #666;
-        }
-        
-        .selection-form {
-            display: flex;
-            gap: 15px;
-            align-items: flex-end;
-        }
-        
-        .selection-form .form-group {
-            flex: 1;
-        }
-        
-        .selection-form label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 600;
-            color: #333;
-        }
-        
-        .selection-form select, .selection-form input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        
-        .action-buttons {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
-        
-        .btn-action {
-            padding: 12px 30px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: bold;
-        }
-        
-        .btn-single {
-            background: #059669;
-            color: white;
-        }
-        
-        .btn-all {
-            background: #1e3a8a;
-            color: white;
-        }
-        
-        .btn-action:hover {
-            opacity: 0.9;
-        }
-    </style>
+   
 </head>
 <body>
 
@@ -294,8 +188,8 @@ $selected_student_id = isset($_GET['student_id']) ? $_GET['student_id'] : '';
 
     <div class="main-container">
         
-        <div class="nav-links">
-            <a href="home.php">← Back to Dashboard</a>
+        <div class="back-button-container">
+            <a href="home.php" class="back-button">← Back to Dashboard</a>
         </div>
         
         <div class="selection-container">

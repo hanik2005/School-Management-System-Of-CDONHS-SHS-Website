@@ -49,6 +49,11 @@ include "../../Back_End_Files/PHP_Files/enlistment_validation_backend.php";
             <form method="GET">
                 <div class="filter-section">
                     <div class="filter-group">
+                        <label>Search by Name:</label>
+                        <input type="text" name="search_name" class="filter-dropdown" placeholder="Enter student name..." value="<?= isset($_GET['search_name']) ? htmlspecialchars($_GET['search_name']) : '' ?>">
+                    </div>
+
+                    <div class="filter-group">
                         <label>Grade Level:</label>
                         <select name="grade_level" class="filter-dropdown">
                             <option value="">Select Grade Level</option>
@@ -89,11 +94,12 @@ include "../../Back_End_Files/PHP_Files/enlistment_validation_backend.php";
             </form>
 
             <!-- ================= TABLE SECTION ================= -->
-            <form method="POST" action="../../Back_End_Files/PHP_Files/admin_enlistment_validation_backend.php">
+            <form method="POST" action="../../Back_End_Files/PHP_Files/admin_enlistment_validation_backend.php" onsubmit="showLoadingModal()">
                 <div class="table-container">
                     <table class="validation-table">
                         <thead>
                             <tr>
+                                <th><input type="checkbox" id="selectAllCheckbox"></th>
                                 <th>No</th>
                                 <th>LRN</th>
                                 <th>Student Name</th>
@@ -124,6 +130,7 @@ include "../../Back_End_Files/PHP_Files/enlistment_validation_backend.php";
                                 $student_name = $row['first_name'] . ' ' . $row['last_name'];
                         ?>
                             <tr>
+                                <td><input type="checkbox" class="row-checkbox" name="selected_students[]" value="<?= $row['student_id'] ?>"></td>
                                 <td><?= $no++ ?></td>
                                 <td><?= $row['lrn'] ?></td>
                                 <td><?= $student_name ?></td>
@@ -157,6 +164,26 @@ include "../../Back_End_Files/PHP_Files/enlistment_validation_backend.php";
         </div>
     </div>
 
+    <!-- Loading Modal -->
+    <div id="loadingModal" class="loading-modal">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <p>Processing... Please wait.</p>
+            <span class="loading-subtext">Sending notifications and updating records.</span>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <?php if (isset($_GET['success'])): ?>
+    <div id="successModal" class="success-modal active">
+        <div class="success-content">
+            <div class="success-icon">&#10004;</div>
+            <p>Students validated successfully!</p>
+            <button type="button" class="success-btn" onclick="closeSuccessModal()">OK</button>
+        </div>
+    </div>
+    <?php endif; ?>
+
     <!-- footer -->
     <div class="footer">
         © 2026 Cagayan De Oro National High School - Senior High School  
@@ -164,5 +191,29 @@ include "../../Back_End_Files/PHP_Files/enlistment_validation_backend.php";
         School Management System
     </div>
     <script src="../../Back_End_Files/JSCRIPT_Files/profile_dropdown_function.js"></script>
+    <script>
+    document.getElementById('selectAllCheckbox').addEventListener('change', function() {
+        const checkboxes = document.querySelectorAll('.row-checkbox');
+        checkboxes.forEach(cb => cb.checked = this.checked);
+    });
+    
+    function showLoadingModal() {
+        const loadingModal = document.getElementById('loadingModal');
+        if (loadingModal) {
+            loadingModal.classList.add('active');
+        }
+    }
+    
+    function closeSuccessModal() {
+        const successModal = document.getElementById('successModal');
+        if (successModal) {
+            successModal.classList.remove('active');
+        }
+        // Remove the success parameter from URL without reloading
+        const url = new URL(window.location.href);
+        url.searchParams.delete('success');
+        window.history.replaceState({}, document.title, url);
+    }
+    </script>
 </body>
 </html>

@@ -167,7 +167,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['finalize_status'])) {
                     // Update student enrollment status to Graduated
                     // Do NOT update school_year for graduated students
                     $updateGraduated = $connection->prepare("
-                        UPDATE students SET enrollment_status = 'Graduated', enlistment_status = 'Promoted'
+                        UPDATE students SET enrollment_status = 'Graduated', enlistment_status = 'Finished'
                         WHERE student_id = ?
                     ");
                     $updateGraduated->bind_param("i", $student_id);

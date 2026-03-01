@@ -92,10 +92,8 @@ include "../../Back_End_Files/PHP_Files/grade_validation_backend.php";
 
     <label>Status:</label>
     <select name="status" id="status">
-        <option value="" <?= empty($_GET['status']) ? 'selected' : '' ?>>All</option>
+        <option value="Draft_Rejected" <?= (isset($_GET['status']) && $_GET['status']=='Draft_Rejected') || !isset($_GET['status']) ? 'selected' : '' ?>>All (Draft & Rejected)</option>
         <option value="Draft" <?= (isset($_GET['status']) && $_GET['status']=='Draft') ? 'selected' : '' ?>>Draft</option>
-        <option value="Submitted" <?= (isset($_GET['status']) && $_GET['status']=='Submitted') ? 'selected' : '' ?>>Submitted</option>
-        <option value="Approved" <?= (isset($_GET['status']) && $_GET['status']=='Approved') ? 'selected' : '' ?>>Approved</option>
         <option value="Rejected" <?= (isset($_GET['status']) && $_GET['status']=='Rejected') ? 'selected' : '' ?>>Rejected</option>
     </select>
 

@@ -96,6 +96,11 @@ if (!isFeatureEnabled('Student Enrollment')) {
             <input type="email" name="email" required>
         </div>
 
+         <div>
+            <label>Facebook Profile URL (Optional)</label>
+            <input type="url" name="facebookProfile">
+        </div>
+
     </div>
 
     <!-- ADDRESS -->

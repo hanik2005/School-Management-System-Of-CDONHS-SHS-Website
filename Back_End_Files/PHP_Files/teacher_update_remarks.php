@@ -70,7 +70,7 @@ foreach ($updates as $item) {
         $stmtCheck->close();
         
         if ($existingTeacher) {
-            // Teacher already exists - just update advisory if provided
+            // Teacher already exists - update advisory if provided
             $teacherId = $existingTeacher['teacher_id'];
             
             if ($advisory) {
@@ -80,26 +80,20 @@ foreach ($updates as $item) {
                     $gradeLevel = (int)$advisoryParts[1];
                     $sectionId = (int)$advisoryParts[2];
                     
-                    // Check if advisory already exists
-                    $stmtAdvCheck = $connection->prepare("
-                        SELECT advisory_id FROM teacher_advisory 
-                        WHERE teacher_id = ? AND strand_id = ? AND grade_level = ? AND section_id = ?
-                    ");
-                    $stmtAdvCheck->bind_param("iiii", $teacherId, $strandId, $gradeLevel, $sectionId);
-                    $stmtAdvCheck->execute();
-                    $resultAdvCheck = $stmtAdvCheck->get_result();
+                    // Delete existing advisory for this teacher
+                    $stmtDeleteAdvisory = $connection->prepare("DELETE FROM teacher_advisory WHERE teacher_id = ?");
+                    $stmtDeleteAdvisory->bind_param("i", $teacherId);
+                    $stmtDeleteAdvisory->execute();
+                    $stmtDeleteAdvisory->close();
                     
-                    if ($resultAdvCheck->num_rows === 0) {
-                        // Insert new advisory
-                        $stmtAdvisory = $connection->prepare("
-                            INSERT INTO teacher_advisory (teacher_id, strand_id, grade_level, section_id) 
-                            VALUES (?, ?, ?, ?)
-                        ");
-                        $stmtAdvisory->bind_param("iiii", $teacherId, $strandId, $gradeLevel, $sectionId);
-                        $stmtAdvisory->execute();
-                        $stmtAdvisory->close();
-                    }
-                    $stmtAdvCheck->close();
+                    // Insert new advisory
+                    $stmtAdvisory = $connection->prepare("
+                        INSERT INTO teacher_advisory (teacher_id, strand_id, grade_level, section_id) 
+                        VALUES (?, ?, ?, ?)
+                    ");
+                    $stmtAdvisory->bind_param("iiii", $teacherId, $strandId, $gradeLevel, $sectionId);
+                    $stmtAdvisory->execute();
+                    $stmtAdvisory->close();
                 }
             }
             

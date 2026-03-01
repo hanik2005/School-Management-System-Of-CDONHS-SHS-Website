@@ -165,16 +165,24 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    function closeSuccessModal() {
-        const successModal = document.getElementById("successModal");
+    function closeSuccessModal(shouldReload = true) {
+        const successModal = document.getElementById('successModal');
         if (successModal) {
-            successModal.classList.remove("active");
+            successModal.classList.remove('active');
         }
-        
-        // Reload page to show updated statuses
-        location.reload();
+        // Reload page or just remove URL parameter
+        if (shouldReload) {
+            location.reload();
+        } else {
+            const url = new URL(window.location.href);
+            url.searchParams.delete('success');
+            window.history.replaceState({}, document.title, url);
+        }
     }
-
+    
+    // Make function globally accessible
+    window.closeSuccessModal = closeSuccessModal;
+    
     // Close modal when clicking outside
     window.addEventListener("click", function(event) {
         const successModal = document.getElementById("successModal");
